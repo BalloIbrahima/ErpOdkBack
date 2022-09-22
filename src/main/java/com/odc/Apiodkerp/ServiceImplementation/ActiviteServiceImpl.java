@@ -2,6 +2,9 @@ package com.odc.Apiodkerp.ServiceImplementation;
 
 import com.odc.Apiodkerp.Models.Activite;
 import com.odc.Apiodkerp.Models.Salle;
+
+import com.odc.Apiodkerp.Models.Etat;
+
 import com.odc.Apiodkerp.Repository.ActiviteRepository;
 import com.odc.Apiodkerp.Repository.SalleRepository;
 import com.odc.Apiodkerp.Service.ActiviteService;
@@ -64,6 +67,11 @@ private   ActiviteRepository activiteRepository;
             activiteRepository.save(activitecourant);
             return "Salle attribuée avec succès !";
         } else return "Cette salle n'existe pas !";
+    }
+
+    @Override
+    public Activite GetByEtat(Etat etat) {
+        return activiteRepository.findByEtat(etat);
     }
 
 
