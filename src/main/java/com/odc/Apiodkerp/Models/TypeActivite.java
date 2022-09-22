@@ -21,7 +21,7 @@ public class TypeActivite {
     private  String libelle;
 
 
-    @OneToMany
+    @OneToMany(mappedBy = "typeActivite")
     @JoinColumn(name = "activite_id")
     @JsonIgnore
    private Activite activite;

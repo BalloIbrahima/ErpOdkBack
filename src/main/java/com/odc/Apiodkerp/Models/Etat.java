@@ -22,8 +22,8 @@ public class Etat {
 
 
 
-    @OneToMany
-    @JoinColumn(name = "activite_id")
+    @OneToMany(mappedBy = "etat")
+    @JoinColumn(name = "activite")
     @JsonIgnore
     private Activite activite;
 

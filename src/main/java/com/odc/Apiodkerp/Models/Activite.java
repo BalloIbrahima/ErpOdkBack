@@ -30,15 +30,15 @@ public class Activite {
     //Plusieurs activite pour un seul etat
 
     @ManyToOne
-    @JoinColumn(name = "etat_id")
+    @JoinColumn(name = "etat")
     private  Etat etat;
 
     @ManyToOne
-    @JoinColumn(name = "type_activite_id")
+    @JoinColumn(name = "typeactivite")
     private  TypeActivite typeActivite;
 
     @ManyToOne
-    @JoinColumn(name = "salle_id")
+    @JoinColumn(name = "salle")
     private  Salle salle;
 
 

@@ -24,8 +24,8 @@ public class Salle {
     private  String description;
 
 
-    @OneToMany
-    @JoinColumn(name = "activite_id")
+    @OneToMany(mappedBy = "salle")
+    @JoinColumn(name = "activite")
     @JsonIgnore
     private  Activite activite;
 }
