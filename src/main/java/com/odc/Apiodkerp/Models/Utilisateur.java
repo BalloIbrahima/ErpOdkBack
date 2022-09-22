@@ -42,7 +42,7 @@ public class Utilisateur extends Personne {
 
     @JsonIgnore
     @OneToMany(mappedBy = "leader")
-    private List<Tirage> activitesLeads = new ArrayList<>();
+    private List<Activite> activitesLeads = new ArrayList<>();
 
     @ManyToMany
     @JoinTable(name = "UtilisateurActivite", joinColumns = {
