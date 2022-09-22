@@ -116,10 +116,10 @@ public class ResponsableController {
 
                     return ResponseMessage.generateResponse("ok", HttpStatus.OK, Simpleutilisateur);
                 } else {
-                    return ResponseMessage.generateResponse("non autorise", HttpStatus.OK, null);
+                    return ResponseMessage.generateResponse("error", HttpStatus.OK, "non autorise");
                 }
             } else {
-                return ResponseMessage.generateResponse("utilisateur n'existe pas", HttpStatus.OK, null);
+                return ResponseMessage.generateResponse("error", HttpStatus.OK, "utilisateur n'existe pas");
             }
 
         } catch (Exception e) {
@@ -128,10 +128,10 @@ public class ResponsableController {
         }
     }
 
-    // la methode pour importer une liste
-    @ApiOperation(value = "la methode pour importer une liste.")
+    // la methode pour importer une liste de postulant
+    @ApiOperation(value = "la methode pour importer une liste de postulant.")
     @PostMapping("/list/new/{libelleliste}")
-    public ResponseEntity<Object> CreateTirage(@PathVariable("libelleliste") String libelleliste,
+    public ResponseEntity<Object> ImportListePostulant(@PathVariable("libelleliste") String libelleliste,
             @RequestParam("file") MultipartFile file) {
 
         try {
@@ -166,12 +166,63 @@ public class ResponsableController {
                             listePostulantService.creer(listePostulant));
 
                 } else {
-                    return ResponseMessage.generateResponse("Veuiller fournir un fichier Excel valide!", HttpStatus.OK,
-                            null);
+                    return ResponseMessage.generateResponse("error", HttpStatus.OK,
+                            "Veuiller fournir un fichier Excel valide!");
                 }
             } else {
                 // Il existe une liste avec la même libelle
-                return ResponseMessage.generateResponse("Cette lise existe deja", HttpStatus.OK, null);
+                return ResponseMessage.generateResponse("error", HttpStatus.OK, "Cette lise existe deja");
+
+            }
+
+        } catch (Exception e) {
+            // TODO: handle exception
+            return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
+        }
+    }
+
+    // la methode pour importer une liste de postulant
+    @ApiOperation(value = "la methode pour importer une liste de postulant.")
+    @PostMapping("/list/new/{idTirage}")
+    public ResponseEntity<Object> ImportListeParticipant(@RequestParam("file") MultipartFile file,
+            @PathVariable("idTirage") Long idTirage) {
+
+        try {
+            Tirage tirage = tirageService.getById(idTirage);
+            if (tirage != null) {
+                if (ExcelImport.verifier(file)) {
+
+                    List<Postulant> postulants = ExcelImport.postulantsExcel(file);
+                    // insertion des postulants recuperes à partir du fichier excel
+                    for (Postulant p : postulants) {
+
+                        if (postulantService.GetByEmail(p.getEmail()) == null
+                                & p.getNom() != null & p.getPrenom() != null) {
+                            Postulant pc = postulantService.creer(p);
+
+                            tirageService.ajouterParticipant(pc, idTirage);
+                            // p.getListePostulants().add(listePostulant);
+                            // listePostulant.getPostulants().add(pc);
+
+                        } else if (p.getEmail() != null & p.getNom() != null & p.getPrenom() != null) {
+
+                            Postulant pc = postulantService.GetByEmail(p.getEmail());
+                            tirageService.ajouterParticipant(pc, idTirage);
+
+                        }
+
+                    }
+
+                    return ResponseMessage.generateResponse("ok", HttpStatus.OK,
+                            null);
+
+                } else {
+                    return ResponseMessage.generateResponse("error", HttpStatus.OK,
+                            "Veuiller fournir un fichier Excel valide !");
+                }
+            } else {
+                // Il existe une liste avec la même libelle
+                return ResponseMessage.generateResponse("error", HttpStatus.OK, "Cette tirage n'existe deja");
 
             }
 
@@ -237,10 +288,20 @@ public class ResponsableController {
     // Tire---------------------------------------//
     // Creation de postulant tiré
     @ApiOperation(value = "Ajouter participant")
-    @PostMapping("/create")
-    public ResponseEntity<PostulantTire> createPostulantTire(@RequestBody PostulantTire postulantTire) {
-        postulantTrieService.create(postulantTire);
-        return new ResponseEntity<>(postulantTire, HttpStatus.CREATED);
+    @PostMapping("/create/participant/{idtirage}")
+    public ResponseEntity<Object> createPostulantTire(@RequestBody Postulant participant,
+            @PathVariable("idtirage") Long idtirage) {
+
+        try {
+            tirageService.ajouterParticipant(participant, idtirage);
+            return ResponseMessage.generateResponse("ok", HttpStatus.OK, null);
+
+        } catch (Exception e) {
+            // TODO: handle exception
+            return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
+
+        }
+
     }
 
     // Afficher de postulant tiré
@@ -249,21 +310,23 @@ public class ResponsableController {
     public ResponseEntity<Object> readPostulantTire(@PathVariable long id) {
         try {
             PostulantTire post = postulantTrieService.read(id);
-            return new ResponseEntity<>(post, HttpStatus.OK);
+            return ResponseMessage.generateResponse("ok", HttpStatus.OK, post);
+
         } catch (Exception e) {
-            return ResponseMessage.generateResponse("postulant non trouvé", HttpStatus.OK, e.getMessage());
+            return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
         }
     }
 
     // Modifier de postulant tiré par son id
     @ApiOperation(value = "modifier participant par son id")
     @PutMapping("/update/{id}")
-    public ResponseEntity<Object> updatePostulantTire(@RequestBody PostulantTire postulantTire, @PathVariable long id) {
+    public ResponseEntity<Object> updatePostulantTire(@RequestBody Postulant postulant, @PathVariable long id) {
         try {
-            PostulantTire post = postulantTrieService.update(postulantTire, id);
-            return new ResponseEntity<>(post, HttpStatus.OK);
+            Postulant post = postulantService.update(id, postulant);
+            return ResponseMessage.generateResponse("ok", HttpStatus.OK, post);
+
         } catch (Exception e) {
-            return ResponseMessage.generateResponse("Participant non trouvé", HttpStatus.OK, e.getMessage());
+            return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
         }
 
     }
@@ -271,15 +334,32 @@ public class ResponsableController {
     // Supprimer Postulant tiré par son id
     @ApiOperation(value = "Supprimer participant par son id")
     @DeleteMapping("/delete/{id}")
-    public void deletePostulantTire(@PathVariable long id) {
-        postulantTrieService.delete(id);
+    public ResponseEntity<Object> deletePostulantTire(@PathVariable long id) {
+        try {
+            postulantTrieService.delete(id);
+            return ResponseMessage.generateResponse("ok", HttpStatus.OK, null);
+
+        } catch (Exception e) {
+            // TODO: handle exception
+            return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
+
+        }
+
     }
 
     // Afficher tous les postulants
     @ApiOperation(value = "Afficher tous les participants")
     @GetMapping("/All")
-    public List<PostulantTire> getAllPostulantTire() {
-        return postulantTrieService.getAll();
+    public ResponseEntity<Object> getAllPostulantTire() {
+        try {
+            return ResponseMessage.generateResponse("ok", HttpStatus.OK, postulantTrieService.getAll());
+
+        } catch (Exception e) {
+            // TODO: handle exception
+            return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
+
+        }
+
     }
 
 }

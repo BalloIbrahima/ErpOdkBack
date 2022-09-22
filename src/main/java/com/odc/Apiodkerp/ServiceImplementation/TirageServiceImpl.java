@@ -20,13 +20,13 @@ public class TirageServiceImpl implements TirageService {
     TirageRepository tirageRepository;
     @Autowired
     PostulantTrieRepository postulantTrieRepository;
+
     @Override
     public List<Postulant> creer(Tirage tirage, List<Postulant> listeatirer, long nombre) {
         List<Postulant> listetiree = new ArrayList<>();
         PostulantTire postulantTire = new PostulantTire();
         Random ran = new Random();
-        for (Postulant choisi:
-             listeatirer) {
+        for (Postulant choisi : listeatirer) {
             Integer nombrealeatoire = ran.nextInt(listeatirer.size());
             listetiree.add(listeatirer.get(nombrealeatoire));
             postulantTire.setPostulant(listeatirer.get(nombrealeatoire));
@@ -68,11 +68,13 @@ public class TirageServiceImpl implements TirageService {
     public void ajouterParticipant(Postulant participant, long idtirage) {
         Tirage tiragehote = tirageRepository.findById(idtirage).orElse(null);
         PostulantTire postulantTire = new PostulantTire();
-        List<PostulantTire> listedutirage = tiragehote.getPostulanttires();
+        // List<PostulantTire> listedutirage = tiragehote.getPostulanttires();
         postulantTire.setPostulant(participant);
+
         postulantTire.setTirage(tiragehote);
-        listedutirage.add(postulantTire);
+        // listedutirage.add(postulantTire);
+
         postulantTrieRepository.save(postulantTire);
-        tiragehote.setPostulanttires(listedutirage);
+        // tiragehote.setPostulanttires(listedutirage);
     }
 }

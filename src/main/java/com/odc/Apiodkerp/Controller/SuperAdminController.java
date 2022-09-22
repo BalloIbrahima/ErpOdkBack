@@ -79,7 +79,7 @@ public class SuperAdminController {
         try {
             Utilisateur Superutilisateur = utilisateurService.login(login, password);
             Role admin = RoleService.GetByLibelle("ADMIN");
-            if (Superutilisateur != null) {
+            if (Superutilisateur != null && Superutilisateur.getActive() == true) {
                 if (Superutilisateur.getRole() == admin && Superutilisateur.getActive() == true) {
                     return ResponseMessage.generateResponse("ok", HttpStatus.OK, Superutilisateur);
                 } else {
@@ -154,35 +154,57 @@ public class SuperAdminController {
             return ResponseMessage.generateResponse("ok", HttpStatus.OK, NewUser);
         } catch (Exception e) {
             // TODO: handle exception
-            return ResponseMessage.generateResponse("Utilisateur non trouvé", HttpStatus.OK, e.getMessage());
+            return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
         }
     }
 
     @ApiOperation(value = "Modifier un utilisateur.")
     @PutMapping("/update/user/{id}")
-    public ResponseEntity<Utilisateur> updateUser(@RequestBody Utilisateur utilisateur,
+    public ResponseEntity<Object> updateUser(@RequestBody Utilisateur utilisateur,
             @RequestParam(value = "file", required = false) MultipartFile file) {
 
-        if (file != null) {
-            SaveImage.save("user", file, utilisateur.getEmail());
+        try {
+            if (file != null) {
+                SaveImage.save("user", file, utilisateur.getEmail());
+            }
+            Utilisateur UpdateUtilisateur = utilisateurService.update(utilisateur);
+            return ResponseMessage.generateResponse("ok", HttpStatus.OK, UpdateUtilisateur);
+
+        } catch (Exception e) {
+            // TODO: handle exception
+            return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
+
         }
-        Utilisateur UpdateUtilisateur = utilisateurService.update(utilisateur);
-        return new ResponseEntity<>(UpdateUtilisateur, HttpStatus.OK);
+
     }
 
     @ApiOperation(value = "Supprimer un utilisateur")
     @DeleteMapping("/delete/user/{id}")
     public ResponseEntity<Object> deleteUser(@PathVariable Long id) {
-        utilisateurService.delete(id);
-        return ResponseMessage.generateResponse("ok", HttpStatus.OK, null);
+        try {
+            utilisateurService.delete(id);
+            return ResponseMessage.generateResponse("ok", HttpStatus.OK, null);
+        } catch (Exception e) {
+            // TODO: handle exception
+            return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
+        }
 
     }
 
     @ApiOperation(value = "Affichager tout les utilisateurs")
     @GetMapping("/getAll/user")
     public ResponseEntity<Object> GetAllUser() {
-        List<Utilisateur> getAllUtilisateur = utilisateurService.getAll();
-        return ResponseMessage.generateResponse("ok", HttpStatus.OK, getAllUtilisateur);
+        try {
+            Role uRole = RoleService.GetByLibelle("USER");
+            List<Utilisateur> getAllUtilisateur = utilisateurService.RetrouverParRole(uRole);
+            return ResponseMessage.generateResponse("ok", HttpStatus.OK, getAllUtilisateur);
+
+        } catch (Exception e) {
+            // TODO: handle exception
+            return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
+
+        }
+
     }
 
     @ApiOperation(value = "Affichager un utilisateur")
@@ -194,7 +216,7 @@ public class SuperAdminController {
 
         } catch (Exception e) {
             // TODO: handle exception
-            return ResponseMessage.generateResponse("id non trouvé", HttpStatus.OK, e.getMessage());
+            return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
         }
     }
 
@@ -202,29 +224,38 @@ public class SuperAdminController {
     // Responsable-------------------------------------------------------------->
     @ApiOperation(value = "Creer un responsable.")
     @PostMapping("/create/responsable")
-    public ResponseEntity<Object> createResponsable(@RequestBody Utilisateur utilisateur) {
+    public ResponseEntity<Object> createResponsable(@RequestBody Utilisateur utilisateur,
+            @RequestParam(value = "file", required = false) MultipartFile file) {
         try {
             Role role = RoleService.GetByLibelle("RESPONSABLE");
             utilisateur.setRole(role);
+            if (file != null) {
+                utilisateur.setImage(SaveImage.save("user", file, utilisateur.getEmail()));
+            }
             Utilisateur NewResponsable = utilisateurService.creer(utilisateur);
             return ResponseMessage.generateResponse("ok", HttpStatus.OK, NewResponsable);
 
         } catch (Exception e) {
             // TODO: handle exception
-            return ResponseMessage.generateResponse("Responsable non trouvé", HttpStatus.OK, e.getMessage());
+            return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
         }
     }
 
     @ApiOperation(value = "Modifier un responsable.")
     @PutMapping("/update/responsable/{id}")
-    public ResponseEntity<Object> updateResponsable(@RequestBody Utilisateur utilisateur) {
+    public ResponseEntity<Object> updateResponsable(@RequestBody Utilisateur utilisateur,
+            @RequestParam(value = "file", required = false) MultipartFile file) {
         try {
+
+            if (file != null) {
+                utilisateur.setImage(SaveImage.save("user", file, utilisateur.getEmail()));
+            }
             Utilisateur UpdateResponsable = utilisateurService.update(utilisateur);
             return ResponseMessage.generateResponse("ok", HttpStatus.OK, UpdateResponsable);
 
         } catch (Exception e) {
             // TODO: handle exception
-            return ResponseMessage.generateResponse("Responsable non trouvé", HttpStatus.OK, e.getMessage());
+            return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
         }
     }
 
@@ -239,8 +270,15 @@ public class SuperAdminController {
     @ApiOperation(value = "Affichager toute les responsables")
     @GetMapping("/getAll/responsable")
     public ResponseEntity<Object> GetAllResponsable() {
-        List<Utilisateur> getAllResponsable = utilisateurService.getAll();
-        return ResponseMessage.generateResponse("ok", HttpStatus.OK, getAllResponsable);
+        try {
+            Role reponsable = RoleService.GetByLibelle("RESPONSABLE");
+            List<Utilisateur> getAllResponsable = utilisateurService.RetrouverParRole(reponsable);
+            return ResponseMessage.generateResponse("ok", HttpStatus.OK, getAllResponsable);
+        } catch (Exception e) {
+            // TODO: handle exception
+            return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
+
+        }
 
     }
 
@@ -253,7 +291,7 @@ public class SuperAdminController {
 
         } catch (Exception e) {
             // TODO: handle exception
-            return ResponseMessage.generateResponse("responsable non trouvé", HttpStatus.OK, e.getMessage());
+            return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
         }
     }
 
@@ -262,31 +300,54 @@ public class SuperAdminController {
     @ApiOperation(value = "Creer un entite.")
     @PostMapping("/create/entite")
     public ResponseEntity<Object> createEntite(@RequestBody Entite entite) {
-        Entite NewEntite = entiteService.Create(entite);
-        return ResponseMessage.generateResponse("ok", HttpStatus.OK, NewEntite);
+        try {
+            Entite NewEntite = entiteService.Create(entite);
+            return ResponseMessage.generateResponse("ok", HttpStatus.OK, NewEntite);
+        } catch (Exception e) {
+            // TODO: handle exception
+            return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
+        }
 
     }
 
     @ApiOperation(value = "Modifier un entite.")
     @PutMapping("/update/entite/{id}")
     public ResponseEntity<Object> updateEntite(@PathVariable("id") Long id, @RequestBody Entite entite) {
-        Entite UpdateEntite = entiteService.Update(id, entite);
-        return ResponseMessage.generateResponse("ok", HttpStatus.OK, UpdateEntite);
+        try {
+            Entite UpdateEntite = entiteService.Update(id, entite);
+            return ResponseMessage.generateResponse("ok", HttpStatus.OK, UpdateEntite);
+        } catch (Exception e) {
+            // TODO: handle exception
+            return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
+        }
+
     }
 
     @ApiOperation(value = "Supprimer un entite")
     @DeleteMapping("/delete/entite/{id}")
     public ResponseEntity<Object> DeleteEntite(@PathVariable Long id) {
-        entiteService.Delete(id);
-        return ResponseMessage.generateResponse("ok", HttpStatus.OK, null);
+        try {
+            entiteService.Delete(id);
+            return ResponseMessage.generateResponse("ok", HttpStatus.OK, null);
+
+        } catch (Exception e) {
+            // TODO: handle exception
+            return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
+        }
 
     }
 
     @ApiOperation(value = "Affichager tout les entités")
     @GetMapping("/getAll/entite")
     public ResponseEntity<Object> GetAllEntite() {
-        List<Entite> getAllEntite = entiteService.GetAll();
-        return ResponseMessage.generateResponse("ok", HttpStatus.OK, getAllEntite);
+        try {
+            List<Entite> getAllEntite = entiteService.GetAll();
+            return ResponseMessage.generateResponse("ok", HttpStatus.OK, getAllEntite);
+        } catch (Exception e) {
+            // TODO: handle exception
+            return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
+        }
+
     }
 
     @ApiOperation(value = "Affichager une entite")
@@ -298,7 +359,39 @@ public class SuperAdminController {
 
         } catch (Exception e) {
             // TODO: handle exception
-            return ResponseMessage.generateResponse("id non trouvé", HttpStatus.OK, e.getMessage());
+            return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
+        }
+    }
+
+    /// active un utilisateur
+    @ApiOperation(value = "Active un utilisateur")
+    @GetMapping("/active/{id}")
+    ResponseEntity<Object> activeUser(@PathVariable("id") Long id) {
+
+        try {
+            Utilisateur user = utilisateurService.getById(id);
+            user.setActive(true);
+            return ResponseMessage.generateResponse("ok", HttpStatus.OK, utilisateurService.creer(user));
+
+        } catch (Exception e) {
+            // TODO: handle exception
+            return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
+        }
+    }
+
+    /// desactive un utilisateur
+    @ApiOperation(value = "Active un utilisateur")
+    @GetMapping("/desactive/{id}")
+    ResponseEntity<Object> desactiveUser(@PathVariable("id") Long id) {
+
+        try {
+            Utilisateur user = utilisateurService.getById(id);
+            user.setActive(false);
+            return ResponseMessage.generateResponse("ok", HttpStatus.OK, utilisateurService.creer(user));
+
+        } catch (Exception e) {
+            // TODO: handle exception
+            return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
         }
     }
 
