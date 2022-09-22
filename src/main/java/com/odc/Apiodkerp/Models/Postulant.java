@@ -1,5 +1,35 @@
 package com.odc.Apiodkerp.Models;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.experimental.SuperBuilder;
+import javax.persistence.JoinColumn;
+
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Entity
+@SuperBuilder
 public class Postulant extends Personne {
+    private String numero;
+
+    @ManyToMany
+    @JoinTable(name = "UtilisateurActivite", joinColumns = {
+            @JoinColumn(name = "id_utilisateur") }, inverseJoinColumns = {
+                    @JoinColumn(name = "id_activite") })
+    List<ListePostulant> activites = new ArrayList<>();
 
 }
