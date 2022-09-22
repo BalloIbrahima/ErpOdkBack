@@ -41,7 +41,7 @@ public class Utilisateur extends Personne {
     private List<Activite> activitesCreateurs = new ArrayList<>();
 
     @JsonIgnore
-    @OneToMany(mappedBy = "utilisateur")
+    @OneToMany(mappedBy = "leader")
     private List<Tirage> activitesLeads = new ArrayList<>();
 
     @ManyToMany
