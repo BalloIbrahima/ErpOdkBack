@@ -1,6 +1,9 @@
 package com.odc.Apiodkerp.Controller;
 
-import lombok.AllArgsConstructor;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Objects;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -8,10 +11,15 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.odc.Apiodkerp.Configuration.ResponseMessage;
+import com.odc.Apiodkerp.Configuration.SaveImage;
+import com.odc.Apiodkerp.Models.Activite;
 import com.odc.Apiodkerp.Models.Role;
 import com.odc.Apiodkerp.Models.Utilisateur;
 import com.odc.Apiodkerp.Service.ActiviteService;
@@ -76,11 +84,11 @@ public class UtilisateurController {
     @ApiOperation(value = "Pour le login d'un utilisateur.")
     @PostMapping("/login/{login}/{password}")
     public ResponseEntity<Object> login(@PathVariable("login") String login,
-            @PathVariable("password") String passord) {
+            @PathVariable("password") String password) {
 
         try {
-            Utilisateur Simpleutilisateur = utilisateurService.login(login, passord);
-            Role user = new Role();
+            Utilisateur Simpleutilisateur = utilisateurService.login(login, password);
+            Role user = RoleService.GetByLibelle("USER");
             if (Simpleutilisateur != null) {
                 if (Simpleutilisateur.getRole() == user && Simpleutilisateur.getActive() == true) {
                     return ResponseMessage.generateResponse("ok", HttpStatus.OK, Simpleutilisateur);
@@ -97,4 +105,29 @@ public class UtilisateurController {
         }
     }
     ////
+
+    // methode pour la création d'une activité
+    @ApiOperation(value = "methode pour la création d'une activité.")
+    @PostMapping("/activite/new/{idutilisateur}")
+    public ResponseEntity<Object> CreateTirage(@RequestBody Activite activite,
+            @PathVariable("idutilisateur") Long idutilisateur,
+            @RequestParam(value = "file", required = true) MultipartFile file) {
+
+        if (file != null) {
+            try {
+                Utilisateur user = utilisateurService.getById(idutilisateur);
+
+                activite.setImage(SaveImage.save("activite", file, activite.getNom()));
+
+                return ResponseMessage.generateResponse("ok", HttpStatus.OK, activiteService.Create(activite));
+
+            } catch (Exception e) {
+                // TODO: handle exception
+                return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
+            }
+        } else {
+            return ResponseMessage.generateResponse("error", HttpStatus.OK, "Fichier vide");
+        }
+
+    }
 }
