@@ -61,4 +61,10 @@ public class UtilisateurServiceImpl implements UtilisateurService {
         } else
             return null;
     }
+
+    @Override
+    public Utilisateur getByEmail(String email) {
+        // TODO Auto-generated method stub
+        return repos.findByEmail(email);
+    }
 }

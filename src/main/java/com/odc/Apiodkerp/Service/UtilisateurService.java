@@ -20,6 +20,8 @@ public interface UtilisateurService {
 
     Utilisateur getById(Long id);
 
+    Utilisateur getByEmail(String email);
+
     List<Utilisateur> getAll();
 
 }
