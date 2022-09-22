@@ -64,6 +64,8 @@ private Tirage tirage;
  @JoinColumn(name = "etat")
  private  Etat etat;
 
-
+ @JsonIgnore
+@OneToMany(mappedBy = "activite")
+    private  Activite activite;
 
 }
