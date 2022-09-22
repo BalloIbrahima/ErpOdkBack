@@ -2,6 +2,8 @@ package com.odc.Apiodkerp.Repository;
 
 import com.odc.Apiodkerp.Models.Utilisateur;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
-public interface Utilisateurrepository extends JpaRepository<Utilisateur,Long> {
+@Repository
+public interface UtilisateurRepository extends JpaRepository<Utilisateur, Long> {
 }
