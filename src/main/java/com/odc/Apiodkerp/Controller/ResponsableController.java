@@ -1,9 +1,12 @@
 package com.odc.Apiodkerp.Controller;
 
+import com.odc.Apiodkerp.Configuration.ResponseMessage;
+import com.odc.Apiodkerp.Models.Utilisateur;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import com.odc.Apiodkerp.Service.ActiviteService;
 import com.odc.Apiodkerp.Service.EntiteService;
@@ -19,6 +22,8 @@ import com.odc.Apiodkerp.Service.TypeActiviteService;
 import com.odc.Apiodkerp.Service.UtilisateurService;
 
 import io.swagger.annotations.Api;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/responsable")
