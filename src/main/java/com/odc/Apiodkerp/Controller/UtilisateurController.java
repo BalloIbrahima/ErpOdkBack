@@ -162,6 +162,19 @@ public class UtilisateurController {
         }
     }
 
+        //afficher toutes les activites
+        @ApiOperation(value = "Afficher toutes les  activite  ")
+        @GetMapping("/lapresence")
+        public ResponseEntity<Object> ToutesActivite(){
+            try{
+                return ResponseMessage.generateResponse("ok", HttpStatus.OK,  activiteService.FindAllAct());
+            }
+            catch (Exception e) {
+                // TODO: handle exception
+                return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
+            }
+        }
+
 
     //Afficher une activite
     @ApiOperation(value = "Afficher une activite en fonction de l'id ")
