@@ -29,21 +29,24 @@ public class Activite {
     private  Date dateFin;
     private  String lieu;
     private  String description;
-
-
-@JsonIgnore
- @ManyToMany(mappedBy = "activitesFormateurs")
- List<Utilisateur> utilisateurs = new ArrayList<>();
+    private  String image;
 
 
 
+    @JsonIgnore
+     @ManyToMany(mappedBy = "activitesFormateurs")
+     List<Utilisateur> utilisateurs = new ArrayList<>();
+
+
+@OneToOne(mappedBy = "activite", cascade= CascadeType.ALL)
+private Tirage tirage;
    @ManyToOne
-   @JoinColumn(name = "utilisateur")
+   @JoinColumn(name = "createur")
    private  Utilisateur createur;
 
 
  @ManyToOne
- @JoinColumn(name = "utilisateur")
+ @JoinColumn(name = "lead")
  private  Utilisateur leader;
 
 

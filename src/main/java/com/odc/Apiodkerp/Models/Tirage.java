@@ -5,7 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.experimental.SuperBuilder;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -25,10 +24,15 @@ public class Tirage {
     private String libelle;
     private Date date;
     @ManyToOne
+    @JoinColumn(name = "idlistepostulant")
     ListePostulant listepostulant;
     @ManyToOne
     Utilisateur utilisateur;
     @JsonIgnore
-    @OneToMany
+    @OneToMany(mappedBy = "tirage")
     List<PostulantTire> postulanttires = new ArrayList<>();
+
+    @OneToOne
+    @JoinColumn(name = "activite_id",referencedColumnName = "id")
+    private  Activite activite;
 }

@@ -41,8 +41,8 @@ public class Utilisateur extends Personne {
     private List<Activite> activitesCreateurs = new ArrayList<>();
 
     @JsonIgnore
-    @OneToMany(mappedBy = "utilisateur")
-    private List<Tirage> activitesLeads = new ArrayList<>();
+    @OneToMany(mappedBy = "leader")
+    private List<Activite> activitesLeads = new ArrayList<>();
 
     @ManyToMany
     @JoinTable(name = "UtilisateurActivite", joinColumns = {

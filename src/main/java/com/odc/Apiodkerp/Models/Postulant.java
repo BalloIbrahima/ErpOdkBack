@@ -27,9 +27,9 @@ public class Postulant extends Personne {
     private String numero;
 
     @ManyToMany
-    @JoinTable(name = "UtilisateurActivite", joinColumns = {
-            @JoinColumn(name = "id_utilisateur") }, inverseJoinColumns = {
-                    @JoinColumn(name = "id_activite") })
-    List<ListePostulant> activites = new ArrayList<>();
+    @JoinTable(name = "ListepostulantPostulant", joinColumns = {
+            @JoinColumn(name = "id_postulant") }, inverseJoinColumns = {
+                    @JoinColumn(name = "id_liste_postulant") })
+    List<ListePostulant> listePostulants = new ArrayList<>();
 
 }
