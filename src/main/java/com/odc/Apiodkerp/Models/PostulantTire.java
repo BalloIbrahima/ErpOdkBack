@@ -17,6 +17,9 @@ public class PostulantTire {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Long id;
+
+    @ManyToOne
+    Postulant postulant;
     @ManyToOne
     Tirage tirage;
 

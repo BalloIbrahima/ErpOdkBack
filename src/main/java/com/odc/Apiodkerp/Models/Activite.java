@@ -38,7 +38,8 @@ public class Activite {
      List<Utilisateur> utilisateurs = new ArrayList<>();
 
 
-
+@OneToOne(mappedBy = "activite", cascade= CascadeType.ALL)
+private Tirage tirage;
    @ManyToOne
    @JoinColumn(name = "createur")
    private  Utilisateur createur;

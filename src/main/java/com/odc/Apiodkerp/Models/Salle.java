@@ -20,6 +20,7 @@ public class Salle {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private  long id;
+    private long nombreplace;
     private  String libelle;
     private  String etape;
     private  String disponibilite;
