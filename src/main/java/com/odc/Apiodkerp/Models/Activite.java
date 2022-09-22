@@ -29,9 +29,11 @@ public class Activite {
     private  Date dateFin;
     private  String lieu;
     private  String description;
+    private  String image;
 
 
-@JsonIgnore
+
+    @JsonIgnore
  @ManyToMany(mappedBy = "activitesFormateurs")
  List<Utilisateur> utilisateurs = new ArrayList<>();
 
