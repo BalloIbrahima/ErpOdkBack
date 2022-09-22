@@ -74,11 +74,12 @@ public class SuperAdminController {
     @ApiOperation(value = "Pour le login d'un super administrateur.")
     @PostMapping("/login/{login}/{password}")
     public ResponseEntity<Object> CreateAdmin(@PathVariable("login") String login,
-                                              @PathVariable("password") String passord) {
+            @PathVariable("password") String password) {
+
 
         try {
-            Utilisateur Superutilisateur = utilisateurService.login(login, passord);
-            Role admin = new Role();
+            Utilisateur Superutilisateur = utilisateurService.login(login, password);
+            Role admin = RoleService.GetByLibelle("ADMIN");
             if (Superutilisateur != null) {
                 if (Superutilisateur.getRole() == admin && Superutilisateur.getActive() == true) {
                     return ResponseMessage.generateResponse("ok", HttpStatus.OK, Superutilisateur);
