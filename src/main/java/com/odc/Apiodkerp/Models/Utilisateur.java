@@ -7,6 +7,7 @@ import javax.persistence.Entity;
 
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -29,6 +30,7 @@ public class Utilisateur extends Personne {
     private String login;
     private String password;
     private String image;
+    private Boolean active;
 
     // relation avec tirage
     @JsonIgnore
@@ -54,4 +56,9 @@ public class Utilisateur extends Personne {
     @JsonIgnore
     @OneToMany(mappedBy = "utilisateur")
     private List<Salle> salles = new ArrayList<>();
+
+    // relation avec rolle
+    @ManyToOne
+    private Role role;
+
 }

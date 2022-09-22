@@ -6,4 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface TirageRepository extends JpaRepository<Tirage, Long> {
+    Tirage findByLibelle(String libelle);
 }

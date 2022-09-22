@@ -1,5 +1,6 @@
 package com.odc.Apiodkerp.Models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -22,5 +23,9 @@ public class PostulantTire {
     Postulant postulant;
     @ManyToOne
     Tirage tirage;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "postulantTire")
+    private  PostulantTire postulantTire;
 
 }
