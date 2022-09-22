@@ -22,8 +22,8 @@ public class TypeActivite {
     private  long id;
     private  String libelle;
 
-
-    @OneToMany(mappedBy = "typeActivite")
     @JsonIgnore
+    @OneToMany(mappedBy = "typeActivite")
+
     List<Activite> activite=new ArrayList<>();
 }

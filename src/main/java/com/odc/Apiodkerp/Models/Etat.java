@@ -23,9 +23,9 @@ public class Etat {
     private String statut;
 
 
-
-    @OneToMany(mappedBy = "etat")
     @JsonIgnore
+    @OneToMany(mappedBy = "etat")
+
     List<Activite> activite=new ArrayList<>();
 
 }

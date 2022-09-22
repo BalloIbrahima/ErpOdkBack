@@ -1,13 +1,16 @@
 package com.odc.Apiodkerp.Models;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name = "activite")
@@ -28,12 +31,20 @@ public class Activite {
     private  String description;
 
 
+@JsonIgnore
+ @ManyToMany(mappedBy = "activitesFormateurs")
+ List<Utilisateur> utilisateurs = new ArrayList<>();
 
 
 
-    @ManyToOne
-    @JoinColumn(name = "utilisateur")
-    private  Utilisateur utilisateur;
+   @ManyToOne
+   @JoinColumn(name = "utilisateur")
+   private  Utilisateur createur;
+
+
+ @ManyToOne
+ @JoinColumn(name = "utilisateur")
+ private  Utilisateur leader;
 
 
 
@@ -44,6 +55,11 @@ public class Activite {
     @ManyToOne
     @JoinColumn(name = "salle")
     private  Salle salle;
+
+
+ @ManyToOne
+ @JoinColumn(name = "etat")
+ private  Etat etat;
 
 
 
