@@ -1,5 +1,6 @@
 package com.odc.Apiodkerp.ServiceImplementation;
 
+import com.odc.Apiodkerp.Models.Role;
 import com.odc.Apiodkerp.Models.Utilisateur;
 import com.odc.Apiodkerp.Repository.UtilisateurRepository;
 import com.odc.Apiodkerp.Service.UtilisateurService;
@@ -66,5 +67,11 @@ public class UtilisateurServiceImpl implements UtilisateurService {
     public Utilisateur getByEmail(String email) {
         // TODO Auto-generated method stub
         return repos.findByEmail(email);
+    }
+
+    @Override
+    public List<Utilisateur> RetrouverParRole(Role role) {
+        // TODO Auto-generated method stub
+        return repos.findByRole(role);
     }
 }
