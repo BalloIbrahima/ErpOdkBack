@@ -4,9 +4,10 @@ import com.odc.Apiodkerp.Models.Postulant;
 import com.odc.Apiodkerp.Repository.PostulantRepository;
 import com.odc.Apiodkerp.Service.PostulantService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
-
+@Service
 public class PostulantServiceImpl implements PostulantService {
 
     @Autowired

@@ -1,8 +1,15 @@
 package com.odc.Apiodkerp.ServiceImplementation;
 
 import com.odc.Apiodkerp.Models.Activite;
+import com.odc.Apiodkerp.Models.Salle;
+
+import com.odc.Apiodkerp.Models.Etat;
+
 import com.odc.Apiodkerp.Repository.ActiviteRepository;
+import com.odc.Apiodkerp.Repository.SalleRepository;
 import com.odc.Apiodkerp.Service.ActiviteService;
+import com.odc.Apiodkerp.Service.SalleService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -10,6 +17,8 @@ import java.util.Optional;
 
 @Service
 public class ActiviteServiceImpl implements ActiviteService{
+    @Autowired
+    SalleRepository salleRepository;
 
 private   ActiviteRepository activiteRepository;
     @Override
@@ -49,6 +58,21 @@ private   ActiviteRepository activiteRepository;
         return activiteRepository.findById(id).get();
     }
 
+    @Override
+    public String attribuerSalle(long idsalle, long idactivite) {
+        Activite activitecourant = activiteRepository.findById(idactivite).orElse(null);
+        Salle salleverifiee = salleRepository.findById(idsalle).orElse(null);
+        if (salleverifiee != null) {
+            activitecourant.setSalle(salleverifiee);
+            activiteRepository.save(activitecourant);
+            return "Salle attribuée avec succès !";
+        } else return "Cette salle n'existe pas !";
+    }
+
+    @Override
+    public Activite GetByEtat(Etat etat) {
+        return activiteRepository.findByEtat(etat);
+    }
 
 
 }
