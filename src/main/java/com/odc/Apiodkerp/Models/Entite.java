@@ -17,7 +17,7 @@ import javax.persistence.*;
 @SuperBuilder
 public class Entite {
     @Id
-    @GeneratedValue(strategy = GenerationType.TABLE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String libelleentite;
     private String description;

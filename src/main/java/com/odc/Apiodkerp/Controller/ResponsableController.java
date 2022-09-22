@@ -12,6 +12,7 @@ import com.odc.Apiodkerp.Models.Utilisateur;
 import io.swagger.annotations.ApiOperation;
 
 import com.odc.Apiodkerp.Models.PostulantTire;
+import com.odc.Apiodkerp.Models.Role;
 import com.odc.Apiodkerp.Repository.PostulantTrieRepository;
 import com.odc.Apiodkerp.Service.PostulantTrieService;
 import io.swagger.annotations.ApiOperation;
@@ -100,6 +101,32 @@ public class ResponsableController {
 
     @Autowired
     private TypeActiviteService typeActiviteService;
+
+    // Pour le login d'un utilisateur
+    @ApiOperation(value = "Pour le login d'un utilisateur.")
+    @PostMapping("/login/{login}/{password}")
+    public ResponseEntity<Object> login(@PathVariable("login") String login,
+            @PathVariable("password") String password) {
+
+        try {
+            Utilisateur Simpleutilisateur = utilisateurService.login(login, password);
+            Role user = RoleService.GetByLibelle("RESPONSABLE");
+            if (Simpleutilisateur != null) {
+                if (Simpleutilisateur.getRole() == user && Simpleutilisateur.getActive() == true) {
+
+                    return ResponseMessage.generateResponse("ok", HttpStatus.OK, Simpleutilisateur);
+                } else {
+                    return ResponseMessage.generateResponse("non autorise", HttpStatus.OK, null);
+                }
+            } else {
+                return ResponseMessage.generateResponse("utilisateur n'existe pas", HttpStatus.OK, null);
+            }
+
+        } catch (Exception e) {
+            // TODO: handle exception
+            return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
+        }
+    }
 
     // la methode pour importer une liste
     @ApiOperation(value = "la methode pour importer une liste.")
@@ -205,48 +232,54 @@ public class ResponsableController {
 
         }
     }
-// ---------------------------------Postulant Tire---------------------------------------//
-    //Creation de postulant tiré
+
+    // ---------------------------------Postulant
+    // Tire---------------------------------------//
+    // Creation de postulant tiré
     @ApiOperation(value = "Ajouter participant")
     @PostMapping("/create")
-    public ResponseEntity<PostulantTire> createPostulantTire(@RequestBody PostulantTire postulantTire){
+    public ResponseEntity<PostulantTire> createPostulantTire(@RequestBody PostulantTire postulantTire) {
         postulantTrieService.create(postulantTire);
         return new ResponseEntity<>(postulantTire, HttpStatus.CREATED);
     }
-    //Afficher de postulant tiré
+
+    // Afficher de postulant tiré
     @ApiOperation(value = "Afficher participant par son id")
     @GetMapping("/read/{id}")
-    public ResponseEntity<Object> readPostulantTire(@PathVariable long id){
+    public ResponseEntity<Object> readPostulantTire(@PathVariable long id) {
         try {
-            PostulantTire post=postulantTrieService.read(id);
-            return new ResponseEntity<>(post,HttpStatus.OK);
-        }catch (Exception e) {
-            return ResponseMessage.generateResponse("postulant non trouvé", HttpStatus.OK,e.getMessage());
+            PostulantTire post = postulantTrieService.read(id);
+            return new ResponseEntity<>(post, HttpStatus.OK);
+        } catch (Exception e) {
+            return ResponseMessage.generateResponse("postulant non trouvé", HttpStatus.OK, e.getMessage());
         }
     }
-    //Modifier de postulant tiré par son id
+
+    // Modifier de postulant tiré par son id
     @ApiOperation(value = "modifier participant par son id")
     @PutMapping("/update/{id}")
-    public ResponseEntity<Object> updatePostulantTire(@RequestBody PostulantTire postulantTire,@PathVariable long id){
+    public ResponseEntity<Object> updatePostulantTire(@RequestBody PostulantTire postulantTire, @PathVariable long id) {
         try {
-            PostulantTire post=postulantTrieService.update(postulantTire,id);
-            return new ResponseEntity<>(post,HttpStatus.OK);
-        }catch (Exception e){
-            return ResponseMessage.generateResponse("Participant non trouvé",HttpStatus.OK,e.getMessage());
+            PostulantTire post = postulantTrieService.update(postulantTire, id);
+            return new ResponseEntity<>(post, HttpStatus.OK);
+        } catch (Exception e) {
+            return ResponseMessage.generateResponse("Participant non trouvé", HttpStatus.OK, e.getMessage());
         }
 
     }
-    //Supprimer Postulant tiré par son id
+
+    // Supprimer Postulant tiré par son id
     @ApiOperation(value = "Supprimer participant par son id")
     @DeleteMapping("/delete/{id}")
-    public void deletePostulantTire(@PathVariable long id){
-         postulantTrieService.delete(id);
+    public void deletePostulantTire(@PathVariable long id) {
+        postulantTrieService.delete(id);
     }
-    //Afficher tous les postulants
+
+    // Afficher tous les postulants
     @ApiOperation(value = "Afficher tous les participants")
     @GetMapping("/All")
-    public List<PostulantTire> getAllPostulantTire(){
+    public List<PostulantTire> getAllPostulantTire() {
         return postulantTrieService.getAll();
     }
-    
+
 }
