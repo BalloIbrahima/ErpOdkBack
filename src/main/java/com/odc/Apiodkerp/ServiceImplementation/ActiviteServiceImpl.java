@@ -59,6 +59,11 @@ private   ActiviteRepository activiteRepository;
     }
 
     @Override
+    public Activite FindAllAct() {
+        return (Activite) activiteRepository.findAll();
+    }
+
+    @Override
     public String attribuerSalle(long idsalle, long idactivite) {
         Activite activitecourant = activiteRepository.findById(idactivite).orElse(null);
         Salle salleverifiee = salleRepository.findById(idsalle).orElse(null);
