@@ -57,5 +57,9 @@ public class Activite {
    @ManyToOne
    @JoinColumn(name = "etat")
    private Etat etat;
+   
+    @JsonIgnore
+    @OneToMany(mappedBy = "activite")
+    List<Presence> presences=new new ArrayList<>();
 
 }
