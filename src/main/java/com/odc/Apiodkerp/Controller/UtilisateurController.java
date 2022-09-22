@@ -162,13 +162,15 @@ public class UtilisateurController {
         }
     }
 
-    // Afficher une activite
+
+    //Afficher une activite
     @ApiOperation(value = "Afficher une activite en fonction de l'id ")
-    @PostMapping("/lapresence/{idactivite}")
-    public ResponseEntity<Object> Afficheractivite(@PathVariable long idactivite) {
-        try {
-            return ResponseMessage.generateResponse("ok", HttpStatus.OK, activiteService.GetById(idactivite));
-        } catch (Exception e) {
+    @GetMapping("/lapresence/{idactivite}")
+    public ResponseEntity<Object> Afficheractivite(@PathVariable long idactivite ){
+        try{
+            return ResponseMessage.generateResponse("ok", HttpStatus.OK,  activiteService.GetById(idactivite));
+        }
+        catch (Exception e) {
             // TODO: handle exception
             return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
         }
