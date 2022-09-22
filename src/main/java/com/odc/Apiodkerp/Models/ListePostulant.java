@@ -23,10 +23,16 @@ public class ListePostulant {
     private Long id;
     private String libelle;
     private Date dateimport;
+
     @JsonIgnore
-    @OneToMany
-    List<Tirage> tirage = new ArrayList<>();
-    @ManyToMany(mappedBy = "activites")
-    private List<Postulant> postulant = new ArrayList<>();
+    @OneToMany(mappedBy = "listepostulant")
+    List<Tirage> tirages = new ArrayList<>();
+
+
+
+    @ManyToMany(mappedBy = "listePostulants")
+    private List<Postulant> postulants = new ArrayList<>();
+
+
 
 }

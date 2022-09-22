@@ -34,18 +34,19 @@ public class Activite {
 
 
     @JsonIgnore
- @ManyToMany(mappedBy = "activitesFormateurs")
- List<Utilisateur> utilisateurs = new ArrayList<>();
+     @ManyToMany(mappedBy = "activitesFormateurs")
+     List<Utilisateur> utilisateurs = new ArrayList<>();
 
 
-
+@OneToOne(mappedBy = "activite", cascade= CascadeType.ALL)
+private Tirage tirage;
    @ManyToOne
-   @JoinColumn(name = "utilisateur")
+   @JoinColumn(name = "createur")
    private  Utilisateur createur;
 
 
  @ManyToOne
- @JoinColumn(name = "utilisateur")
+ @JoinColumn(name = "lead")
  private  Utilisateur leader;
 
 
