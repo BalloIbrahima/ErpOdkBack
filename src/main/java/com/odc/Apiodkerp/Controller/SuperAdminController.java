@@ -1,17 +1,12 @@
 package com.odc.Apiodkerp.Controller;
 
+import com.odc.Apiodkerp.Models.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.odc.Apiodkerp.Configuration.ResponseMessage;
-import com.odc.Apiodkerp.Models.Role;
-import com.odc.Apiodkerp.Models.Utilisateur;
 import com.odc.Apiodkerp.Service.ActiviteService;
 import com.odc.Apiodkerp.Service.EntiteService;
 import com.odc.Apiodkerp.Service.EtatService;
@@ -27,6 +22,9 @@ import com.odc.Apiodkerp.Service.UtilisateurService;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @RestController
 @RequestMapping("/admin")
@@ -94,4 +92,42 @@ public class SuperAdminController {
         }
     }
     ////
+    @ApiOperation(value = "Lien pour créer une salle")
+    @PostMapping("creersalle")
+    public ResponseEntity<Object> creerSalle(@RequestBody Salle salle) {
+        try {
+            return ResponseMessage.generateResponse("ok",HttpStatus.OK,salleService.create(salle));
+        } catch (Exception e) {
+            return ResponseMessage.generateResponse("error",HttpStatus.OK,e.getMessage());
+        }
+    }
+    @ApiOperation(value = "Lien pour modifier une salle")
+    @PutMapping("modifiersalle/{id}")
+    public ResponseEntity<Object> modifier(@RequestBody Salle salle, @PathVariable long id) {
+        try {
+            return ResponseMessage.generateResponse("ok",HttpStatus.OK,salleService.update(salle,id));
+        } catch (Exception e) {
+            return ResponseMessage.generateResponse("error",HttpStatus.OK,e.getMessage());
+        }
+    }
+    @ApiOperation(value = "Lien pour modifier une salle")
+    @DeleteMapping("supprimersalle/{id}")
+    public ResponseEntity<Object> supprimer(@PathVariable long id) {
+        try {
+            salleService.delete(id);
+            return ResponseMessage.generateResponse("ok",HttpStatus.OK,"Salle supprimer avec succès !");
+        } catch (Exception e) {
+            return ResponseMessage.generateResponse("error",HttpStatus.OK,e.getMessage());
+        }
+    }
+    @ApiOperation(value = "Lien pour modifier une salle")
+    @GetMapping("attribuersalle/{idsalle}/{idactivite}")
+    public ResponseEntity<Object> attribuerSalle(@PathVariable long idsalle,@PathVariable long idactivite) {
+        try {
+            return ResponseMessage.generateResponse("ok",HttpStatus.OK,activiteService.attribuerSalle(idsalle,idactivite));
+        } catch (Exception e) {
+            return ResponseMessage.generateResponse("error",HttpStatus.OK,e.getMessage());
+        }
+    }
+
 }

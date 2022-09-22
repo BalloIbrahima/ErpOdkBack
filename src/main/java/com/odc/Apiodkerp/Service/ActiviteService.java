@@ -18,6 +18,5 @@ public interface ActiviteService {
     Activite GetById(long id);
 
 
-
-
+    String attribuerSalle(long idsalle, long idactivite);
 }
