@@ -3,6 +3,7 @@ package com.odc.Apiodkerp.ServiceImplementation;
 import com.odc.Apiodkerp.Models.PostulantTire;
 import com.odc.Apiodkerp.Repository.PostulantTrieRepository;
 import com.odc.Apiodkerp.Service.PostulantTrieService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -10,6 +11,7 @@ import java.util.List;
 @Service
 public class PostulantTrieServiceImpl implements PostulantTrieService {
 
+    @Autowired
     private PostulantTrieRepository postulantTrieRepository;
     @Override
     public PostulantTire create(PostulantTire postulantTire) {
