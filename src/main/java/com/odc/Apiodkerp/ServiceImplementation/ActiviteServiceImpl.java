@@ -1,6 +1,7 @@
 package com.odc.Apiodkerp.ServiceImplementation;
 
 import com.odc.Apiodkerp.Models.Activite;
+import com.odc.Apiodkerp.Models.Etat;
 import com.odc.Apiodkerp.Repository.ActiviteRepository;
 import com.odc.Apiodkerp.Service.ActiviteService;
 import org.springframework.stereotype.Service;
@@ -49,6 +50,10 @@ private   ActiviteRepository activiteRepository;
         return activiteRepository.findById(id).get();
     }
 
+    @Override
+    public Activite GetByEtat(Etat etat) {
+        return activiteRepository.findByEtat(etat);
+    }
 
 
 }
