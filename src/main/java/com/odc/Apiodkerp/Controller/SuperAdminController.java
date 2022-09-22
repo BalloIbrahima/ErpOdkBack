@@ -160,7 +160,12 @@ public class SuperAdminController {
 
     @ApiOperation(value = "Modifier un utilisateur.")
     @PutMapping("/update/user/{id}")
-    public ResponseEntity<Utilisateur> updateUser(@RequestBody Utilisateur utilisateur) {
+    public ResponseEntity<Utilisateur> updateUser(@RequestBody Utilisateur utilisateur,
+            @RequestParam(value = "file", required = false) MultipartFile file) {
+
+        if (file != null) {
+            SaveImage.save("user", file, utilisateur.getEmail());
+        }
         Utilisateur UpdateUtilisateur = utilisateurService.update(utilisateur);
         return new ResponseEntity<>(UpdateUtilisateur, HttpStatus.OK);
     }
