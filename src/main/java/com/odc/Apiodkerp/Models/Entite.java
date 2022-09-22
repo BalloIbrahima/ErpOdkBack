@@ -1,6 +1,5 @@
 package com.odc.Apiodkerp.Models;
 
-import com.odc.Apiodkerp.Enum.Genre;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
