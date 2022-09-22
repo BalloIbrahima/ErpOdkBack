@@ -7,6 +7,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "salle")
@@ -25,7 +27,6 @@ public class Salle {
 
 
     @OneToMany(mappedBy = "salle")
-    @JoinColumn(name = "activite")
     @JsonIgnore
-    private  Activite activite;
+    List<Activite>  activite=new ArrayList<>();
 }

@@ -27,11 +27,15 @@ public class Activite {
     private  String lieu;
     private  String description;
 
-    //Plusieurs activite pour un seul etat
+
+
+
 
     @ManyToOne
-    @JoinColumn(name = "etat")
-    private  Etat etat;
+    @JoinColumn(name = "utilisateur")
+    private  Utilisateur utilisateur;
+
+
 
     @ManyToOne
     @JoinColumn(name = "typeactivite")

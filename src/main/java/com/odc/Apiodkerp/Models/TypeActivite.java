@@ -7,6 +7,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "typeativite")
@@ -22,7 +24,6 @@ public class TypeActivite {
 
 
     @OneToMany(mappedBy = "typeActivite")
-    @JoinColumn(name = "activite_id")
     @JsonIgnore
-   private Activite activite;
+    List<Activite> activite=new ArrayList<>();
 }
