@@ -6,4 +6,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface TypeActiviteRepository extends JpaRepository<TypeActivite, Long> {
+
+    TypeActivite findByLibelle(String libelle);
 }
