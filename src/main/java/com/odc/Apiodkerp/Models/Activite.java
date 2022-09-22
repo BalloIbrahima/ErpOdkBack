@@ -60,6 +60,8 @@ public class Activite {
    
     @JsonIgnore
     @OneToMany(mappedBy = "activite")
-    List<Presence> presences=new new ArrayList<>();
+    List<Presence> presences=new ArrayList<>();
+
+
 
 }

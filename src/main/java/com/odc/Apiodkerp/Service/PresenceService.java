@@ -14,6 +14,7 @@ public interface PresenceService {
 
     void delete(Long id);
 
+
     Presence getById(Long id);
 
     Presence getByPostulantTire(PostulantTire postulantTire);

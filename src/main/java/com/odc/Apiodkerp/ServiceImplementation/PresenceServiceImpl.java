@@ -35,6 +35,8 @@ public class PresenceServiceImpl implements PresenceService {
 
     }
 
+
+
     @Override
     public Presence getById(Long id) {
         // TODO Auto-generated method stub
