@@ -1,6 +1,7 @@
 package com.odc.Apiodkerp.Service;
 
 import com.odc.Apiodkerp.Models.Activite;
+import com.odc.Apiodkerp.Models.Etat;
 
 import java.util.List;
 import java.util.Optional;
@@ -17,7 +18,9 @@ public interface ActiviteService {
 
     Activite GetById(long id);
 
+//Activite en fonction de l'etat
+    Activite GetByEtat( Etat etat);
 
 
-
+    String attribuerSalle(long idsalle, long idactivite);
 }
