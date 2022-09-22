@@ -172,7 +172,7 @@ public class UtilisateurController {
 
         //Afficher une activite
         @ApiOperation(value = "Afficher une activite en fonction de l'id ")
-        @PostMapping("/lapresence/{idactivite}")
+        @GetMapping("/lapresence/{idactivite}")
         public ResponseEntity<Object> Afficheractivite(@PathVariable long idactivite ){
             try{
                 return ResponseMessage.generateResponse("ok", HttpStatus.OK,  activiteService.GetById(idactivite));
