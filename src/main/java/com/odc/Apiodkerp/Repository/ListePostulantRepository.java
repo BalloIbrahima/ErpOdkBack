@@ -2,6 +2,8 @@ package com.odc.Apiodkerp.Repository;
 
 import com.odc.Apiodkerp.Models.ListePostulant;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
-public interface ListePostulantRepository extends JpaRepository<Long, ListePostulant> {
+@Repository
+public interface ListePostulantRepository extends JpaRepository<ListePostulant, Long> {
 }

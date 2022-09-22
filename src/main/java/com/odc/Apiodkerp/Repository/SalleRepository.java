@@ -2,6 +2,8 @@ package com.odc.Apiodkerp.Repository;
 
 import com.odc.Apiodkerp.Models.Salle;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
-public interface SalleRepository extends JpaRepository<Long, Salle> {
+@Repository
+public interface SalleRepository extends JpaRepository<Salle, Long> {
 }
