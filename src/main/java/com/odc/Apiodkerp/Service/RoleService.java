@@ -7,8 +7,8 @@ import java.util.List;
 public interface RoleService {
     //Creer role
     Role create(Role role);
-    // Afficher role par libelle
-    Role read(String libelle);
+    // Afficher un role par son id
+    Role read(long id);
     //Modifier role
     Role update(Role role,long id);
     //Effacer role
@@ -16,4 +16,5 @@ public interface RoleService {
     //Afficher Tous les Roles
     List<Role> getAll();
 
+    Role GetByLibelle(String libelle);
 }

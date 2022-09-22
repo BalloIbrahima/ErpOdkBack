@@ -17,8 +17,8 @@ public class SalleServiceImpl implements SalleService {
     }
 
     @Override
-    public Salle read(String libelle) {
-        return salleRepository.findByLibelle(libelle);
+    public Salle read(long id) {
+        return salleRepository.findById(id).get();
     }
 
     @Override
@@ -34,6 +34,11 @@ public class SalleServiceImpl implements SalleService {
     @Override
     public List<Salle> getAll() {
         return salleRepository.findAll();
+    }
+
+    @Override
+    public Salle getByLibelle(String libelle) {
+        return salleRepository.findByLibelle(libelle);
     }
 
 }

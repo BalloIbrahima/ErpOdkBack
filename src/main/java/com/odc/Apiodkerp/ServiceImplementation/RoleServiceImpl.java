@@ -17,8 +17,8 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
-    public Role read(String libelle) {
-        return roleRepository.findByLibellerole(libelle);
+    public Role read(long id) {
+        return roleRepository.findById(id).get();
     }
 
     @Override
@@ -34,6 +34,11 @@ public class RoleServiceImpl implements RoleService {
     @Override
     public List<Role> getAll() {
         return roleRepository.findAll();
+    }
+
+    @Override
+    public Role GetByLibelle(String libelle) {
+        return roleRepository.findByLibellerole(libelle);
     }
 
 }
