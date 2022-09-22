@@ -26,7 +26,13 @@ public class Salle {
     private  String description;
 
 
+
+
     @OneToMany(mappedBy = "salle")
     @JsonIgnore
     List<Activite>  activite=new ArrayList<>();
+
+    @ManyToOne
+    @JoinColumn(name = "utilisateur")
+    private  Utilisateur utilisateur;
 }
