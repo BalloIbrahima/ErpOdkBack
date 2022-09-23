@@ -8,12 +8,11 @@ import com.odc.Apiodkerp.Models.Etat;
 import com.odc.Apiodkerp.Repository.ActiviteRepository;
 import com.odc.Apiodkerp.Repository.SalleRepository;
 import com.odc.Apiodkerp.Service.ActiviteService;
-import com.odc.Apiodkerp.Service.SalleService;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class ActiviteServiceImpl implements ActiviteService {
