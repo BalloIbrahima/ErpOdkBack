@@ -34,20 +34,19 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.odc.Apiodkerp.Configuration.ExcelGenerator;
 import com.odc.Apiodkerp.Configuration.ExcelImport;
-import com.odc.Apiodkerp.Configuration.ResponseMessage;
+
+import com.odc.Apiodkerp.Models.Activite;
 import com.odc.Apiodkerp.Models.ListePostulant;
 import com.odc.Apiodkerp.Models.Postulant;
-import com.odc.Apiodkerp.Models.PostulantTire;
-import com.odc.Apiodkerp.Models.Tirage;
 
-import org.springframework.web.bind.annotation.*;
+import com.odc.Apiodkerp.Models.Tirage;
 
 import com.odc.Apiodkerp.Service.ActiviteService;
 import com.odc.Apiodkerp.Service.EntiteService;
 import com.odc.Apiodkerp.Service.EtatService;
 import com.odc.Apiodkerp.Service.ListePostulantService;
 import com.odc.Apiodkerp.Service.PostulantService;
-import com.odc.Apiodkerp.Service.PostulantTrieService;
+
 import com.odc.Apiodkerp.Service.PresenceService;
 import com.odc.Apiodkerp.Service.RoleService;
 import com.odc.Apiodkerp.Service.SalleService;
@@ -56,9 +55,6 @@ import com.odc.Apiodkerp.Service.TypeActiviteService;
 import com.odc.Apiodkerp.Service.UtilisateurService;
 
 import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/responsable")
@@ -130,7 +126,7 @@ public class ResponsableController {
 
     // la methode pour importer une liste de postulant
     @ApiOperation(value = "la methode pour importer une liste de postulant.")
-    @PostMapping("/list/new/{libelleliste}")
+    @PostMapping("/listpostulant/new/{libelleliste}")
     public ResponseEntity<Object> ImportListePostulant(@PathVariable("libelleliste") String libelleliste,
             @RequestParam("file") MultipartFile file) {
 
@@ -143,27 +139,32 @@ public class ResponsableController {
                     listePostulant.setLibelle(libelleliste);
                     listePostulant.setDateimport(new Date());
 
+                    ListePostulant listSaved = listePostulantService.creer(listePostulant);
+
                     List<Postulant> postulants = ExcelImport.postulantsExcel(file);
                     // insertion des postulants recuperes à partir du fichier excel
                     for (Postulant p : postulants) {
 
                         if (postulantService.GetByEmail(p.getEmail()) == null
                                 & p.getNom() != null & p.getPrenom() != null) {
+                            p.getListePostulants().add(listSaved);
                             Postulant pc = postulantService.creer(p);
 
-                            p.getListePostulants().add(listePostulant);
-                            listePostulant.getPostulants().add(pc);
+                            // p.getListePostulants().add(listePostulant);
+                            // listePostulant.getPostulants().add(pc);
 
                         } else if (p.getEmail() != null & p.getNom() != null & p.getPrenom() != null) {
                             Postulant pc = postulantService.GetByEmail(p.getEmail());
-                            listePostulant.getPostulants().add(pc);
+                            pc.getListePostulants().add(listSaved);
+                            postulantService.creer(pc);
+                            // listePostulant.getPostulants().add(pc);
 
                         }
 
                     }
 
                     return ResponseMessage.generateResponse("ok", HttpStatus.OK,
-                            listePostulantService.creer(listePostulant));
+                            listSaved);
 
                 } else {
                     return ResponseMessage.generateResponse("error", HttpStatus.OK,
@@ -183,7 +184,7 @@ public class ResponsableController {
 
     // la methode pour importer une liste de postulant
     @ApiOperation(value = "la methode pour importer une liste de postulant.")
-    @PostMapping("/list/new/{idTirage}")
+    @PostMapping("/listparticipant/new/{idTirage}")
     public ResponseEntity<Object> ImportListeParticipant(@RequestParam("file") MultipartFile file,
             @PathVariable("idTirage") Long idTirage) {
 
@@ -262,19 +263,31 @@ public class ResponsableController {
 
     // la methode pour effectuer un tirage
     @ApiOperation(value = "La methode Pour effectuer un tirage.")
-    @PostMapping("/tirage/new/{libelleliste}/{nombre}/{libelleTirage}")
+    @PostMapping("/tirage/new/{libelleliste}/{idactivite}/{iduser}/{nombre}/{libelleTirage}")
     public ResponseEntity<Object> DoTirage(@PathVariable("libelleliste") String libelleliste,
-            @PathVariable("nombre") Long nombre,
+            @PathVariable("nombre") Long nombre, @PathVariable("idactivite") Long idactivite,
+            @PathVariable("iduser") Long iduser,
             @PathVariable("libelleTirage") String libelleTirage) {
-        ListePostulant listePostulant = listePostulantService.retrouveParLibelle(libelleliste);
 
+        Utilisateur utilisateur = utilisateurService.getById(iduser);
+        Activite activite = activiteService.GetById(idactivite);
+
+        ListePostulant listePostulant = listePostulantService.retrouveParLibelle(libelleliste);
         Tirage tirage = new Tirage();
         tirage.setLibelle(libelleTirage);
+        tirage.setListepostulant(listePostulant);
+        tirage.setActivite(activite);
+        tirage.setUtilisateur(utilisateur);
+
+        System.out.println(libelleTirage);
+        System.out.println(nombre);
+        System.out.println(libelleliste);
+
+        System.out.println(listePostulant.getPostulants());
 
         List<Postulant> postulanttires = tirageService.creer(tirage, listePostulant.getPostulants(), nombre);
 
         try {
-
             return ResponseMessage.generateResponse("ok", HttpStatus.OK, postulanttires);
 
         } catch (Exception e) {

@@ -1,10 +1,8 @@
 package com.odc.Apiodkerp.Configuration;
 
-import java.util.List;
-
-import com.odc.Apiodkerp.Models.Postulant;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.DataFormatter;
@@ -13,6 +11,8 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.web.multipart.MultipartFile;
+
+import com.odc.Apiodkerp.Models.Postulant;
 
 public class ExcelImport {
 

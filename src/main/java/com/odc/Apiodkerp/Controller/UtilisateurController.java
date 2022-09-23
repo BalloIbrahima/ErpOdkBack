@@ -243,9 +243,9 @@ public class UtilisateurController {
     // methode pour la création d'une activité
     @ApiOperation(value = "methode pour la création d'une activité.")
     @PostMapping("/activite/new/{idutilisateur}")
-    public ResponseEntity<Object> CreateTirage(@RequestBody Activite activite,
+    public ResponseEntity<Object> Createactivite(@RequestBody Activite activite,
             @PathVariable("idutilisateur") Long idutilisateur,
-            @RequestParam(value = "file", required = true) MultipartFile file) {
+            @RequestParam(value = "file", required = false) MultipartFile file) {
 
         if (file != null) {
             try {

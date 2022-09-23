@@ -12,6 +12,7 @@ import java.util.List;
 public class ListePostulantServiceImpl implements ListePostulantService {
     @Autowired
     ListePostulantRepository listePostulantRepository;
+
     @Override
     public ListePostulant creer(ListePostulant listepostulant) {
         return listePostulantRepository.save(listepostulant);
@@ -20,11 +21,11 @@ public class ListePostulantServiceImpl implements ListePostulantService {
     @Override
     public ListePostulant update(Long id, ListePostulant listepostulant) {
         return listePostulantRepository.findById(id)
-                .map(p->{
+                .map(p -> {
                     p.setLibelle(listepostulant.getLibelle());
                     p.setDateimport(listepostulant.getDateimport());
                     return listePostulantRepository.save(p);
-                }).orElseThrow(()-> new RuntimeException("liste non trouvé !"));
+                }).orElseThrow(() -> new RuntimeException("liste non trouvé !"));
     }
 
     @Override

@@ -11,7 +11,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "typeativite")
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
@@ -19,11 +18,11 @@ import java.util.List;
 public class TypeActivite {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private  long id;
-    private  String libelle;
+    private long id;
+    private String libelle;
 
     @JsonIgnore
     @OneToMany(mappedBy = "typeActivite")
 
-    List<Activite> activite=new ArrayList<>();
+    List<Activite> activite = new ArrayList<>();
 }

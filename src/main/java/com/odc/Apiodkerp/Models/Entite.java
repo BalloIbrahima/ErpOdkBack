@@ -13,8 +13,6 @@ import javax.persistence.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
-@SuperBuilder
 public class Entite {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
