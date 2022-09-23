@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.odc.Apiodkerp.Configuration.ResponseMessage;
 import com.odc.Apiodkerp.Configuration.SaveImage;
 import com.odc.Apiodkerp.Service.ActiviteService;
@@ -24,8 +25,6 @@ import com.odc.Apiodkerp.Service.UtilisateurService;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-
-import java.util.ArrayList;
 
 import java.util.List;
 
@@ -97,10 +96,17 @@ public class SuperAdminController {
 
     ////
     @ApiOperation(value = "Lien pour créer une salle")
-    @PostMapping("/creersalle")
-    public ResponseEntity<Object> creerSalle(@RequestBody Salle salle) {
+    @PostMapping("/creersalle/{iduser}")
+    public ResponseEntity<Object> creerSalle(@RequestBody Salle salle, @PathVariable("iduser") Long iduser) {
         try {
-            return ResponseMessage.generateResponse("ok", HttpStatus.OK, salleService.create(salle));
+            Utilisateur utilisateur = utilisateurService.getById(iduser);
+            System.out.println(utilisateur);
+            if (utilisateur.getRole() == RoleService.GetByLibelle("ADMIN")) {
+                salle.setUtilisateur(utilisateur);
+                return ResponseMessage.generateResponse("ok", HttpStatus.OK, salleService.create(salle));
+            } else {
+                return ResponseMessage.generateResponse("error", HttpStatus.OK, "non autorise");
+            }
         } catch (Exception e) {
             return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
         }
@@ -224,13 +230,19 @@ public class SuperAdminController {
     // Responsable-------------------------------------------------------------->
     @ApiOperation(value = "Creer un responsable.")
     @PostMapping("/create/responsable")
-    public ResponseEntity<Object> createResponsable(@RequestBody Utilisateur utilisateur,
+    public ResponseEntity<Object> createResponsable(@RequestParam(value = "data") String data,
             @RequestParam(value = "file", required = false) MultipartFile file) {
         try {
+            Utilisateur utilisateur = new Utilisateur();
+            utilisateur = new JsonMapper().readValue(data, Utilisateur.class);
+
             Role role = RoleService.GetByLibelle("RESPONSABLE");
             utilisateur.setRole(role);
+            System.out.println(file);
             if (file != null) {
                 utilisateur.setImage(SaveImage.save("user", file, utilisateur.getEmail()));
+                // System.out.println(utilisateur.getImage());
+
             }
             Utilisateur NewResponsable = utilisateurService.creer(utilisateur);
             return ResponseMessage.generateResponse("ok", HttpStatus.OK, NewResponsable);
@@ -380,7 +392,7 @@ public class SuperAdminController {
     }
 
     /// desactive un utilisateur
-    @ApiOperation(value = "Active un utilisateur")
+    @ApiOperation(value = "Desactive un utilisateur")
     @GetMapping("/desactive/{id}")
     ResponseEntity<Object> desactiveUser(@PathVariable("id") Long id) {
 

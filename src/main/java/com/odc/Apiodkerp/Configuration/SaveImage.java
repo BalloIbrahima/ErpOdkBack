@@ -1,5 +1,7 @@
 package com.odc.Apiodkerp.Configuration;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -9,18 +11,24 @@ import org.springframework.web.multipart.MultipartFile;
 
 public class SaveImage {
 
-    public static String server = "http://localhost/";
+    public static String localhost = "http://localhost/";
+    public static String serveruser = localhost + "erpodk/images/utilisateurs/";
+    public static String serveractivite = localhost + "erpodk/images/activites/";
+
     public static String Activitelocation = "C:/xampp/htdocs/erpodk/images/activites";
     public static String Userlocation = "C:/xampp/htdocs/erpodk/images/utilisateurs";
 
     public static String save(String typeImage, MultipartFile file, String nomFichier) {
         String src = "";
-
+        String server = "";
         String location = "";
         if (typeImage == "user") {
             location = Userlocation;
+            server = serveruser;
         } else {
             location = Activitelocation;
+            server = serveractivite;
+
         }
 
         /// debut de l'enregistrement
@@ -59,11 +67,13 @@ public class SaveImage {
                 }
 
             }
-        } catch (Exception e) {
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
             // TODO: handle exception
             src = null;
         }
 
         return src;
     }
+
 }

@@ -124,6 +124,7 @@ public class ResponsableController {
         }
     }
 
+    // ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
     // la methode pour importer une liste de postulant
     @ApiOperation(value = "la methode pour importer une liste de postulant.")
     @PostMapping("/listpostulant/new/{libelleliste}")
@@ -182,6 +183,7 @@ public class ResponsableController {
         }
     }
 
+    // :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
     // la methode pour importer une liste de postulant
     @ApiOperation(value = "la methode pour importer une liste de postulant.")
     @PostMapping("/listparticipant/new/{idTirage}")

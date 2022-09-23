@@ -16,11 +16,13 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class ActiviteServiceImpl implements ActiviteService{
+public class ActiviteServiceImpl implements ActiviteService {
     @Autowired
     SalleRepository salleRepository;
 
-private   ActiviteRepository activiteRepository;
+    @Autowired
+    ActiviteRepository activiteRepository;
+
     @Override
     public Activite Create(Activite activite) {
         return activiteRepository.save(activite);
@@ -33,7 +35,7 @@ private   ActiviteRepository activiteRepository;
 
     @Override
     public Activite Update(long id, Activite activite) {
-        return  activiteRepository.findById(id)
+        return activiteRepository.findById(id)
                 .map(activite1 -> {
                     activite1.setNom(activite1.getNom());
                     activite1.setDateCreation(activite1.getDateCreation());
@@ -71,13 +73,13 @@ private   ActiviteRepository activiteRepository;
             activitecourant.setSalle(salleverifiee);
             activiteRepository.save(activitecourant);
             return "Salle attribuée avec succès !";
-        } else return "Cette salle n'existe pas !";
+        } else
+            return "Cette salle n'existe pas !";
     }
 
     @Override
     public Activite GetByEtat(Etat etat) {
         return activiteRepository.findByEtat(etat);
     }
-
 
 }

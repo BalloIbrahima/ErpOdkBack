@@ -42,29 +42,34 @@ public class ApiodkerpApplication {
 		roleService.create(responsable);
 		roleService.create(admin);
 
-		// creation des super administrateurs
-		Utilisateur ballo = new Utilisateur();
-		ballo.setActive(true);
-		ballo.setNom("Ballo");
-		ballo.setRole(admin);
-		ballo.setPrenom("Ibrahima");
-		ballo.setGenre(Genre.Masculin);
-		ballo.setPassword("bababallo#123#");
-		ballo.setId(1L);
-		ballo.setLogin("bababallo");
+		if (utilisateurService.getByEmail("ballo@gmail.com") == null
+				&& utilisateurService.getByEmail("maiga@gmail.com") == null) {
+			// creation des super administrateurs
+			Utilisateur ballo = new Utilisateur();
+			ballo.setActive(true);
+			ballo.setNom("Ballo");
+			ballo.setEmail("ballo@gmail.com");
+			ballo.setRole(admin);
+			ballo.setPrenom("Ibrahima");
+			ballo.setGenre(Genre.Masculin);
+			ballo.setPassword("bababallo#123#");
+			ballo.setId(1L);
+			ballo.setLogin("bababallo");
 
-		Utilisateur abasse = new Utilisateur();
-		abasse.setActive(true);
-		abasse.setNom("Maiga");
-		abasse.setRole(admin);
-		abasse.setPrenom("Abasse");
-		abasse.setGenre(Genre.Masculin);
-		abasse.setPassword("abassemaiga");
-		abasse.setId(2L);
-		abasse.setLogin("abasse");
+			Utilisateur abasse = new Utilisateur();
+			abasse.setActive(true);
+			abasse.setNom("Maiga");
+			abasse.setEmail("maiga@gmail.com");
+			abasse.setRole(admin);
+			abasse.setPrenom("Abasse");
+			abasse.setGenre(Genre.Masculin);
+			abasse.setPassword("abassemaiga");
+			abasse.setId(2L);
+			abasse.setLogin("abasse");
 
-		utilisateurService.creer(ballo);
-		utilisateurService.creer(abasse);
+			utilisateurService.creer(ballo);
+			utilisateurService.creer(abasse);
+		}
 
 		// création des etats
 		Etat encour = new Etat();
