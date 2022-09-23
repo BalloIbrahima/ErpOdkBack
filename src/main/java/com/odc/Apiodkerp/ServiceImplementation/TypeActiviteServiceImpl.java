@@ -28,10 +28,10 @@ public class TypeActiviteServiceImpl implements TypeActiviteService {
     }
 
     @Override
-    public void delete(Long id) {
+    public String delete(Long id) {
         // TODO Auto-generated method stub
         repos.deleteById(id);
-
+return "supprimer avec succes";
     }
 
     @Override
