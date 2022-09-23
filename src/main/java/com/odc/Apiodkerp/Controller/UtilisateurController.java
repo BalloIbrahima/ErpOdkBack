@@ -240,7 +240,7 @@ public class UtilisateurController {
 
     }
     ////
-    // ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+    // ::::::::::::::::::::::::::::::::::::::::ACTIVITE ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
     // methode pour la création d'une activité
     @ApiOperation(value = "methode pour la création d'une activité.")
@@ -296,12 +296,12 @@ public class UtilisateurController {
         // application/json
 
     }
-    // ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+    // ::::::::::::::::::::::::::::::::TYPE ACTIVITE ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
 
 
     @ApiOperation(value = "methode pour la création d'une type d' activité.")
-    @PostMapping("/Typeactivite")
+    @PostMapping("/TypeactiviteCreer")
     public ResponseEntity<Object> CreateTypeActivite(@RequestBody TypeActivite typeActivite) {
             try {
                 return ResponseMessage.generateResponse("ok", HttpStatus.OK, typeActiviteService.creer(typeActivite));
@@ -314,7 +314,7 @@ public class UtilisateurController {
 
 
     @ApiOperation(value = "methode pour la Suppression d'une type d' activité.")
-    @PostMapping("/Typeactivite/{id}")
+    @PostMapping("/TypeactiviteSupprimer/{id}")
     public ResponseEntity<Object> SupprimerTypeActivite(@PathVariable long id,@RequestBody TypeActivite typeActivite) {
         try {
             return ResponseMessage.generateResponse("ok", HttpStatus.OK, typeActiviteService.delete(id));
@@ -326,9 +326,8 @@ public class UtilisateurController {
 
     }
 
-
     @ApiOperation(value = "methode pour la modification d'une type d' activité.")
-    @PostMapping("/Typeactivite")
+    @PostMapping("/TypeactiviteModif")
     public ResponseEntity<Object> ModifTypeActivite(@RequestBody TypeActivite typeActivite) {
         try {
             return ResponseMessage.generateResponse("ok", HttpStatus.OK, typeActiviteService.update(typeActivite));
