@@ -3,6 +3,8 @@ package com.odc.Apiodkerp.ServiceImplementation;
 import com.odc.Apiodkerp.Models.Salle;
 import com.odc.Apiodkerp.Repository.SalleRepository;
 import com.odc.Apiodkerp.Service.SalleService;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -10,7 +12,9 @@ import java.util.List;
 @Service
 public class SalleServiceImpl implements SalleService {
 
-    private SalleRepository salleRepository;
+    @Autowired
+    SalleRepository salleRepository;
+
     @Override
     public Salle create(Salle salle) {
         return salleRepository.save(salle);
