@@ -2,6 +2,8 @@ package com.odc.Apiodkerp.Controller;
 
 import com.odc.Apiodkerp.Models.*;
 
+import java.util.Date;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -189,7 +191,7 @@ public class UtilisateurController {
 
     // Afficher une activite
     @ApiOperation(value = "Afficher une activite en fonction de l'id ")
-    @GetMapping("/lapresence/{idactivite}")
+    @GetMapping("/activite/{idactivite}")
     public ResponseEntity<Object> Afficheractivite(@PathVariable long idactivite) {
         try {
             return ResponseMessage.generateResponse("ok", HttpStatus.OK, activiteService.GetById(idactivite));
@@ -202,11 +204,16 @@ public class UtilisateurController {
     // Ajouter des participants ou apprenants à la liste de presence
     @ApiOperation(value = "Creer la liste de presence ")
     @PostMapping("/lapresence/{idactivite}/{idpostulanttire}")
-    public ResponseEntity<Object> presence(@PathVariable long idactivite, @PathVariable long idpostulanttire) {
+    public ResponseEntity<Object> presence(@PathVariable("idactivite") long idactivite,
+            @PathVariable("idpostulanttire") long idpostulanttire) {
         try {
             Presence presence = new Presence();
-            presence.setActivite(activiteService.GetById(idactivite));
-            presence.setPostulantTire(postulantTrieService.read(idpostulanttire));
+            Activite activite = activiteService.GetById(idactivite);
+            presence.setActivite(activite);
+            presence.setDate(new Date());
+            PostulantTire postulantTire = postulantTrieService.read(idpostulanttire);
+
+            presence.setPostulantTire(postulantTire);
             return ResponseMessage.generateResponse("ok", HttpStatus.OK, presenceService.creer(presence));
         } catch (Exception e) {
             // TODO: handle exception
@@ -215,7 +222,7 @@ public class UtilisateurController {
     }
 
     @ApiOperation(value = " afficher la liste de presence en fonction de l'id de l'activite")
-    @GetMapping("/lapresence/{idactivite}/")
+    @GetMapping("/lapresence/{idactivite}")
     public ResponseEntity<Object> Listepresence(@PathVariable long idactivite) {
         try {
             Activite act = activiteService.GetById(idactivite);
@@ -267,6 +274,7 @@ public class UtilisateurController {
                     activite.setSalle(salle);
                     activite.setCreateur(user);
                     activite.setEtat(etat);
+                    activite.setDateCreation(new Date());
                     System.out.println(user);
                     activite.setLeader(user);
 
@@ -275,18 +283,15 @@ public class UtilisateurController {
                     return ResponseMessage.generateResponse("ok", HttpStatus.OK, activiteService.Create(activite));
 
                 } catch (Exception e) {
-                    System.out.println("eeeeeeeeeeeee");
 
                     // TODO: handle exception
                     return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
                 }
             } else {
-                System.out.println("iiiiiiiiii");
 
                 return ResponseMessage.generateResponse("error", HttpStatus.OK, "Fichier vide");
             }
         } catch (Exception e) {
-            System.out.println("ggggggggg");
 
             System.out.println(activite);
 
@@ -298,6 +303,10 @@ public class UtilisateurController {
     }
     // ::::::::::::::::::::::::::::::::TYPE ACTIVITE ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
+    // methode pour la création d'une historique
+    @ApiOperation(value = "methode pour la création d'une historique.")
+    @PostMapping("/historique/new")
+    public ResponseEntity<Object> CreateHistorique(@RequestBody Historique historique) {
 
 
     @ApiOperation(value = "methode pour la création d'une type d' activité.")
@@ -316,9 +325,9 @@ public class UtilisateurController {
     @ApiOperation(value = "methode pour la Suppression d'une type d' activité.")
     @PostMapping("/TypeactiviteSupprimer/{id}")
     public ResponseEntity<Object> SupprimerTypeActivite(@PathVariable long id,@RequestBody TypeActivite typeActivite) {
-        try {
-            return ResponseMessage.generateResponse("ok", HttpStatus.OK, typeActiviteService.delete(id));
 
+        try {
+            return ResponseMessage.generateResponse("ok", HttpStatus.OK, historiqueService.save(historique));
         } catch (Exception e) {
             // TODO: handle exception
             return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
@@ -339,4 +348,5 @@ public class UtilisateurController {
 
 
     }
+
 }
