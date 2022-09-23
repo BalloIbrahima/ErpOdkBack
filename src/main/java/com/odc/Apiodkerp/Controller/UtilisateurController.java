@@ -244,9 +244,9 @@ public class UtilisateurController {
 
     // methode pour la création d'une activité
     @ApiOperation(value = "methode pour la création d'une activité.")
-    @PostMapping("/activite/new/{idutilisateur}")
-    public ResponseEntity<Object> Createactivite(@RequestParam(value = "data") String acti,
-            @PathVariable("idutilisateur") Long idutilisateur,
+    @PostMapping("/activite/new/{idutilisateur}/{idsalle}")
+    public ResponseEntity<Object> Createactivite(@RequestParam(value = "data") String acti, Activite activit,
+            @PathVariable("idutilisateur") Long idutilisateur, @PathVariable("idsalle") Long idsalle,
             @RequestParam(value = "file", required = false) MultipartFile file) {
         Activite activite = null;
 
@@ -259,6 +259,9 @@ public class UtilisateurController {
                 try {
                     Etat etat = etatService.recupereParStatut("A VENIR");
                     Utilisateur user = utilisateurService.getById(idutilisateur);
+                    Salle salle = salleService.read(idsalle);
+
+                    activite.setSalle(salle);
                     activite.setCreateur(user);
                     activite.setEtat(etat);
                     System.out.println(user);

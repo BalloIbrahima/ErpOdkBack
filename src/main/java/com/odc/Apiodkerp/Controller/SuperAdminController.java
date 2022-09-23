@@ -26,9 +26,6 @@ import com.odc.Apiodkerp.Service.UtilisateurService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
-import java.io.Console;
-import java.util.ArrayList;
-
 import java.util.List;
 
 @RestController
@@ -99,10 +96,17 @@ public class SuperAdminController {
 
     ////
     @ApiOperation(value = "Lien pour créer une salle")
-    @PostMapping("/creersalle")
-    public ResponseEntity<Object> creerSalle(@RequestBody Salle salle) {
+    @PostMapping("/creersalle/{iduser}")
+    public ResponseEntity<Object> creerSalle(@RequestBody Salle salle, @PathVariable("iduser") Long iduser) {
         try {
-            return ResponseMessage.generateResponse("ok", HttpStatus.OK, salleService.create(salle));
+            Utilisateur utilisateur = utilisateurService.getById(iduser);
+            System.out.println(utilisateur);
+            if (utilisateur.getRole() == RoleService.GetByLibelle("ADMIN")) {
+                salle.setUtilisateur(utilisateur);
+                return ResponseMessage.generateResponse("ok", HttpStatus.OK, salleService.create(salle));
+            } else {
+                return ResponseMessage.generateResponse("error", HttpStatus.OK, "non autorise");
+            }
         } catch (Exception e) {
             return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
         }

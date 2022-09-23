@@ -12,14 +12,15 @@ import java.util.List;
 public class PostulantTrieServiceImpl implements PostulantTrieService {
 
     @Autowired
-    private PostulantTrieRepository postulantTrieRepository;
+    PostulantTrieRepository postulantTrieRepository;
+
     @Override
     public PostulantTire create(PostulantTire postulantTire) {
         return postulantTrieRepository.save(postulantTire);
     }
 
     @Override
-    public PostulantTire update(PostulantTire postulantTire,long id) {
+    public PostulantTire update(PostulantTire postulantTire, long id) {
         return postulantTrieRepository.save(postulantTire);
     }
 

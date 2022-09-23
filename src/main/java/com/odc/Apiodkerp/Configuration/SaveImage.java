@@ -1,5 +1,7 @@
 package com.odc.Apiodkerp.Configuration;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -65,7 +67,7 @@ public class SaveImage {
                 }
 
             }
-        } catch (Exception e) {
+        } catch (IOException e) {
             System.out.println(e.getMessage());
             // TODO: handle exception
             src = null;

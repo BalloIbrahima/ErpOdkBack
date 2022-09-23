@@ -17,7 +17,7 @@ import org.springframework.stereotype.Service;
 public class UtilisateurServiceImpl implements UtilisateurService {
 
     @Autowired
-    private UtilisateurRepository repos;
+    UtilisateurRepository repos;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
