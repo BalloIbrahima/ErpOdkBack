@@ -33,8 +33,8 @@ public class Postulant extends Personne {
                     @JoinColumn(name = "id_liste_postulant") })
     List<ListePostulant> listePostulants = new ArrayList<>();
 
-    public String toString() {
-        return this.getNom() + " " + this.getPrenom();
-    }
+    // public String toString() {
+    // return this.getNom() + " " + this.getPrenom();
+    // }
 
 }

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import javax.lang.model.element.Element;
 import javax.servlet.http.HttpServletResponse;
 
 import com.odc.Apiodkerp.Configuration.ResponseMessage;
@@ -271,32 +272,39 @@ public class ResponsableController {
             @PathVariable("iduser") Long iduser,
             @PathVariable("libelleTirage") String libelleTirage) {
 
-        Utilisateur utilisateur = utilisateurService.getById(iduser);
-        Activite activite = activiteService.GetById(idactivite);
+        Tirage exist = tirageService.findByLibelle(libelleTirage);
+        if (exist == null) {
 
-        ListePostulant listePostulant = listePostulantService.retrouveParLibelle(libelleliste);
-        Tirage tirage = new Tirage();
-        tirage.setLibelle(libelleTirage);
-        tirage.setListepostulant(listePostulant);
-        tirage.setActivite(activite);
-        tirage.setUtilisateur(utilisateur);
+            Utilisateur utilisateur = utilisateurService.getById(iduser);
+            Activite activite = activiteService.GetById(idactivite);
 
-        System.out.println(libelleTirage);
-        System.out.println(nombre);
-        System.out.println(libelleliste);
+            ListePostulant listePostulant = listePostulantService.retrouveParLibelle(libelleliste);
+            Tirage tirage = new Tirage();
+            tirage.setLibelle(libelleTirage);
+            tirage.setListepostulant(listePostulant);
+            tirage.setActivite(activite);
+            tirage.setUtilisateur(utilisateur);
 
-        System.out.println(listePostulant.getPostulants());
+            System.out.println(libelleTirage);
+            System.out.println(nombre);
+            System.out.println(libelleliste);
 
-        List<Postulant> postulanttires = tirageService.creer(tirage, listePostulant.getPostulants(), nombre);
+            System.out.println(listePostulant.getPostulants());
 
-        try {
-            return ResponseMessage.generateResponse("ok", HttpStatus.OK, postulanttires);
+            List<Postulant> postulanttires = tirageService.creer(tirage, listePostulant.getPostulants(), nombre);
 
-        } catch (Exception e) {
-            // TODO: handle exception
-            return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
+            try {
+                return ResponseMessage.generateResponse("ok", HttpStatus.OK, postulanttires);
 
+            } catch (Exception e) {
+                // TODO: handle exception
+                return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
+
+            }
+        } else {
+            return ResponseMessage.generateResponse("error", HttpStatus.OK, "Ce tirage exist");
         }
+
     }
 
     // ---------------------------------Postulant
