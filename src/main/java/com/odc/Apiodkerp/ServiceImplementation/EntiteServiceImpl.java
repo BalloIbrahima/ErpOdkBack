@@ -1,6 +1,5 @@
 package com.odc.Apiodkerp.ServiceImplementation;
 
-import com.odc.Apiodkerp.Models.Activite;
 import com.odc.Apiodkerp.Models.Entite;
 import com.odc.Apiodkerp.Repository.EntiteRepository;
 import com.odc.Apiodkerp.Service.EntiteService;
@@ -11,8 +10,10 @@ import java.util.List;
 
 @Service
 public class EntiteServiceImpl implements EntiteService {
-@Autowired
+
+    @Autowired
     public EntiteRepository entiteRepository;
+
     @Override
     public Entite Create(Entite entite) {
         return entiteRepository.save(entite);
@@ -25,8 +26,8 @@ public class EntiteServiceImpl implements EntiteService {
 
     @Override
     public Entite Update(long id, Entite entite) {
-       // entite.setId(id);
-      Entite ent =  entiteRepository.findById(id).orElse(null);
+        // entite.setId(id);
+        Entite ent = entiteRepository.findById(id).orElse(null);
         return entiteRepository.save(ent);
     }
 

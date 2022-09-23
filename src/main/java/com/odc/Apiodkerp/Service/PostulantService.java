@@ -18,6 +18,7 @@ public interface PostulantService {
     // Retrouver les postulants à travers son id
     Postulant GetById(Long id);
 
-    //Retrouver le postulant par email
+    // Retrouver le postulant par email
     Postulant GetByEmail(String email);
+
 }

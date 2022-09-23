@@ -139,10 +139,22 @@ public class UtilisateurController {
 
     // Supprimer d'activite en fonction de l'id
     @ApiOperation(value = "Supprimer une activite en fonction de l'id")
-    @DeleteMapping("/supprimer/{id}")
-    public ResponseEntity<Object> supprimer(@PathVariable long id) {
+    @DeleteMapping("/supprimeractivite/{idactivite}/{iduser}")
+    public ResponseEntity<Object> supprimer(@PathVariable("idactivite") long idactivite,
+            @PathVariable("iduser") long iduser) {
         try {
-            return ResponseMessage.generateResponse("ok", HttpStatus.OK, activiteService.Delete(id));
+            Activite activite = activiteService.GetById(idactivite);
+
+            Utilisateur utilisateur = utilisateurService.getById(iduser);
+
+            Role admin = RoleService.GetByLibelle("ADMIN");
+
+            if (activite.getCreateur() == utilisateur || utilisateur.getRole() == admin) {
+                return ResponseMessage.generateResponse("ok", HttpStatus.OK, activiteService.Delete(idactivite));
+            } else {
+                return ResponseMessage.generateResponse("error", HttpStatus.OK, "vous n'etes pas autorisé");
+            }
+
         } catch (Exception e) {
             // TODO: handle exception
             return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
@@ -162,28 +174,25 @@ public class UtilisateurController {
         }
     }
 
-        //afficher toutes les activites
-        @ApiOperation(value = "Afficher toutes les  activite  ")
-        @GetMapping("/lapresence")
-        public ResponseEntity<Object> ToutesActivite(){
-            try{
-                return ResponseMessage.generateResponse("ok", HttpStatus.OK,  activiteService.FindAllAct());
-            }
-            catch (Exception e) {
-                // TODO: handle exception
-                return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
-            }
+    // afficher toutes les activites
+    @ApiOperation(value = "Afficher toutes les  activite  ")
+    @GetMapping("/lapresence")
+    public ResponseEntity<Object> ToutesActivite() {
+        try {
+            return ResponseMessage.generateResponse("ok", HttpStatus.OK, activiteService.FindAllAct());
+        } catch (Exception e) {
+            // TODO: handle exception
+            return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
         }
+    }
 
-
-    //Afficher une activite
+    // Afficher une activite
     @ApiOperation(value = "Afficher une activite en fonction de l'id ")
     @GetMapping("/lapresence/{idactivite}")
-    public ResponseEntity<Object> Afficheractivite(@PathVariable long idactivite ){
-        try{
-            return ResponseMessage.generateResponse("ok", HttpStatus.OK,  activiteService.GetById(idactivite));
-        }
-        catch (Exception e) {
+    public ResponseEntity<Object> Afficheractivite(@PathVariable long idactivite) {
+        try {
+            return ResponseMessage.generateResponse("ok", HttpStatus.OK, activiteService.GetById(idactivite));
+        } catch (Exception e) {
             // TODO: handle exception
             return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
         }
@@ -219,7 +228,7 @@ public class UtilisateurController {
     //
 
     @ApiOperation(value = "Modification de l'entite en fonction de l'id")
-    @PutMapping("/updatecc/{id}")
+    @PutMapping("/updateentite/{id}")
     public ResponseEntity<Object> updateEntite(@PathVariable Long id, @RequestBody Entite entite) {
         try {
             return ResponseMessage.generateResponse("error", HttpStatus.OK, entiteService.Update(id, entite));
