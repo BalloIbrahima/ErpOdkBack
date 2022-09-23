@@ -245,7 +245,7 @@ public class UtilisateurController {
     @PostMapping("/activite/new/{idutilisateur}")
     public ResponseEntity<Object> CreateActivite(@RequestBody Activite activite,
             @PathVariable("idutilisateur") Long idutilisateur,
-            @RequestParam(value = "file", required = true) MultipartFile file) {
+            @RequestParam(value = "file", required = false) MultipartFile file) {
 
         if (file != null) {
             try {

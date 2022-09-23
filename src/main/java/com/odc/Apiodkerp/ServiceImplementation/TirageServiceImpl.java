@@ -65,6 +65,7 @@ public class TirageServiceImpl implements TirageService {
             Long k = listId.get(i);
             listpostulant.add(postulantRepository.findById(k).get());
 
+
         }
 
         // ajout des postulants trie ds la table postulant trie
