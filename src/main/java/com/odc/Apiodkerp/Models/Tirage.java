@@ -23,16 +23,19 @@ public class Tirage {
     private Long id;
     private String libelle;
     private Date date;
+
     @ManyToOne
     @JoinColumn(name = "idlistepostulant")
     ListePostulant listepostulant;
+
     @ManyToOne
     Utilisateur utilisateur;
+
     @JsonIgnore
     @OneToMany(mappedBy = "tirage")
     List<PostulantTire> postulanttires = new ArrayList<>();
 
     @OneToOne
-    @JoinColumn(name = "activite_id",referencedColumnName = "id")
-    private  Activite activite;
+    @JoinColumn(name = "activite_id", referencedColumnName = "id")
+    private Activite activite;
 }

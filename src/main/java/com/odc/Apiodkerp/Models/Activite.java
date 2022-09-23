@@ -12,7 +12,6 @@ import java.util.Date;
 import java.util.List;
 
 @Entity
-@Table(name = "activite")
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter

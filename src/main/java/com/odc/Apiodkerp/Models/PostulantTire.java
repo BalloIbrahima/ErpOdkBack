@@ -23,9 +23,9 @@ public class PostulantTire {
 
     @ManyToOne
     Postulant postulant;
+
     @ManyToOne
     Tirage tirage;
-
 
     @JsonIgnore
     @OneToMany(mappedBy = "postulantTire")

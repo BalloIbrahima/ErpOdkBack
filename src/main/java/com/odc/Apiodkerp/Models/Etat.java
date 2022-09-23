@@ -11,7 +11,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "etat")
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
@@ -22,10 +21,9 @@ public class Etat {
     private long id;
     private String statut;
 
-
     @JsonIgnore
     @OneToMany(mappedBy = "etat")
 
-    List<Activite> activite=new ArrayList<>();
+    List<Activite> activite = new ArrayList<>();
 
 }

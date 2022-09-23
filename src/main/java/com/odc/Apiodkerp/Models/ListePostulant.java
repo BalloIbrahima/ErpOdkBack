@@ -28,11 +28,7 @@ public class ListePostulant {
     @OneToMany(mappedBy = "listepostulant")
     List<Tirage> tirages = new ArrayList<>();
 
-
-
     @ManyToMany(mappedBy = "listePostulants")
     private List<Postulant> postulants = new ArrayList<>();
-
-
 
 }
