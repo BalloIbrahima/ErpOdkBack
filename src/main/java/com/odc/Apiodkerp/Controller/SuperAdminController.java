@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.odc.Apiodkerp.Configuration.ResponseMessage;
 import com.odc.Apiodkerp.Configuration.SaveImage;
 import com.odc.Apiodkerp.Service.ActiviteService;
@@ -25,6 +26,7 @@ import com.odc.Apiodkerp.Service.UtilisateurService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
+import java.io.Console;
 import java.util.ArrayList;
 
 import java.util.List;
@@ -224,13 +226,19 @@ public class SuperAdminController {
     // Responsable-------------------------------------------------------------->
     @ApiOperation(value = "Creer un responsable.")
     @PostMapping("/create/responsable")
-    public ResponseEntity<Object> createResponsable(@RequestBody Utilisateur utilisateur,
+    public ResponseEntity<Object> createResponsable(@RequestParam(value = "data") String data,
             @RequestParam(value = "file", required = false) MultipartFile file) {
         try {
+            Utilisateur utilisateur = new Utilisateur();
+            utilisateur = new JsonMapper().readValue(data, Utilisateur.class);
+
             Role role = RoleService.GetByLibelle("RESPONSABLE");
             utilisateur.setRole(role);
+            System.out.println(file);
             if (file != null) {
                 utilisateur.setImage(SaveImage.save("user", file, utilisateur.getEmail()));
+                // System.out.println(utilisateur.getImage());
+
             }
             Utilisateur NewResponsable = utilisateurService.creer(utilisateur);
             return ResponseMessage.generateResponse("ok", HttpStatus.OK, NewResponsable);
@@ -380,7 +388,7 @@ public class SuperAdminController {
     }
 
     /// desactive un utilisateur
-    @ApiOperation(value = "Active un utilisateur")
+    @ApiOperation(value = "Desactive un utilisateur")
     @GetMapping("/desactive/{id}")
     ResponseEntity<Object> desactiveUser(@PathVariable("id") Long id) {
 

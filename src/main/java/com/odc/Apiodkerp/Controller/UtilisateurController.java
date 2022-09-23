@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.odc.Apiodkerp.Configuration.ResponseMessage;
 import com.odc.Apiodkerp.Configuration.SaveImage;
 import com.odc.Apiodkerp.Models.Activite;
@@ -239,29 +240,56 @@ public class UtilisateurController {
 
     }
     ////
+    // ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
     // methode pour la création d'une activité
     @ApiOperation(value = "methode pour la création d'une activité.")
     @PostMapping("/activite/new/{idutilisateur}")
-    public ResponseEntity<Object> Createactivite(@RequestBody Activite activite,
+    public ResponseEntity<Object> Createactivite(@RequestParam(value = "data") String acti,
             @PathVariable("idutilisateur") Long idutilisateur,
             @RequestParam(value = "file", required = false) MultipartFile file) {
+        Activite activite = null;
 
-        if (file != null) {
-            try {
-                Utilisateur user = utilisateurService.getById(idutilisateur);
+        System.out.println(idutilisateur);
 
-                activite.setImage(SaveImage.save("activite", file, activite.getNom()));
+        try {
+            activite = new JsonMapper().readValue(acti, Activite.class);
+            System.out.println(activite);
+            if (file != null) {
+                try {
+                    Etat etat = etatService.recupereParStatut("A VENIR");
+                    Utilisateur user = utilisateurService.getById(idutilisateur);
+                    activite.setCreateur(user);
+                    activite.setEtat(etat);
+                    System.out.println(user);
+                    activite.setLeader(user);
 
-                return ResponseMessage.generateResponse("ok", HttpStatus.OK, activiteService.Create(activite));
+                    activite.setImage(SaveImage.save("activite", file, activite.getNom()));
 
-            } catch (Exception e) {
-                // TODO: handle exception
-                return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
+                    return ResponseMessage.generateResponse("ok", HttpStatus.OK, activiteService.Create(activite));
+
+                } catch (Exception e) {
+                    System.out.println("eeeeeeeeeeeee");
+
+                    // TODO: handle exception
+                    return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
+                }
+            } else {
+                System.out.println("iiiiiiiiii");
+
+                return ResponseMessage.generateResponse("error", HttpStatus.OK, "Fichier vide");
             }
-        } else {
-            return ResponseMessage.generateResponse("error", HttpStatus.OK, "Fichier vide");
+        } catch (Exception e) {
+            System.out.println("ggggggggg");
+
+            System.out.println(activite);
+
+            return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
         }
 
+        // application/json
+
     }
+    // ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+
 }

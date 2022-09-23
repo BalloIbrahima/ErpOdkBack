@@ -42,4 +42,10 @@ public class EtatServiceImpl implements EtatService {
     public Etat GetById(long id) {
         return etatRepository.findById(id).get();
     }
+
+    @Override
+    public Etat recupereParStatut(String statut) {
+        // TODO Auto-generated method stub
+        return etatRepository.findByStatut(statut);
+    }
 }
