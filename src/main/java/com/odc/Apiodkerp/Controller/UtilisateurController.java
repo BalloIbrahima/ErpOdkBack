@@ -29,6 +29,7 @@ import org.springframework.web.bind.annotation.*;
 import com.odc.Apiodkerp.Service.ActiviteService;
 import com.odc.Apiodkerp.Service.EntiteService;
 import com.odc.Apiodkerp.Service.EtatService;
+import com.odc.Apiodkerp.Service.HistoriqueService;
 import com.odc.Apiodkerp.Service.ListePostulantService;
 import com.odc.Apiodkerp.Service.PostulantService;
 import com.odc.Apiodkerp.Service.PostulantTrieService;
@@ -83,6 +84,9 @@ public class UtilisateurController {
 
     @Autowired
     private TypeActiviteService typeActiviteService;
+
+    @Autowired
+    private HistoriqueService historiqueService;
 
     // Pour le login d'un utilisateur
     @ApiOperation(value = "Pour le login d'un utilisateur.")
@@ -247,7 +251,8 @@ public class UtilisateurController {
 
     }
     ////
-    // ::::::::::::::::::::::::::::::::::::::::ACTIVITE ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+    // ::::::::::::::::::::::::::::::::::::::::ACTIVITE
+    //// ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
     // methode pour la création d'une activité
     @ApiOperation(value = "methode pour la création d'une activité.")
@@ -301,33 +306,27 @@ public class UtilisateurController {
         // application/json
 
     }
-    // ::::::::::::::::::::::::::::::::TYPE ACTIVITE ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-
-    // methode pour la création d'une historique
-    @ApiOperation(value = "methode pour la création d'une historique.")
-    @PostMapping("/historique/new")
-    public ResponseEntity<Object> CreateHistorique(@RequestBody Historique historique) {
-
+    // ::::::::::::::::::::::::::::::::TYPE ACTIVITE
+    // ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
     @ApiOperation(value = "methode pour la création d'une type d' activité.")
     @PostMapping("/TypeactiviteCreer")
     public ResponseEntity<Object> CreateTypeActivite(@RequestBody TypeActivite typeActivite) {
-            try {
-                return ResponseMessage.generateResponse("ok", HttpStatus.OK, typeActiviteService.creer(typeActivite));
+        try {
+            return ResponseMessage.generateResponse("ok", HttpStatus.OK, typeActiviteService.creer(typeActivite));
 
-            } catch (Exception e) {
-                // TODO: handle exception
-                return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
-            }
+        } catch (Exception e) {
+            // TODO: handle exception
+            return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
+        }
     }
-
 
     @ApiOperation(value = "methode pour la Suppression d'une type d' activité.")
     @PostMapping("/TypeactiviteSupprimer/{id}")
-    public ResponseEntity<Object> SupprimerTypeActivite(@PathVariable long id,@RequestBody TypeActivite typeActivite) {
+    public ResponseEntity<Object> SupprimerTypeActivite(@PathVariable long id, @RequestBody TypeActivite typeActivite) {
 
         try {
-            return ResponseMessage.generateResponse("ok", HttpStatus.OK, historiqueService.save(historique));
+            return ResponseMessage.generateResponse("ok", HttpStatus.OK, typeActiviteService.delete(id));
         } catch (Exception e) {
             // TODO: handle exception
             return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
@@ -346,7 +345,21 @@ public class UtilisateurController {
             return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
         }
 
+    }
 
+    //////// :::::::::::::::::::::::historique
+    // methode pour la création d'une historique
+    @ApiOperation(value = "methode pour la création d'une historique.")
+    @PostMapping("/historique/new")
+    public ResponseEntity<Object> CreateHistorique(@RequestBody Historique historique) {
+        try {
+            return ResponseMessage.generateResponse("ok", HttpStatus.OK, historiqueService.Create(historique));
+
+        } catch (Exception e) {
+            // TODO: handle exception
+            return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
+
+        }
     }
 
 }
