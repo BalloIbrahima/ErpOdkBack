@@ -244,14 +244,14 @@ public class UtilisateurController {
     @ApiOperation(value = "methode pour la création d'une activité.")
     @PostMapping("/activite/new/{idutilisateur}")
     public ResponseEntity<Object> CreateTirage(@RequestBody Activite activite,
-            @PathVariable("idutilisateur") Long idutilisateur,
-            @RequestParam(value = "file", required = true) MultipartFile file) {
+            @PathVariable("idutilisateur") Long idutilisateur){
+          //  @RequestParam(value = "file", required = false) MultipartFile file) {
 
-        if (file != null) {
+       // if (file != null) {
             try {
                 Utilisateur user = utilisateurService.getById(idutilisateur);
 
-                activite.setImage(SaveImage.save("activite", file, activite.getNom()));
+              //  activite.setImage(SaveImage.save("activite", file, activite.getNom()));
 
                 return ResponseMessage.generateResponse("ok", HttpStatus.OK, activiteService.Create(activite));
 
@@ -259,9 +259,7 @@ public class UtilisateurController {
                 // TODO: handle exception
                 return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
             }
-        } else {
-            return ResponseMessage.generateResponse("error", HttpStatus.OK, "Fichier vide");
         }
 
     }
-}
+
