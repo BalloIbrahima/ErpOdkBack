@@ -63,7 +63,8 @@ public class TirageServiceImpl implements TirageService {
         for (int i = 1; i <= nombre; i++) {
 
             Long k = listId.get(i);
-            listpostulant.add(postulantRepository.findById(k).orElseThrow());
+            listpostulant.add(postulantRepository.findById(k).get());
+
 
         }
 

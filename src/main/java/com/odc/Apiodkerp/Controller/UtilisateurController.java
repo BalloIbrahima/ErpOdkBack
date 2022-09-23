@@ -243,7 +243,7 @@ public class UtilisateurController {
     // methode pour la création d'une activité
     @ApiOperation(value = "methode pour la création d'une activité.")
     @PostMapping("/activite/new/{idutilisateur}")
-    public ResponseEntity<Object> Createactivite(@RequestBody Activite activite,
+    public ResponseEntity<Object> CreateActivite(@RequestBody Activite activite,
             @PathVariable("idutilisateur") Long idutilisateur,
             @RequestParam(value = "file", required = false) MultipartFile file) {
 
@@ -262,6 +262,48 @@ public class UtilisateurController {
         } else {
             return ResponseMessage.generateResponse("error", HttpStatus.OK, "Fichier vide");
         }
+
+    }
+
+
+    @ApiOperation(value = "methode pour la création d'une type d' activité.")
+    @PostMapping("/Typeactivite")
+    public ResponseEntity<Object> CreateTypeActivite(@RequestBody TypeActivite typeActivite) {
+            try {
+                return ResponseMessage.generateResponse("ok", HttpStatus.OK, typeActiviteService.creer(typeActivite));
+
+            } catch (Exception e) {
+                // TODO: handle exception
+                return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
+            }
+    }
+
+
+    @ApiOperation(value = "methode pour la Suppression d'une type d' activité.")
+    @PostMapping("/Typeactivite/{id}")
+    public ResponseEntity<Object> SupprimerTypeActivite(@PathVariable long id,@RequestBody TypeActivite typeActivite) {
+        try {
+            return ResponseMessage.generateResponse("ok", HttpStatus.OK, typeActiviteService.delete(id));
+
+        } catch (Exception e) {
+            // TODO: handle exception
+            return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
+        }
+
+    }
+
+
+    @ApiOperation(value = "methode pour la modification d'une type d' activité.")
+    @PostMapping("/Typeactivite")
+    public ResponseEntity<Object> ModifTypeActivite(@RequestBody TypeActivite typeActivite) {
+        try {
+            return ResponseMessage.generateResponse("ok", HttpStatus.OK, typeActiviteService.update(typeActivite));
+
+        } catch (Exception e) {
+            // TODO: handle exception
+            return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
+        }
+
 
     }
 }
