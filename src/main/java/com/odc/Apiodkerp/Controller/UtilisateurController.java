@@ -243,7 +243,7 @@ public class UtilisateurController {
     // methode pour la création d'une activité
     @ApiOperation(value = "methode pour la création d'une activité.")
     @PostMapping("/activite/new/{idutilisateur}")
-    public ResponseEntity<Object> CreateTirage(@RequestBody Activite activite,
+    public ResponseEntity<Object> CreateActivite(@RequestBody Activite activite,
             @PathVariable("idutilisateur") Long idutilisateur,
             @RequestParam(value = "file", required = true) MultipartFile file) {
 
@@ -262,6 +262,27 @@ public class UtilisateurController {
         } else {
             return ResponseMessage.generateResponse("error", HttpStatus.OK, "Fichier vide");
         }
+
+    }
+
+
+
+
+    @ApiOperation(value = "methode pour la création d'une type d' activité.")
+    @PostMapping("/Typeactivite")
+    public ResponseEntity<Object> CreateTypeActivite(@RequestBody TypeActivite typeActivite) {
+
+
+            try {
+
+
+                return ResponseMessage.generateResponse("ok", HttpStatus.OK, typeActiviteService.creer(typeActivite));
+
+            } catch (Exception e) {
+                // TODO: handle exception
+                return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
+            }
+
 
     }
 }
