@@ -247,7 +247,7 @@ public class UtilisateurController {
 
     }
     ////
-    // ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+    // ::::::::::::::::::::::::::::::::::::::::ACTIVITE ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
     // methode pour la création d'une activité
     @ApiOperation(value = "methode pour la création d'une activité.")
@@ -301,12 +301,30 @@ public class UtilisateurController {
         // application/json
 
     }
-    // ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+    // ::::::::::::::::::::::::::::::::TYPE ACTIVITE ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
     // methode pour la création d'une historique
     @ApiOperation(value = "methode pour la création d'une historique.")
     @PostMapping("/historique/new")
     public ResponseEntity<Object> CreateHistorique(@RequestBody Historique historique) {
+
+
+    @ApiOperation(value = "methode pour la création d'une type d' activité.")
+    @PostMapping("/TypeactiviteCreer")
+    public ResponseEntity<Object> CreateTypeActivite(@RequestBody TypeActivite typeActivite) {
+            try {
+                return ResponseMessage.generateResponse("ok", HttpStatus.OK, typeActiviteService.creer(typeActivite));
+
+            } catch (Exception e) {
+                // TODO: handle exception
+                return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
+            }
+    }
+
+
+    @ApiOperation(value = "methode pour la Suppression d'une type d' activité.")
+    @PostMapping("/TypeactiviteSupprimer/{id}")
+    public ResponseEntity<Object> SupprimerTypeActivite(@PathVariable long id,@RequestBody TypeActivite typeActivite) {
 
         try {
             return ResponseMessage.generateResponse("ok", HttpStatus.OK, historiqueService.save(historique));
@@ -314,6 +332,20 @@ public class UtilisateurController {
             // TODO: handle exception
             return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
         }
+
+    }
+
+    @ApiOperation(value = "methode pour la modification d'une type d' activité.")
+    @PostMapping("/TypeactiviteModif")
+    public ResponseEntity<Object> ModifTypeActivite(@RequestBody TypeActivite typeActivite) {
+        try {
+            return ResponseMessage.generateResponse("ok", HttpStatus.OK, typeActiviteService.update(typeActivite));
+
+        } catch (Exception e) {
+            // TODO: handle exception
+            return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
+        }
+
 
     }
 
