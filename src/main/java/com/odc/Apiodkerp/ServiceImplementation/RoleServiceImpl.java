@@ -3,6 +3,8 @@ package com.odc.Apiodkerp.ServiceImplementation;
 import com.odc.Apiodkerp.Models.Role;
 import com.odc.Apiodkerp.Repository.RoleRepository;
 import com.odc.Apiodkerp.Service.RoleService;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -10,7 +12,9 @@ import java.util.List;
 @Service
 public class RoleServiceImpl implements RoleService {
 
-    private RoleRepository roleRepository;
+    @Autowired
+    RoleRepository roleRepository;
+
     @Override
     public Role create(Role role) {
         return roleRepository.save(role);
