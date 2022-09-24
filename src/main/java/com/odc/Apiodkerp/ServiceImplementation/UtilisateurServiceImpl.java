@@ -32,7 +32,7 @@ public class UtilisateurServiceImpl implements UtilisateurService {
     }
 
     @Override
-    public Utilisateur update(Utilisateur utilisateur) {
+    public Utilisateur update(long id,Utilisateur utilisateur) {
         // TODO Auto-generated method stub
         return repos.save(utilisateur);
     }

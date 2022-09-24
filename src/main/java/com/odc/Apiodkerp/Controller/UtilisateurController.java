@@ -362,4 +362,27 @@ public class UtilisateurController {
         }
     }
 
+    // ::::::::::::::::::::::::::::::::::Modifier Utilisateur :::::::::::::::::::::::::::::::::::::
+
+    @ApiOperation(value = "Modification utilisateur en fournisssant id")
+    @PutMapping("/updateUser/{id}")
+    public ResponseEntity<Object> updateUtilisateur(@PathVariable Long id, @RequestBody Utilisateur utilisateur) {
+        Utilisateur utilisateur1 = utilisateurService.getById(id);
+
+
+        try {
+            if(utilisateur1!=null  && utilisateur1.getId()==utilisateur.getId()) {
+                return ResponseMessage.generateResponse("error", HttpStatus.OK, utilisateurService.update(id,utilisateur));
+            }
+            else{
+                return ResponseMessage.generateResponse("error", HttpStatus.OK, "Vous n'êtes pas autorisé à supprimer");
+            }
+
+        } catch (Exception e) {
+            // TODO: handle exception
+            return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
+        }
+
+    }
+
 }

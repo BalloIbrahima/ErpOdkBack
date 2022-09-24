@@ -13,7 +13,7 @@ public interface UtilisateurService {
 
     Utilisateur creer(Utilisateur utilisateur);
 
-    Utilisateur update(Utilisateur utilisateur);
+    Utilisateur update(long id,Utilisateur utilisateur);
 
     Utilisateur login(String login, String password);
 
