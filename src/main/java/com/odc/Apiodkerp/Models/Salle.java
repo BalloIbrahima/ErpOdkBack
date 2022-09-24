@@ -21,7 +21,7 @@ public class Salle {
     private long id;
     private long nombreplace;
     private String libelle;
-    private String etape;
+    private String etage;
     private Boolean disponibilite;
 
     @Lob

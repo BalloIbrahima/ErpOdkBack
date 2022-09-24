@@ -90,22 +90,24 @@ public class UtilisateurController {
 
     // Pour le login d'un utilisateur
     @ApiOperation(value = "Pour le login d'un utilisateur.")
-    @PostMapping("/login/{login}/{password}")
-    public ResponseEntity<Object> login(@PathVariable("login") String login,
-            @PathVariable("password") String password) {
+    @PostMapping("/login")
+    public ResponseEntity<Object> login(@RequestBody Utilisateur utilisateur) {
+
+        System.out.println(utilisateur.getLogin());
+        System.out.println(utilisateur.getPassword());
 
         try {
-            Utilisateur Simpleutilisateur = utilisateurService.login(login, password);
-            Role user = RoleService.GetByLibelle("USER");
+            Utilisateur Simpleutilisateur = utilisateurService.login(utilisateur.getLogin(), utilisateur.getPassword());
+            System.out.println(Simpleutilisateur);
             if (Simpleutilisateur != null) {
-                if (Simpleutilisateur.getRole() == user && Simpleutilisateur.getActive() == true) {
-
+                if (Simpleutilisateur.getActive() == true) {
                     return ResponseMessage.generateResponse("ok", HttpStatus.OK, Simpleutilisateur);
                 } else {
-                    return ResponseMessage.generateResponse("non autorise", HttpStatus.OK, null);
+                    return ResponseMessage.generateResponse("error", HttpStatus.OK, "non autorise");
                 }
+
             } else {
-                return ResponseMessage.generateResponse("utilisateur n'existe pas", HttpStatus.OK, null);
+                return ResponseMessage.generateResponse("error", HttpStatus.OK, "utilisateur n'existe pas");
             }
 
         } catch (Exception e) {

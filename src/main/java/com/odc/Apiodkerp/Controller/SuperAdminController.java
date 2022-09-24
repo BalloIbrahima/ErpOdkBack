@@ -148,16 +148,25 @@ public class SuperAdminController {
     // USER-------------------------------------------------------------->
     @ApiOperation(value = "Creer un utilisateur.")
     @PostMapping("/create/user")
-    public ResponseEntity<Object> createUser(@RequestBody Utilisateur utilisateur,
+    public ResponseEntity<Object> createUser(@RequestParam(value = "data") String data,
             @RequestParam(value = "file", required = false) MultipartFile file) {
         try {
+            Utilisateur utilisateur = new JsonMapper().readValue(data, Utilisateur.class);
+
             Role role = RoleService.GetByLibelle("USER");
-            utilisateur.setRole(role);
-            if (file != null) {
-                utilisateur.setImage(SaveImage.save("user", file, utilisateur.getEmail()));
+
+            if (utilisateurService.getByEmail(utilisateur.getEmail()) == null) {
+                utilisateur.setRole(role);
+                if (file != null) {
+                    utilisateur.setImage(SaveImage.save("user", file, utilisateur.getEmail()));
+                }
+                Utilisateur NewUser = utilisateurService.creer(utilisateur);
+                return ResponseMessage.generateResponse("ok", HttpStatus.OK, NewUser);
+            } else {
+                return ResponseMessage.generateResponse("error", HttpStatus.OK, "Adresse mail existante");
+
             }
-            Utilisateur NewUser = utilisateurService.creer(utilisateur);
-            return ResponseMessage.generateResponse("ok", HttpStatus.OK, NewUser);
+
         } catch (Exception e) {
             // TODO: handle exception
             return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
@@ -216,7 +225,7 @@ public class SuperAdminController {
 
     @ApiOperation(value = "Affichager un utilisateur")
     @GetMapping("/get/user/{id}")
-    public ResponseEntity<Object> GetIdUtilisateur(@PathVariable("id") Long id, @RequestBody Utilisateur utilisateur) {
+    public ResponseEntity<Object> GetIdUtilisateur(@PathVariable("id") Long id) {
         try {
             Utilisateur idUser = utilisateurService.getById(id);
             return ResponseMessage.generateResponse("ok", HttpStatus.OK, idUser);
@@ -230,23 +239,43 @@ public class SuperAdminController {
     // ---------------------------CRUD
     // Responsable-------------------------------------------------------------->
     @ApiOperation(value = "Creer un responsable.")
-    @PostMapping("/create/responsable")
+    @PostMapping("/create/responsable/{idAdmin}")
     public ResponseEntity<Object> createResponsable(@RequestParam(value = "data") String data,
+            @PathVariable("idAdmin") Long idAdmin,
             @RequestParam(value = "file", required = false) MultipartFile file) {
         try {
-            Utilisateur utilisateur = new Utilisateur();
-            utilisateur = new JsonMapper().readValue(data, Utilisateur.class);
+            Utilisateur admin = utilisateurService.getById(idAdmin);
+            if (admin.getRole() == RoleService.GetByLibelle("ADMIN")) {
+                Utilisateur utilisateur = new Utilisateur();
+                utilisateur = new JsonMapper().readValue(data, Utilisateur.class);
 
-            Role role = RoleService.GetByLibelle("RESPONSABLE");
-            utilisateur.setRole(role);
-            System.out.println(file);
-            if (file != null) {
-                utilisateur.setImage(SaveImage.save("user", file, utilisateur.getEmail()));
-                // System.out.println(utilisateur.getImage());
+                Utilisateur verif = utilisateurService.getByEmail(utilisateur.getEmail());
+
+                if (verif == null) {
+                    Role role = RoleService.GetByLibelle("RESPONSABLE");
+                    utilisateur.setRole(role);
+                    String pass = utilisateur.getNom().substring(0, 1) + utilisateur.getPrenom().substring(0, 1)
+                            + "@ODC2022";
+
+                    System.out.println(pass);
+
+                    utilisateur.setPassword(pass);
+                    System.out.println(file);
+                    if (file != null) {
+                        utilisateur.setImage(SaveImage.save("user", file, utilisateur.getEmail()));
+                        // System.out.println(utilisateur.getImage());
+
+                    }
+                    Utilisateur NewResponsable = utilisateurService.creer(utilisateur);
+                    return ResponseMessage.generateResponse("ok", HttpStatus.OK, NewResponsable);
+                } else {
+                    return ResponseMessage.generateResponse("error", HttpStatus.OK, "Utilisateur existe deja");
+
+                }
+            } else {
+                return ResponseMessage.generateResponse("error", HttpStatus.OK, "non autorise");
 
             }
-            Utilisateur NewResponsable = utilisateurService.creer(utilisateur);
-            return ResponseMessage.generateResponse("ok", HttpStatus.OK, NewResponsable);
 
         } catch (Exception e) {
             // TODO: handle exception
@@ -255,17 +284,27 @@ public class SuperAdminController {
     }
 
     @ApiOperation(value = "Modifier un responsable.")
-    @PutMapping("/update/responsable/{id}")
-    public ResponseEntity<Object> updateResponsable(@RequestBody Utilisateur utilisateur,
+    @PutMapping("/update/responsable/{idResponsable}")
+    public ResponseEntity<Object> updateResponsable(@RequestParam(value = "data") String data,
+            @PathVariable("idResponsable") Long idResponsable,
             @RequestParam(value = "file", required = false) MultipartFile file) {
         try {
+            Utilisateur utilisateur = new JsonMapper().readValue(data, Utilisateur.class);
+            Utilisateur responsable = utilisateurService.getById(idResponsable);
 
-            if (file != null) {
-                utilisateur.setImage(SaveImage.save("user", file, utilisateur.getEmail()));
+            if (responsable != null && responsable.getId() == utilisateur.getId()) {
+                if (file != null) {
+                    utilisateur.setImage(SaveImage.save("user", file, utilisateur.getEmail()));
+                }
+                System.out.println(utilisateur.getPassword());
+                Utilisateur UpdateResponsable = utilisateurService.update(utilisateur);
+                return ResponseMessage.generateResponse("ok", HttpStatus.OK, UpdateResponsable);
+            } else {
+                return ResponseMessage.generateResponse("error", HttpStatus.OK, "non autorise");
+
             }
-          long userid=  utilisateur.getId();
-            Utilisateur UpdateResponsable = utilisateurService.update(userid,utilisateur);
-            return ResponseMessage.generateResponse("ok", HttpStatus.OK, UpdateResponsable);
+
+
 
         } catch (Exception e) {
             // TODO: handle exception
@@ -274,10 +313,23 @@ public class SuperAdminController {
     }
 
     @ApiOperation(value = "Supprimer un responsable")
-    @DeleteMapping("/delete/responsable/{id}")
-    public ResponseEntity<Object> deleteResponsable(@PathVariable Long id) {
-        utilisateurService.delete(id);
-        return ResponseMessage.generateResponse("ok", HttpStatus.OK, null);
+    @DeleteMapping("/delete/responsable/{idAdmin}/{idResponsable}")
+    public ResponseEntity<Object> deleteResponsable(@PathVariable("idAdmin") Long idAdmin,
+            @PathVariable("idResponsable") Long idResponsable) {
+        try {
+            Utilisateur admin = utilisateurService.getById(idAdmin);
+            if (admin.getRole() == RoleService.GetByLibelle("ADMIN")) {
+                utilisateurService.delete(idResponsable);
+                return ResponseMessage.generateResponse("ok", HttpStatus.OK, null);
+            } else {
+                return ResponseMessage.generateResponse("error", HttpStatus.OK, "non autorise");
+            }
+
+        } catch (Exception e) {
+            // TODO: handle exception
+            return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
+
+        }
 
     }
 
@@ -379,13 +431,22 @@ public class SuperAdminController {
 
     /// active un utilisateur
     @ApiOperation(value = "Active un utilisateur")
-    @GetMapping("/active/{id}")
-    ResponseEntity<Object> activeUser(@PathVariable("id") Long id) {
+    @GetMapping("/active/{idAmin}/{idUser}")
+    ResponseEntity<Object> activeUser(@PathVariable("idAmin") Long idAmin, @PathVariable("idUser") Long idUser) {
 
         try {
-            Utilisateur user = utilisateurService.getById(id);
-            user.setActive(true);
-            return ResponseMessage.generateResponse("ok", HttpStatus.OK, utilisateurService.creer(user));
+            Utilisateur admin = utilisateurService.getById(idAmin);
+            if (admin.getRole() == RoleService.GetByLibelle("ADMIN")) {
+                Utilisateur user = utilisateurService.getById(idUser);
+                user.setActive(true);
+                // System.out.println(user.getPassword());
+                // user.setPassword("");
+
+                return ResponseMessage.generateResponse("ok", HttpStatus.OK, utilisateurService.modifierRole(user));
+
+            } else {
+                return ResponseMessage.generateResponse("error", HttpStatus.OK, "non autorise");
+            }
 
         } catch (Exception e) {
             // TODO: handle exception
@@ -395,13 +456,20 @@ public class SuperAdminController {
 
     /// desactive un utilisateur
     @ApiOperation(value = "Desactive un utilisateur")
-    @GetMapping("/desactive/{id}")
-    ResponseEntity<Object> desactiveUser(@PathVariable("id") Long id) {
+    @GetMapping("/desactive/{idAmin}/{idUser}")
+    ResponseEntity<Object> desactiveUser(@PathVariable("idAmin") Long idAmin, @PathVariable("idUser") Long idUser) {
 
         try {
-            Utilisateur user = utilisateurService.getById(id);
-            user.setActive(false);
-            return ResponseMessage.generateResponse("ok", HttpStatus.OK, utilisateurService.creer(user));
+            Utilisateur admin = utilisateurService.getById(idAmin);
+            if (admin.getRole() == RoleService.GetByLibelle("ADMIN")) {
+                Utilisateur user = utilisateurService.getById(idUser);
+                user.setActive(false);
+                // System.out.println(user.getPassword());
+                // user.setPassword("");
+                return ResponseMessage.generateResponse("ok", HttpStatus.OK, utilisateurService.modifierRole(user));
+            } else {
+                return ResponseMessage.generateResponse("error", HttpStatus.OK, "non autorise");
+            }
 
         } catch (Exception e) {
             // TODO: handle exception
@@ -414,7 +482,11 @@ public class SuperAdminController {
     @PostMapping("/Typeactivite/creer")
     public ResponseEntity<Object> CreateTypeActivite(@RequestBody TypeActivite typeActivite) {
         try {
-            return ResponseMessage.generateResponse("ok", HttpStatus.OK, typeActiviteService.creer(typeActivite));
+            if (typeActiviteService.getByLibelle(typeActivite.getLibelle()) == null) {
+                return ResponseMessage.generateResponse("ok", HttpStatus.OK, typeActiviteService.creer(typeActivite));
+            } else {
+                return ResponseMessage.generateResponse("error", HttpStatus.OK, "libelle existant");
+            }
 
         } catch (Exception e) {
             // TODO: handle exception

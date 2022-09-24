@@ -34,6 +34,22 @@ public class UtilisateurServiceImpl implements UtilisateurService {
     @Override
     public Utilisateur update(long id,Utilisateur utilisateur) {
         // TODO Auto-generated method stub
+        Utilisateur user = this.getById(utilisateur.getId());
+        System.out.println(user.getPassword());
+
+        utilisateur.setRole(user.getRole());
+
+        if (utilisateur.getPassword() == null || utilisateur.getPassword() == "") {
+            System.out.println("nullll ou vide");
+
+            utilisateur.setPassword(user.getPassword());
+
+        } else if (utilisateur.getPassword() != null) {
+            System.out.println("non null");
+
+            utilisateur.setPassword(passwordEncoder().encode(utilisateur.getPassword()));
+
+        }
         return repos.save(utilisateur);
     }
 
@@ -59,9 +75,12 @@ public class UtilisateurServiceImpl implements UtilisateurService {
     public Utilisateur login(String login, String password) {
         // TODO Auto-generated method stub
         Utilisateur utilisateur = repos.findByLogin(login);
+
         if (passwordEncoder().matches(password, utilisateur.getPassword())) {
+
             return utilisateur;
         } else
+
             return null;
     }
 
@@ -81,9 +100,22 @@ public class UtilisateurServiceImpl implements UtilisateurService {
     public Long TotalPersonnel() {
         return repos.Total();
     }
-
+    @Override
     public Long TotalEntite() {
         return repos.TotalEntite();
     }
 
+    @Override
+    public Utilisateur modifierRole(Utilisateur utilisateur) {
+        // TODO Auto-generated method stub
+
+        Utilisateur user = this.getById(utilisateur.getId());
+        System.out.println(user.getPassword());
+
+        utilisateur.setRole(user.getRole());
+
+        utilisateur.setPassword(user.getPassword());
+
+        return repos.save(utilisateur);
+    }
 }
