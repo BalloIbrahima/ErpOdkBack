@@ -182,7 +182,8 @@ public class SuperAdminController {
             if (file != null) {
                 SaveImage.save("user", file, utilisateur.getEmail());
             }
-            Utilisateur UpdateUtilisateur = utilisateurService.update(utilisateur);
+            long userid=  utilisateur.getId();
+            Utilisateur UpdateUtilisateur = utilisateurService.update(userid,utilisateur);
             return ResponseMessage.generateResponse("ok", HttpStatus.OK, UpdateUtilisateur);
 
         } catch (Exception e) {
@@ -302,6 +303,8 @@ public class SuperAdminController {
                 return ResponseMessage.generateResponse("error", HttpStatus.OK, "non autorise");
 
             }
+
+
 
         } catch (Exception e) {
             // TODO: handle exception
@@ -509,6 +512,40 @@ public class SuperAdminController {
     public ResponseEntity<Object> ModifTypeActivite(@RequestBody TypeActivite typeActivite) {
         try {
             return ResponseMessage.generateResponse("ok", HttpStatus.OK, typeActiviteService.update(typeActivite));
+
+        } catch (Exception e) {
+            // TODO: handle exception
+            return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
+        }
+
+    }
+
+
+
+
+    //:::::::::::::::total postulant ::::::::::::::::::::
+
+    @ApiOperation(value = "Total postulant")
+    @GetMapping("/totalpersonnel")
+    public ResponseEntity<Object> TotalPostulant() {
+        try {
+            return ResponseMessage.generateResponse("ok", HttpStatus.OK, utilisateurService.TotalPersonnel());
+
+        } catch (Exception e) {
+            // TODO: handle exception
+            return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
+        }
+
+    }
+
+
+    //:::::::::::::::total entite ::::::::::::::::::::
+
+    @ApiOperation(value = "Total entite")
+    @GetMapping("/totalentite")
+    public ResponseEntity<Object> TotalEntite() {
+        try {
+            return ResponseMessage.generateResponse("ok", HttpStatus.OK, utilisateurService.TotalEntite());
 
         } catch (Exception e) {
             // TODO: handle exception

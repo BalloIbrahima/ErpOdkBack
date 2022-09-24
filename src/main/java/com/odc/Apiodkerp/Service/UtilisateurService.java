@@ -13,7 +13,7 @@ public interface UtilisateurService {
 
     Utilisateur creer(Utilisateur utilisateur);
 
-    Utilisateur update(Utilisateur utilisateur);
+    Utilisateur update(long id,Utilisateur utilisateur);
 
     Utilisateur modifierRole(Utilisateur utilisateur);
 
@@ -28,5 +28,8 @@ public interface UtilisateurService {
     List<Utilisateur> getAll();
 
     List<Utilisateur> RetrouverParRole(Role role);
+    Long TotalPersonnel();
+
+    Long TotalEntite();
 
 }

@@ -21,4 +21,6 @@ public interface PostulantService {
     // Retrouver le postulant par email
     Postulant GetByEmail(String email);
 
+
+
 }
