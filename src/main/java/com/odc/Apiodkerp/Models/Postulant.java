@@ -9,6 +9,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -31,5 +32,9 @@ public class Postulant extends Personne {
             @JoinColumn(name = "id_postulant") }, inverseJoinColumns = {
                     @JoinColumn(name = "id_liste_postulant") })
     List<ListePostulant> listePostulants = new ArrayList<>();
+
+    // public String toString() {
+    // return this.getNom() + " " + this.getPrenom();
+    // }
 
 }

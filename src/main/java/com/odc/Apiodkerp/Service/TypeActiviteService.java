@@ -10,7 +10,7 @@ public interface TypeActiviteService {
 
     TypeActivite update(TypeActivite typeActivite);
 
-    void delete(Long id);
+    String delete(Long id);
 
     TypeActivite getById(Long id);
 

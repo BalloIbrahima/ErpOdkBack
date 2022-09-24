@@ -12,7 +12,6 @@ import java.util.Date;
 import java.util.List;
 
 @Entity
-@Table(name = "activite")
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
@@ -36,8 +35,10 @@ public class Activite {
     @ManyToMany(mappedBy = "activitesFormateurs")
     List<Utilisateur> utilisateurs = new ArrayList<>();
 
+    @JsonIgnore
     @OneToOne(mappedBy = "activite", cascade = CascadeType.ALL)
     private Tirage tirage;
+
     @ManyToOne
     @JoinColumn(name = "createur")
     private Utilisateur createur;

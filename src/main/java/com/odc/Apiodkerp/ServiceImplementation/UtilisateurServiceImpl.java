@@ -1,5 +1,6 @@
 package com.odc.Apiodkerp.ServiceImplementation;
 
+import com.odc.Apiodkerp.Models.Role;
 import com.odc.Apiodkerp.Models.Utilisateur;
 import com.odc.Apiodkerp.Repository.UtilisateurRepository;
 import com.odc.Apiodkerp.Service.UtilisateurService;
@@ -7,6 +8,7 @@ import com.odc.Apiodkerp.Service.UtilisateurService;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -15,8 +17,9 @@ import org.springframework.stereotype.Service;
 public class UtilisateurServiceImpl implements UtilisateurService {
 
     @Autowired
-    private UtilisateurRepository repos;
+    UtilisateurRepository repos;
 
+    @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
@@ -66,5 +69,11 @@ public class UtilisateurServiceImpl implements UtilisateurService {
     public Utilisateur getByEmail(String email) {
         // TODO Auto-generated method stub
         return repos.findByEmail(email);
+    }
+
+    @Override
+    public List<Utilisateur> RetrouverParRole(Role role) {
+        // TODO Auto-generated method stub
+        return repos.findByRole(role);
     }
 }

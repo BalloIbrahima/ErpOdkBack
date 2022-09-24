@@ -11,7 +11,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "salle")
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
@@ -23,7 +22,7 @@ public class Salle {
     private long nombreplace;
     private String libelle;
     private String etape;
-    private String disponibilite;
+    private Boolean disponibilite;
 
     @Lob
     private String description;
