@@ -214,10 +214,7 @@ public class UtilisateurController {
             return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
         }
     }
-
-
         //
-
     @ApiOperation(value = "Modification de l'entite en fonction de l'id")
     @PutMapping("/updatecc/{id}")
     public ResponseEntity<Object> updateEntite(@PathVariable Long id, @RequestBody Entite entite) {
