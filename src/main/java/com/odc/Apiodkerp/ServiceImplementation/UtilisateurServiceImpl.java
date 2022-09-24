@@ -76,4 +76,14 @@ public class UtilisateurServiceImpl implements UtilisateurService {
         // TODO Auto-generated method stub
         return repos.findByRole(role);
     }
+
+    @Override
+    public Long TotalPersonnel() {
+        return repos.Total();
+    }
+
+    public Long TotalEntite() {
+        return repos.TotalEntite();
+    }
+
 }

@@ -366,11 +366,12 @@ public class UtilisateurController {
 
     @ApiOperation(value = "Modification utilisateur en fournisssant id")
     @PutMapping("/updateUser/{id}")
-    public ResponseEntity<Object> updateUtilisateur(@PathVariable Long id, @RequestBody Utilisateur utilisateur) {
+    public ResponseEntity<Object> updateUtilisateur(@PathVariable Long id, @RequestParam(value = "data") String data) {
         Utilisateur utilisateur1 = utilisateurService.getById(id);
 
 
         try {
+            Utilisateur utilisateur = new JsonMapper().readValue(data, Utilisateur.class);
             if(utilisateur1!=null  && utilisateur1.getId()==utilisateur.getId()) {
                 return ResponseMessage.generateResponse("error", HttpStatus.OK, utilisateurService.update(id,utilisateur));
             }
@@ -384,5 +385,22 @@ public class UtilisateurController {
         }
 
     }
+
+    //::::::::::::::::::::::Total activite ::::::::::::::::::::::::
+
+    @ApiOperation(value = "Total activite")
+    @GetMapping("/totalactivite")
+    public ResponseEntity<Object> TotalActivite() {
+        try {
+            return ResponseMessage.generateResponse("ok", HttpStatus.OK, activiteService.TotalActivite());
+
+        } catch (Exception e) {
+            // TODO: handle exception
+            return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
+        }
+
+    }
+
+
 
 }

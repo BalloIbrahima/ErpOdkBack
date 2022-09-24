@@ -23,4 +23,8 @@ public interface ActiviteService {
     Activite GetByEtat(Etat etat);
 
     String attribuerSalle(long idsalle, long idactivite);
+
+    Long TotalActivite();
+
+
 }

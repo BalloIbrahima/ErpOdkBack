@@ -40,4 +40,6 @@ public class PostulantServiceImpl implements PostulantService {
     public Postulant GetByEmail(String email) {
         return postulantRepository.findByEmail(email);
     }
+
+
 }

@@ -26,5 +26,8 @@ public interface UtilisateurService {
     List<Utilisateur> getAll();
 
     List<Utilisateur> RetrouverParRole(Role role);
+    Long TotalPersonnel();
+
+    Long TotalEntite();
 
 }
