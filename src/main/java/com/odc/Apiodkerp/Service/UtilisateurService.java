@@ -15,6 +15,8 @@ public interface UtilisateurService {
 
     Utilisateur update(Utilisateur utilisateur);
 
+    Utilisateur modifierRole(Utilisateur utilisateur);
+
     Utilisateur login(String login, String password);
 
     void delete(Long id);
