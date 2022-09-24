@@ -182,8 +182,8 @@ public class SuperAdminController {
             if (file != null) {
                 SaveImage.save("user", file, utilisateur.getEmail());
             }
-            long userid=  utilisateur.getId();
-            Utilisateur UpdateUtilisateur = utilisateurService.update(userid,utilisateur);
+            long userid = utilisateur.getId();
+            Utilisateur UpdateUtilisateur = utilisateurService.update(utilisateur);
             return ResponseMessage.generateResponse("ok", HttpStatus.OK, UpdateUtilisateur);
 
         } catch (Exception e) {
@@ -303,8 +303,6 @@ public class SuperAdminController {
                 return ResponseMessage.generateResponse("error", HttpStatus.OK, "non autorise");
 
             }
-
-
 
         } catch (Exception e) {
             // TODO: handle exception
@@ -520,10 +518,7 @@ public class SuperAdminController {
 
     }
 
-
-
-
-    //:::::::::::::::total postulant ::::::::::::::::::::
+    // :::::::::::::::total postulant ::::::::::::::::::::
 
     @ApiOperation(value = "Total postulant")
     @GetMapping("/totalpersonnel")
@@ -538,8 +533,7 @@ public class SuperAdminController {
 
     }
 
-
-    //:::::::::::::::total entite ::::::::::::::::::::
+    // :::::::::::::::total entite ::::::::::::::::::::
 
     @ApiOperation(value = "Total entite")
     @GetMapping("/totalentite")

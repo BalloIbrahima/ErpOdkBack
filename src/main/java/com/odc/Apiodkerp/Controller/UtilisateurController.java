@@ -364,20 +364,20 @@ public class UtilisateurController {
         }
     }
 
-    // ::::::::::::::::::::::::::::::::::Modifier Utilisateur :::::::::::::::::::::::::::::::::::::
+    // ::::::::::::::::::::::::::::::::::Modifier Utilisateur
+    // :::::::::::::::::::::::::::::::::::::
 
     @ApiOperation(value = "Modification utilisateur en fournisssant id")
     @PutMapping("/updateUser/{id}")
     public ResponseEntity<Object> updateUtilisateur(@PathVariable Long id, @RequestParam(value = "data") String data) {
         Utilisateur utilisateur1 = utilisateurService.getById(id);
 
-
         try {
             Utilisateur utilisateur = new JsonMapper().readValue(data, Utilisateur.class);
-            if(utilisateur1!=null  && utilisateur1.getId()==utilisateur.getId()) {
-                return ResponseMessage.generateResponse("error", HttpStatus.OK, utilisateurService.update(id,utilisateur));
-            }
-            else{
+            if (utilisateur1 != null && utilisateur1.getId() == utilisateur.getId()) {
+                return ResponseMessage.generateResponse("error", HttpStatus.OK,
+                        utilisateurService.update(utilisateur));
+            } else {
                 return ResponseMessage.generateResponse("error", HttpStatus.OK, "Vous n'êtes pas autorisé à supprimer");
             }
 
@@ -388,7 +388,7 @@ public class UtilisateurController {
 
     }
 
-    //::::::::::::::::::::::Total activite ::::::::::::::::::::::::
+    // ::::::::::::::::::::::Total activite ::::::::::::::::::::::::
 
     @ApiOperation(value = "Total activite")
     @GetMapping("/totalactivite")
@@ -402,7 +402,6 @@ public class UtilisateurController {
         }
 
     }
-
-
-
 }
+
+//
