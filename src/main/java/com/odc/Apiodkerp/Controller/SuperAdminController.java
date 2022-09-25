@@ -535,7 +535,7 @@ public class SuperAdminController {
 
     // :::::::::::::::total entite ::::::::::::::::::::
 
-    @ApiOperation(value = "Total entite")
+    @ApiOperation(value = "totalentite")
     @GetMapping("/totalentite")
     public ResponseEntity<Object> TotalEntite() {
         try {
@@ -546,6 +546,45 @@ public class SuperAdminController {
             return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
         }
 
+    }
+
+    //// :::::::::::::::::::::::::::::::l'ensemble des activites en cour, à venir ,
+    //// termine
+
+    // activités en avenir
+    @ApiOperation(value = "activites/avenir")
+    @GetMapping("activites/avenir")
+    public ResponseEntity<Object> ActivitesAvenir() {
+        try {
+            return ResponseMessage.generateResponse("error", HttpStatus.OK, activiteService.Avenir());
+        } catch (Exception e) {
+            // TODO: handle exception
+            return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
+        }
+    }
+
+    // activités en cour
+    @ApiOperation(value = "activites/encour")
+    @GetMapping("activites/encour")
+    public ResponseEntity<Object> ActivitesEncour() {
+        try {
+            return ResponseMessage.generateResponse("error", HttpStatus.OK, activiteService.Encour());
+        } catch (Exception e) {
+            // TODO: handle exception
+            return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
+        }
+    }
+
+    // activités termines
+    @ApiOperation(value = "activites/termines")
+    @GetMapping("activites/termines")
+    public ResponseEntity<Object> ActivitesTermines() {
+        try {
+            return ResponseMessage.generateResponse("error", HttpStatus.OK, activiteService.Termine());
+        } catch (Exception e) {
+            // TODO: handle exception
+            return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
+        }
     }
 
 }

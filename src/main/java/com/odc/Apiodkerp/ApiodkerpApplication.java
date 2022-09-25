@@ -7,9 +7,11 @@ import org.springframework.context.ApplicationContext;
 import com.odc.Apiodkerp.Enum.Genre;
 import com.odc.Apiodkerp.Models.Etat;
 import com.odc.Apiodkerp.Models.Role;
+import com.odc.Apiodkerp.Models.TypeActivite;
 import com.odc.Apiodkerp.Models.Utilisateur;
 import com.odc.Apiodkerp.Service.EtatService;
 import com.odc.Apiodkerp.Service.RoleService;
+import com.odc.Apiodkerp.Service.TypeActiviteService;
 import com.odc.Apiodkerp.Service.UtilisateurService;
 
 @SpringBootApplication
@@ -21,6 +23,8 @@ public class ApiodkerpApplication {
 		UtilisateurService utilisateurService = ctx.getBean(UtilisateurService.class);
 		RoleService roleService = ctx.getBean(RoleService.class);
 		EtatService etatService = ctx.getBean(EtatService.class);
+
+		TypeActiviteService typeActiviteService = ctx.getBean(TypeActiviteService.class);
 
 		// creation des roles
 		Role user = new Role();
@@ -90,6 +94,26 @@ public class ApiodkerpApplication {
 		etatService.Create(encour);
 		etatService.Create(avenir);
 		etatService.Create(termine);
+
+		// creations des types activites
+
+		TypeActivite talk = new TypeActivite();
+		talk.setLibelle("Talk");
+		talk.setId(1L);
+
+		TypeActivite evenement = new TypeActivite();
+
+		evenement.setLibelle("Evenement");
+		evenement.setId(2L);
+
+		TypeActivite formations = new TypeActivite();
+
+		formations.setLibelle("Formations");
+		formations.setId(3L);
+
+		typeActiviteService.creer(talk);
+		typeActiviteService.creer(evenement);
+		typeActiviteService.creer(formations);
 
 	}
 
