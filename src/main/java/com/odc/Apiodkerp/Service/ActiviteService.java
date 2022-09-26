@@ -20,7 +20,7 @@ public interface ActiviteService {
     Activite FindAllAct();
 
     // Activite en fonction de l'etat
-    Activite GetByEtat(Etat etat);
+    Activite GetByEtat(long idetat);
 
     String attribuerSalle(long idsalle, long idactivite);
 }

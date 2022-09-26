@@ -172,9 +172,9 @@ public class UtilisateurController {
     // Afficher activite en fonction de l'etat
     @ApiOperation(value = "Affichage de l'activite en fonction de son etat")
     @GetMapping("/afficherActiviteEtat/{etat}")
-    public ResponseEntity<Object> AfficherActivite(@PathVariable Etat etat) {
+    public ResponseEntity<Object> AfficherActivite(@PathVariable long idetat) {
         try {
-            return ResponseMessage.generateResponse("ok", HttpStatus.OK, activiteService.GetByEtat(etat));
+            return ResponseMessage.generateResponse("ok", HttpStatus.OK, activiteService.GetByEtat(idetat));
         } catch (Exception e) {
             // TODO: handle exception
             return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());

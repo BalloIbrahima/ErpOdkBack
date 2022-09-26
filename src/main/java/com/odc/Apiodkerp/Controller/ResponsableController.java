@@ -9,11 +9,9 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.odc.Apiodkerp.Configuration.ResponseMessage;
 
-import com.odc.Apiodkerp.Models.Utilisateur;
+import com.odc.Apiodkerp.Models.*;
 import io.swagger.annotations.ApiOperation;
 
-import com.odc.Apiodkerp.Models.PostulantTire;
-import com.odc.Apiodkerp.Models.Role;
 import com.odc.Apiodkerp.Repository.PostulantTrieRepository;
 import com.odc.Apiodkerp.Service.PostulantTrieService;
 import io.swagger.annotations.ApiOperation;
@@ -35,12 +33,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.odc.Apiodkerp.Configuration.ExcelGenerator;
 import com.odc.Apiodkerp.Configuration.ExcelImport;
-
-import com.odc.Apiodkerp.Models.Activite;
-import com.odc.Apiodkerp.Models.ListePostulant;
-import com.odc.Apiodkerp.Models.Postulant;
-
-import com.odc.Apiodkerp.Models.Tirage;
 
 import com.odc.Apiodkerp.Service.ActiviteService;
 import com.odc.Apiodkerp.Service.EntiteService;
@@ -382,6 +374,22 @@ public class ResponsableController {
             return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
 
         }
+
+    }
+
+
+    //::::::::::::::::::::::::::::::Activite by Etat:::::::::::::::::::::::
+
+    @ApiOperation(value = "toutes les activités en fonction de leur etats")
+    @GetMapping("/allActiviteEtat/{idetat")
+    public ResponseEntity<Object> getAllActiviteEtat(@PathVariable long idetat) {
+        try {
+            return ResponseMessage.generateResponse("ok", HttpStatus.OK, activiteService.GetByEtat(idetat));
+        } catch (Exception e) {
+            // TODO: handle exception
+            return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
+        }
+
 
     }
 

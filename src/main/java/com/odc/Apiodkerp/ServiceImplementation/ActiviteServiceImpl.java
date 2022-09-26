@@ -77,8 +77,8 @@ public class ActiviteServiceImpl implements ActiviteService {
     }
 
     @Override
-    public Activite GetByEtat(Etat etat) {
-        return activiteRepository.findByEtat(etat);
+    public Activite GetByEtat(long idetat) {
+        return activiteRepository.findByEtat(idetat);
     }
 
 }
