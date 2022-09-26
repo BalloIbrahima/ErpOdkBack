@@ -27,6 +27,7 @@ public class SalleServiceImpl implements SalleService {
 
     @Override
     public Salle update(Salle salle, long id) {
+
         return salleRepository.save(salle);
     }
 

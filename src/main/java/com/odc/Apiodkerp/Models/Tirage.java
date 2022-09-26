@@ -23,6 +23,7 @@ public class Tirage {
     private Long id;
     private String libelle;
     private Date date;
+    private  boolean valider;
 
     @ManyToOne
     @JoinColumn(name = "idlistepostulant")
