@@ -14,4 +14,5 @@ public interface TirageService {
     Tirage findByLibelle(String libelle);
 
     void ajouterParticipant(Postulant participant, long idtirage);
+
 }
