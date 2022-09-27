@@ -65,4 +65,8 @@ public class Utilisateur extends Personne {
     @JsonIgnore
     @OneToMany(mappedBy = "activite")
     List<AouP> aoup = new ArrayList<>();
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "utilisateur")
+    List<Tache> tache = new ArrayList<>();
 }
