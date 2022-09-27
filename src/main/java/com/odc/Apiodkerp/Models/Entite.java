@@ -19,4 +19,8 @@ public class Entite {
     private Long id;
     private String libelleentite;
     private String description;
+
+    @ManyToOne
+    @JoinColumn(name = "activite")
+    private Activite activite;
 }

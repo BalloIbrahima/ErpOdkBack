@@ -69,4 +69,11 @@ public class Activite {
     @OneToMany(mappedBy = "activite")
     List<AouP> aoup = new ArrayList<>();
 
+
+
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "activite")
+    List<Entite> entite = new ArrayList<>();
+
 }
