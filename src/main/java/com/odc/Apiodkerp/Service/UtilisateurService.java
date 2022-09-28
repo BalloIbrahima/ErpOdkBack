@@ -32,4 +32,6 @@ public interface UtilisateurService {
 
     Long TotalEntite();
 
+    List<Utilisateur> RecupererUserParEtat(Boolean bool);
+
 }

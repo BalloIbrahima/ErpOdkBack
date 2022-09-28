@@ -112,6 +112,20 @@ public class SuperAdminController {
         }
     }
 
+    // ::::::::::Recuperer salle par id
+    @ApiOperation(value = "Recuperer salle par id")
+    @GetMapping("getSalle/{id}")
+    public ResponseEntity<Object> getSalle(@PathVariable("id") Long id) {
+        try {
+            return ResponseMessage.generateResponse("ok", HttpStatus.OK, salleService.read(id));
+
+        } catch (Exception e) {
+            // TODO: handle exception
+            return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
+
+        }
+    }
+
     @ApiOperation(value = "Lien pour modifier une salle")
     @PutMapping("/modifiersalle/{id}")
     public ResponseEntity<Object> modifier(@RequestBody Salle salle, @PathVariable long id) {
@@ -122,7 +136,7 @@ public class SuperAdminController {
         }
     }
 
-    @ApiOperation(value = "Lien pour modifier une salle")
+    @ApiOperation(value = "Lien pour suprimer une salle")
     @DeleteMapping("/supprimersalle/{id}")
     public ResponseEntity<Object> supprimer(@PathVariable long id) {
         try {
@@ -133,13 +147,26 @@ public class SuperAdminController {
         }
     }
 
-    @ApiOperation(value = "Lien pour modifier une salle")
+    @ApiOperation(value = "Lien pour lier une salle à une activite")
     @GetMapping("/attribuersalle/{idsalle}/{idactivite}")
     public ResponseEntity<Object> attribuerSalle(@PathVariable long idsalle, @PathVariable long idactivite) {
         try {
             return ResponseMessage.generateResponse("ok", HttpStatus.OK,
                     activiteService.attribuerSalle(idsalle, idactivite));
         } catch (Exception e) {
+            return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
+        }
+    }
+
+    // pour recuperer toutes les salles
+    @ApiOperation(value = "Pour recuperer toutes les salles")
+    @GetMapping("/salle/all")
+    public ResponseEntity<Object> getAll() {
+        try {
+            return ResponseMessage.generateResponse("ok", HttpStatus.OK,
+                    salleService.getAll());
+        } catch (Exception e) {
+            // TODO: handle exception
             return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
         }
     }
@@ -518,6 +545,19 @@ public class SuperAdminController {
 
     }
 
+    @ApiOperation(value = "Recuperer l'ensemble des types acticite")
+    @GetMapping("Typeactivite/getall")
+    public ResponseEntity<Object> TypaActiviteAll() {
+        try {
+            return ResponseMessage.generateResponse("ok", HttpStatus.OK, typeActiviteService.getAll());
+
+        } catch (Exception e) {
+            // TODO: handle exception
+            return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
+
+        }
+    }
+
     // :::::::::::::::total postulant ::::::::::::::::::::
 
     @ApiOperation(value = "Total postulant")
@@ -584,6 +624,65 @@ public class SuperAdminController {
         } catch (Exception e) {
             // TODO: handle exception
             return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
+        }
+    }
+
+    // :::::::::::::::::::::::Les users active
+    @ApiOperation(value = "Les utilisateurs active")
+    @GetMapping("/getUsers/active")
+    public ResponseEntity<Object> getUsersActives() {
+        try {
+            return ResponseMessage.generateResponse("ok", HttpStatus.OK, utilisateurService.RecupererUserParEtat(true));
+
+        } catch (Exception e) {
+            // TODO: handle exception
+            return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
+
+        }
+    }
+
+    // :::::::::::::::::::::::Les users desactives
+    @ApiOperation(value = "Les utilisateurs desactives")
+    @GetMapping("/getUsers/desactive")
+    public ResponseEntity<Object> getUsersDesactives() {
+        try {
+            return ResponseMessage.generateResponse("ok", HttpStatus.OK,
+                    utilisateurService.RecupererUserParEtat(false));
+
+        } catch (Exception e) {
+            // TODO: handle exception
+            return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
+
+        }
+    }
+    //
+
+    // :::::::::::::::::::::::Les salles disponible
+    @ApiOperation(value = "Les salles disponible")
+    @GetMapping("/getSalles/disponible")
+    public ResponseEntity<Object> getSallesDispo() {
+        try {
+            return ResponseMessage.generateResponse("ok", HttpStatus.OK, salleService.ParEtat(true));
+
+        } catch (Exception e) {
+            // TODO: handle exception
+            return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
+
+        }
+    }
+
+    // :::::::::::::::::::::::Les salles indisponible
+    @ApiOperation(value = "Les salles indisponible")
+    @GetMapping("/getSalles/indisponible")
+    public ResponseEntity<Object> getSallesIndispo() {
+        try {
+            return ResponseMessage.generateResponse("ok", HttpStatus.OK,
+                    salleService.ParEtat(false));
+
+        } catch (Exception e) {
+            // TODO: handle exception
+            return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
+
         }
     }
 
