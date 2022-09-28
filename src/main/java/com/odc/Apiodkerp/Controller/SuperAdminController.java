@@ -1,6 +1,7 @@
 package com.odc.Apiodkerp.Controller;
 
 import com.odc.Apiodkerp.Models.*;
+import com.odc.Apiodkerp.Service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -10,18 +11,6 @@ import org.springframework.web.multipart.MultipartFile;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.odc.Apiodkerp.Configuration.ResponseMessage;
 import com.odc.Apiodkerp.Configuration.SaveImage;
-import com.odc.Apiodkerp.Service.ActiviteService;
-import com.odc.Apiodkerp.Service.EntiteService;
-import com.odc.Apiodkerp.Service.EtatService;
-import com.odc.Apiodkerp.Service.ListePostulantService;
-import com.odc.Apiodkerp.Service.PostulantService;
-import com.odc.Apiodkerp.Service.PostulantTrieService;
-import com.odc.Apiodkerp.Service.PresenceService;
-import com.odc.Apiodkerp.Service.RoleService;
-import com.odc.Apiodkerp.Service.SalleService;
-import com.odc.Apiodkerp.Service.TirageService;
-import com.odc.Apiodkerp.Service.TypeActiviteService;
-import com.odc.Apiodkerp.Service.UtilisateurService;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -45,13 +34,28 @@ public class SuperAdminController {
     private EntiteService entiteService;
 
     @Autowired
+    private DroitService droitService;
+
+    @Autowired
     private EtatService etatService;
+
+
+    @Autowired
+    private DesignationService designationService;
+
+    @Autowired
+    private FormatEmailService formatEmailService;
 
     @Autowired
     private ListePostulantService listePostulantService;
 
     @Autowired
     private PostulantService postulantService;
+
+
+    @Autowired
+    private AouPService aouPService;
+
 
     @Autowired
     private PostulantTrieService postulantTrieService;
@@ -813,4 +817,261 @@ public class SuperAdminController {
         }
     }
 
+
+
+    // :::::::::::::::::::::::::::::::::::::::Apprenants ou Participant :::::::::::::::::::::::::::::::
+    @ApiOperation(value = "Ajouterr AppouParticipant")
+    @PostMapping("/aoup")
+    public ResponseEntity<Object> ajouterAouP(@RequestBody AouP aoup) {
+        try {
+            return ResponseMessage.generateResponse("ok", HttpStatus.OK,
+                    aouPService.Create(aoup));
+        } catch (Exception e) {
+            // TODO: handle exception
+            return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
+
+        }
+    }
+
+
+//::::::::::::::::::::::::::::::::::: Modifier AouP ::::::::::::::::::::::::::::::::::::
+    @ApiOperation(value = "Modifier AppouParticipant")
+    @PutMapping("/aoup/modifier/{id}")
+    public ResponseEntity<Object> ModifierAouP(@PathVariable long id, @RequestBody AouP aoup) {
+        try {
+            return ResponseMessage.generateResponse("ok", HttpStatus.OK,
+                    aouPService.Update(id,aoup));
+        } catch (Exception e) {
+            // TODO: handle exception
+            return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
+
+        }
+    }
+//::::::::::::::::::::::::::::::::::: Supprimer AouP ::::::::::::::::::::::::::::::::::::
+
+    @ApiOperation(value = "Supprimer AouP")
+    @DeleteMapping("/aoup/supprimer/{id}")
+    public ResponseEntity<Object> SupprimerAouP(@PathVariable long id) {
+        try {
+            return ResponseMessage.generateResponse("ok", HttpStatus.OK,
+                    aouPService.Delete(id));
+        } catch (Exception e) {
+            // TODO: handle exception
+            return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
+
+        }
+    }
+    //::::::::::::::::::::::::::::::::::: Get pzr id AouP ::::::::::::::::::::::::::::::::::::
+
+    @ApiOperation(value = "Apprenant ou participant par id")
+    @GetMapping("/aoup/GetId/{id}")
+    public ResponseEntity<Object> GetAouPparId(@PathVariable long id) {
+        try {
+            return ResponseMessage.generateResponse("ok", HttpStatus.OK,
+                    aouPService.GetById(id));
+        } catch (Exception e) {
+            // TODO: handle exception
+            return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
+
+        }
+    }
+
+
+
+
+
+    // :::::::::::::::::::::::::::::::::::::::DESIGNATION :::::::::::::::::::::::::::::::
+    @ApiOperation(value = "Ajouterr Designation")
+    @PostMapping("/designation")
+    public ResponseEntity<Object> ajouterDesignation(@RequestBody Designation designation) {
+        try {
+            return ResponseMessage.generateResponse("ok", HttpStatus.OK,
+                    designationService.Create(designation));
+        } catch (Exception e) {
+            // TODO: handle exception
+            return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
+
+        }
+    }
+
+
+    //::::::::::::::::::::::::::::::::::: Modifier Designation ::::::::::::::::::::::::::::::::::::
+    @ApiOperation(value = "Modifier Desi")
+    @PutMapping("/designation/modifier/{id}")
+    public ResponseEntity<Object> ModifierDesignation(@PathVariable long id, @RequestBody Designation designation) {
+        try {
+            return ResponseMessage.generateResponse("ok", HttpStatus.OK,
+                    designationService.Update(id,designation));
+        } catch (Exception e) {
+            // TODO: handle exception
+            return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
+
+        }
+    }
+//::::::::::::::::::::::::::::::::::: Supprimer AouP ::::::::::::::::::::::::::::::::::::
+
+    @ApiOperation(value = "Supprimer Designation")
+    @DeleteMapping("/designation/supprimer/{id}")
+    public ResponseEntity<Object> SupprimerDesignation(@PathVariable long id) {
+        try {
+            return ResponseMessage.generateResponse("ok", HttpStatus.OK,
+                    designationService.Delete(id));
+        } catch (Exception e) {
+            // TODO: handle exception
+            return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
+
+        }
+    }
+    //::::::::::::::::::::::::::::::::::: Get pzr id AouP ::::::::::::::::::::::::::::::::::::
+
+    @ApiOperation(value = "Designation par id")
+    @GetMapping("/aoup/GetId/{id}")
+    public ResponseEntity<Object> GetDesigantionparId(@PathVariable long id) {
+        try {
+            return ResponseMessage.generateResponse("ok", HttpStatus.OK,
+                    designationService.GetById(id));
+        } catch (Exception e) {
+            // TODO: handle exception
+            return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
+
+        }
+    }
+
+
+
+
+    // :::::::::::::::::::::::::::::::::::::::Droit :::::::::::::::::::::::::::::::
+    @ApiOperation(value = "Ajouter Droit")
+    @PostMapping("/droit")
+    public ResponseEntity<Object> ajouterDroit(@RequestBody Droit droit) {
+        try {
+            return ResponseMessage.generateResponse("ok", HttpStatus.OK,
+                    droitService.Create(droit));
+        } catch (Exception e) {
+            // TODO: handle exception
+            return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
+
+        }
+    }
+
+
+    //::::::::::::::::::::::::::::::::::: Modifier Droit ::::::::::::::::::::::::::::::::::::
+    @ApiOperation(value = "Modifier Droit")
+    @PutMapping("/droit/modifier/{id}")
+    public ResponseEntity<Object> ModifierDroit(@PathVariable long id, @RequestBody Droit droit) {
+        try {
+            return ResponseMessage.generateResponse("ok", HttpStatus.OK,
+                    droitService.Update(id,droit));
+        } catch (Exception e) {
+            // TODO: handle exception
+            return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
+
+        }
+    }
+//::::::::::::::::::::::::::::::::::: Supprimer droit ::::::::::::::::::::::::::::::::::::
+
+    @ApiOperation(value = "Supprimer Droit")
+    @DeleteMapping("/droit/supprimer/{id}")
+    public ResponseEntity<Object> SupprimerDroit(@PathVariable long id) {
+        try {
+            return ResponseMessage.generateResponse("ok", HttpStatus.OK,
+                    droitService.Delete(id));
+        } catch (Exception e) {
+            // TODO: handle exception
+            return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
+
+        }
+    }
+    //::::::::::::::::::::::::::::::::::: Get pzr id AouP ::::::::::::::::::::::::::::::::::::
+
+    @ApiOperation(value = "Droit par id")
+    @GetMapping("/droit/GetId/{id}")
+    public ResponseEntity<Object> GetDroitparId(@PathVariable long id) {
+        try {
+            return ResponseMessage.generateResponse("ok", HttpStatus.OK,
+                    droitService.GetById(id));
+        } catch (Exception e) {
+            // TODO: handle exception
+            return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
+
+        }
+    }
+
+
+    // :::::::::::::::::::::::::::Droit par libelle ::::::::::::::::::::::::::::::::::
+
+    @ApiOperation(value = "Droit par libelle")
+    @GetMapping("/droit/GetLibelle/{libelle}")
+    public ResponseEntity<Object> GetDroitparLibelle(@PathVariable String libelle) {
+        try {
+            return ResponseMessage.generateResponse("ok", HttpStatus.OK,
+                    droitService.GetLibelle(libelle));
+        } catch (Exception e) {
+            // TODO: handle exception
+            return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
+
+        }
+    }
+
+
+
+
+
+    // :::::::::::::::::::::::::::::::::::::::FormationEmail :::::::::::::::::::::::::::::::
+        @ApiOperation(value = "Ajouter FormatEmail")
+    @PostMapping("/formaemail")
+    public ResponseEntity<Object> ajouterFormatEmail(@RequestBody FormatEmail formatEmail) {
+        try {
+            return ResponseMessage.generateResponse("ok", HttpStatus.OK,
+                    formatEmailService.Create(formatEmail));
+        } catch (Exception e) {
+            // TODO: handle exception
+            return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
+
+        }
+    }
+
+
+    //::::::::::::::::::::::::::::::::::: Modifier FormatEmail ::::::::::::::::::::::::::::::::::::
+    @ApiOperation(value = "Modifier formatEmail")
+    @PutMapping("/formatemail/modifier/{id}")
+    public ResponseEntity<Object> ModifierFormatEmail(@PathVariable long id, @RequestBody FormatEmail formatEmail) {
+        try {
+            return ResponseMessage.generateResponse("ok", HttpStatus.OK,
+                    formatEmailService.Update(id,formatEmail));
+        } catch (Exception e) {
+            // TODO: handle exception
+            return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
+
+        }
+    }
+//::::::::::::::::::::::::::::::::::: Supprimer FormatEmail ::::::::::::::::::::::::::::::::::::
+
+    @ApiOperation(value = "Supprimer Format Email")
+    @DeleteMapping("/formatemail/supprimer/{id}")
+    public ResponseEntity<Object> SupprimerFormatEmail(@PathVariable long id) {
+        try {
+            return ResponseMessage.generateResponse("ok", HttpStatus.OK,
+                    formatEmailService.Delete(id));
+        } catch (Exception e) {
+            // TODO: handle exception
+            return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
+
+        }
+    }
+    //::::::::::::::::::::::::::::::::::: Get pzr id FormatEmail ::::::::::::::::::::::::::::::::::::
+
+    @ApiOperation(value = "Format email par id")
+    @GetMapping("/formatEmail/GetId/{id}")
+    public ResponseEntity<Object> GetFormatEMailparId(@PathVariable long id) {
+        try {
+            return ResponseMessage.generateResponse("ok", HttpStatus.OK,
+                    formatEmailService.GetById(id));
+        } catch (Exception e) {
+            // TODO: handle exception
+            return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
+
+        }
+    }
+    
 }
