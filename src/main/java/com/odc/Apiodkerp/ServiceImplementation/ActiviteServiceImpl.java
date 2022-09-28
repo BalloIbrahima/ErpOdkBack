@@ -116,14 +116,19 @@ public class ActiviteServiceImpl implements ActiviteService {
         List<Activite> encour = new ArrayList<>();
 
         Date today = new Date();
+        try {
+            for (Activite activite : all) {
 
-        for (Activite activite : all) {
+                if (today.after(activite.getDateDebut()) && today.before(activite.getDateFin())) {
+                    encour.add(activite);
+                }
 
-            if (today.after(activite.getDateDebut()) && today.before(activite.getDateFin())) {
-                encour.add(activite);
             }
 
+        } catch (Exception e) {
+            // TODO: handle exception
         }
+
         return encour;
     }
 

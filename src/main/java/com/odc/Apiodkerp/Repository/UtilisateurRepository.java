@@ -18,6 +18,8 @@ public interface UtilisateurRepository extends JpaRepository<Utilisateur, Long> 
 
     List<Utilisateur> findByRole(Role role);
 
+    List<Utilisateur> findByActive(Boolean active);
+
     @Query(value = "SELECT COUNT(utilisateur.id) FROM utilisateur", nativeQuery = true)
     public Long Total();
 

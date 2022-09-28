@@ -46,4 +46,10 @@ public class SalleServiceImpl implements SalleService {
         return salleRepository.findByLibelle(libelle);
     }
 
+    @Override
+    public List<Salle> ParEtat(Boolean disponibilite) {
+        // TODO Auto-generated method stub
+        return salleRepository.findByDisponibilite(disponibilite);
+    }
+
 }

@@ -285,7 +285,7 @@ public class UtilisateurController {
                     activite.setLeader(user);
                     activite.setDateCreation(new Date());
                     System.out.println(user);
-                    activite.setLeader(user);
+                    // activite.setLeader(user);
 
                     activite.setImage(SaveImage.save("activite", file, activite.getNom()));
 
@@ -404,6 +404,7 @@ public class UtilisateurController {
         }
 
     }
+
 }
 
 //

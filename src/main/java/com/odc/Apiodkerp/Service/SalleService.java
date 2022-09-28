@@ -8,15 +8,22 @@ public interface SalleService {
 
     // Creer Salle
     Salle create(Salle salle);
-    //Afficher une salle par son id
+
+    // Afficher une salle par son id
     Salle read(long id);
-    //Modifier salle par id
-    Salle update(Salle salle,long id);
-    //Effacer salle
+
+    // Modifier salle par id
+    Salle update(Salle salle, long id);
+
+    // Effacer salle
     void delete(long id);
 
     List<Salle> getAll();
-    //Afficher salle par libelle
+
+    // Afficher salle par libelle
     Salle getByLibelle(String libelle);
+
+    /// list des salles par disponiblite
+    List<Salle> ParEtat(Boolean disponibilite);
 
 }

@@ -119,4 +119,10 @@ public class UtilisateurServiceImpl implements UtilisateurService {
 
         return repos.save(utilisateur);
     }
+
+    @Override
+    public List<Utilisateur> RecupererUserParEtat(Boolean bool) {
+        // TODO Auto-generated method stub
+        return repos.findByActive(bool);
+    }
 }

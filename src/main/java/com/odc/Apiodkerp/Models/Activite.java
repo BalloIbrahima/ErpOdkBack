@@ -26,7 +26,7 @@ public class Activite {
     private Date dateDebut;
     private Date dateFin;
     private String lieu;
-
+    private String duree;
     @Lob
     private String description;
     private String image;
