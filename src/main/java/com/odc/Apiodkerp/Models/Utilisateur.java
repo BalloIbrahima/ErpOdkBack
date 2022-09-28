@@ -61,4 +61,12 @@ public class Utilisateur extends Personne {
     @ManyToOne
     private Role role;
 
+// Un utilisateur fait parti d'une entite
+    @JsonIgnore
+    @OneToMany(mappedBy = "activite")
+    List<AouP> aoup = new ArrayList<>();
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "utilisateur")
+    List<Tache> tache = new ArrayList<>();
 }

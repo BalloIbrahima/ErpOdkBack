@@ -26,7 +26,6 @@ import com.odc.Apiodkerp.Service.UtilisateurService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -588,57 +587,80 @@ public class SuperAdminController {
             return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
         }
     }
+//:::::::::::::: ::::::::::::::debut mise a jour de madame ::::::::::::::::::::
 
-    // ::::::::::::::::::::::::::::::Retour Statut d'une activite ::::::::::::::::::::::::::
-    @ApiOperation(value = "Statut d'une activite enfonction de son id")
-    @GetMapping("statut/activite/{id}")
-    public ResponseEntity<Object> ActivitesTermines(@PathVariable long id) {
+
+    //:::::::::::Liste des activites par entite ::::::::::::::::
+    @ApiOperation(value = "activites par entite")
+    @GetMapping("activites/entite/{identite}")
+    public ResponseEntity<Object> ActivitesParEntite(@PathVariable long identite) {
         try {
-            Activite act = new Activite();
-        act=activiteService.GetById(id);
-       Date dateTodate = new  Date();
-        if(dateTodate.after(act.getDateDebut()) && dateTodate.before(act.getDateFin())){
-                return ResponseMessage.generateResponse("En cours", HttpStatus.OK, "L'activité est en cours");
-        } else if (dateTodate.after(act.getDateFin())) {
-                 return ResponseMessage.generateResponse("Terminé", HttpStatus.OK, "L'activité est terminée");
-        } else if (dateTodate.before(act.getDateDebut())) {
-              return ResponseMessage.generateResponse("A Venir", HttpStatus.OK,"L'activité est à Venir");
-        }
-        else {
-            return ResponseMessage.generateResponse("error", HttpStatus.OK, "");
-        }
 
-
+            return ResponseMessage.generateResponse("error", HttpStatus.OK, activiteService.ActiviteEntiteid(identite));
         } catch (Exception e) {
             // TODO: handle exception
             return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
         }
     }
 
+//:::::::::::::::::::Liste des activites par intervalle de date : ::::::::::::::::::::
+    // fait avec ballo le 26/09
 
-    //::::::::::::::Comparaison date pour salle disponible ::::::::::::::::::::::::::::::
 
 
-    @ApiOperation(value = "Comparaison date pour salle disponible")
-    @GetMapping("SalleDispo/{date1}/{date2}")
-    public ResponseEntity<Object> SalleDispoDate(@PathVariable Date date1,@PathVariable Date date2) {
+    //::::::::::::La liste des participants par activité et par intervalle de date,
+
+
+    @ApiOperation(value = "liste participant par activite")
+    @GetMapping("activites/entite/{idactivite}/{date1}/{date2}")
+    public ResponseEntity<Object> PostulantParActivite(@PathVariable long idactivite, @PathVariable Date date1, @PathVariable Date date2) {
         try {
-            Activite act = activiteService.FindAllAct();
-            List<Salle> salle =new ArrayList<>();
+            //recupere les activites par identifiant
+            Activite activite = activiteService.GetById(idactivite);
+            //recupere tous les postTirés
+            PostulantTire pt = (PostulantTire) postulantTrieService.getAll();
 
-            if(act.getDateDebut().before(date1) && act.getDateDebut().before(date2) && act.getDateFin().after(date1)
-            && act.getDateFin().after(date2) || act.getDateDebut().after(date1) && act.getDateDebut().after(date2)
-                     && act.getDateFin().before(date1) && act.getDateFin().before(date2)
-            ){
-                return ResponseMessage.generateResponse("error", HttpStatus.OK, salle.add(act.getSalle()));
+            //recupere tous les tirages vue qu'il est le lien entre postTirer et activite
+            Tirage tirage = (Tirage) tirageService.getAll();
+
+            //On recupere  les activites par intervalles de temps
+            if(activite.getDateDebut().after(date1) && activite.getDateDebut().before(date2) && activite.getDateFin().before(date2)){
+
+                         if(tirage.getActivite().getId()==activite.getId() && pt.getTirage().getId() == tirage.getId()){
+                    return ResponseMessage.generateResponse("error", HttpStatus.OK, postulantTrieService.getAll());
+                         }else {
+                             return ResponseMessage.generateResponse("error", HttpStatus.OK, "");
+
+                         }
+            }else {
+                return ResponseMessage.generateResponse("Erreur", HttpStatus.OK, "");
 
             }
 
-            return ResponseMessage.generateResponse("error", HttpStatus.OK, activiteService.Termine());
         } catch (Exception e) {
             // TODO: handle exception
             return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
         }
     }
 
+    //La liste des activités par entité et par statut_activité (encours, à venir ou terminée).
+
+    @ApiOperation(value = "activites par entite et par statut")
+    @GetMapping("activites/entite/{identite}/{idstatut}")
+    public ResponseEntity<Object> ActivitesParEntiteEtParstatut(@PathVariable long identite,@PathVariable long idstatut) {
+        try {
+             Etat etat = etatService.GetById(idstatut);//on recup l'etat en fonction de l'id
+             Activite activite = (Activite) activiteService.ActiviteEntiteid(identite);// recuperation des activite d'une entite donnée
+             if(activite.getEtat()== etat.getActivite()){
+                 return ResponseMessage.generateResponse("error", HttpStatus.OK, activiteService.GetAll());
+             }
+             else {
+                 return ResponseMessage.generateResponse("error", HttpStatus.OK, "Une erreur s'est produit");
+
+             }
+        } catch (Exception e) {
+            // TODO: handle exception
+            return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
+        }
+    }
 }

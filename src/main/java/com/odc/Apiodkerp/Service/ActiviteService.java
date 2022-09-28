@@ -32,4 +32,7 @@ public interface ActiviteService {
 
     List<Activite> Termine();
 
+
+    List<Activite> ActiviteEntiteid(long identite);
+
 }
