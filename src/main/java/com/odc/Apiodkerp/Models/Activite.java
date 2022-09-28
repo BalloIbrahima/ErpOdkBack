@@ -25,8 +25,6 @@ public class Activite {
     private Date dateCreation;
     private Date dateDebut;
     private Date dateFin;
-    private String lieu;
-    private String duree;
     @Lob
     private String description;
     private String image;
@@ -70,12 +68,18 @@ public class Activite {
     List<AouP> aoup = new ArrayList<>();
 
 
-
+    @ManyToMany(mappedBy = "intervenuDansActivite")
+    List<IntervenantExterne> intervenantExternes = new ArrayList<>();
 
 
     @JsonIgnore
     @OneToMany(mappedBy = "activite")
     List<Tache> tache = new ArrayList<>();
+
+
+    @OneToOne()
+    @JoinColumn(name = "idactivite", referencedColumnName = "id")
+    private  Notification notification;
 
 
 

@@ -39,4 +39,6 @@ public class Tirage {
     @OneToOne
     @JoinColumn(name = "activite_id", referencedColumnName = "id")
     private Activite activite;
+
+
 }

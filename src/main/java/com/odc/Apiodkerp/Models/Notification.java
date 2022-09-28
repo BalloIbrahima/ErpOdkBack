@@ -1,5 +1,6 @@
 package com.odc.Apiodkerp.Models;
 
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -8,6 +9,7 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Getter
@@ -15,20 +17,22 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-public class PostulantTire {
+public class Notification {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
-    private Long id;
+    private  long id;
+    @Lob
+    private  String description;
+    private  String titre;
+    private  Date datenotif;
 
-   // @ManyToOne
-    //Postulant postulant;
 
-    @ManyToOne
-    Tirage tirage;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "postulantTire")
-    private List<Presence> presence = new ArrayList<>();
+    @OneToOne(mappedBy = "notification", cascade = CascadeType.ALL)
+    private  Activite activite;
+
+
+
 
 }

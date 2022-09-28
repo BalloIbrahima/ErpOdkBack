@@ -4,10 +4,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 
 @Entity
@@ -15,6 +14,15 @@ import javax.persistence.Id;
 @Getter
 @Setter
 public class IntervenantExterne extends Personne {
+
+    private  String numero;
+
+    @ManyToMany
+    @JoinTable(name = "Activite", joinColumns = {
+            @JoinColumn(name = "id_intervenant") }, inverseJoinColumns = {
+            @JoinColumn(name = "id_activite") })
+    List<Activite> intervenuDansActivite = new ArrayList<>();
+
 
 
 
