@@ -48,7 +48,7 @@ public class Activite {
     private Utilisateur leader;
 
     @ManyToOne
-    @JoinColumn(name = "typeactivite")
+    @JoinColumn(name = "typeActivite")
     private TypeActivite typeActivite;
 
     @ManyToOne
@@ -62,5 +62,21 @@ public class Activite {
     @JsonIgnore
     @OneToMany(mappedBy = "activite")
     List<Presence> presences = new ArrayList<>();
+
+
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "activite")
+    List<AouP> aoup = new ArrayList<>();
+
+
+
+
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "activite")
+    List<Tache> tache = new ArrayList<>();
+
+
 
 }

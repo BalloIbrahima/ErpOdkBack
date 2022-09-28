@@ -32,7 +32,7 @@ public class UtilisateurServiceImpl implements UtilisateurService {
     }
 
     @Override
-    public Utilisateur update(long id,Utilisateur utilisateur) {
+    public Utilisateur update(Utilisateur utilisateur) {
         // TODO Auto-generated method stub
         Utilisateur user = this.getById(utilisateur.getId());
         System.out.println(user.getPassword());
@@ -100,6 +100,7 @@ public class UtilisateurServiceImpl implements UtilisateurService {
     public Long TotalPersonnel() {
         return repos.Total();
     }
+
     @Override
     public Long TotalEntite() {
         return repos.TotalEntite();

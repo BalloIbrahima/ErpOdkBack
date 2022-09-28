@@ -26,5 +26,13 @@ public interface ActiviteService {
 
     Long TotalActivite();
 
+    List<Activite> Avenir();
+
+    List<Activite> Encour();
+
+    List<Activite> Termine();
+
+
+    List<Activite> ActiviteEntiteid(long identite);
 
 }
