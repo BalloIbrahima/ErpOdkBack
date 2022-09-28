@@ -26,6 +26,7 @@ import com.odc.Apiodkerp.Service.UtilisateurService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -663,4 +664,53 @@ public class SuperAdminController {
             return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
         }
     }
+
+    //::::::::::::::::::::::
+    @ApiOperation(value = "Statut d'une activite en fonction de son id")
+    @GetMapping("statut/activite/{id}")
+    public ResponseEntity<Object> ActivitesTermines(@PathVariable long id) {
+        try {
+            Activite act = new Activite();
+            act=activiteService.GetById(id);
+            Date dateTodate = new  Date();
+            if(dateTodate.after(act.getDateDebut()) && dateTodate.before(act.getDateFin())){
+                return ResponseMessage.generateResponse("En cours", HttpStatus.OK, "L'activité est en cours");
+            } else if (dateTodate.after(act.getDateFin())) {
+                return ResponseMessage.generateResponse("Terminé", HttpStatus.OK, "L'activité est terminée");
+            } else if (dateTodate.before(act.getDateDebut())) {
+                return ResponseMessage.generateResponse("A Venir", HttpStatus.OK,"L'activité est à Venir");
+            }
+            else {
+                return ResponseMessage.generateResponse("error", HttpStatus.OK, "");
+            }
+
+        } catch (Exception e) {
+            // TODO: handle exception
+            return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
+        }
+    }
+
+
+    //::::::::::::::Comparaison date pour salle disponible ::::::::::::::::::::::::::::::
+    @ApiOperation(value = "Comparaison date pour salle disponible")
+    @GetMapping("SalleDispo/{date1}/{date2}")
+    public ResponseEntity<Object> SalleDispoDate(@PathVariable Date date1,@PathVariable Date date2) {
+        try {
+            Activite act = activiteService.FindAllAct();
+            List<Salle> salle =new ArrayList<>();
+
+            if(act.getDateDebut().before(date1) && act.getDateDebut().before(date2) && act.getDateFin().after(date1)
+                    && act.getDateFin().after(date2) || act.getDateDebut().after(date1) && act.getDateDebut().after(date2)
+                    && act.getDateFin().before(date1) && act.getDateFin().before(date2)
+            ){
+                return ResponseMessage.generateResponse("error", HttpStatus.OK, salle.add(act.getSalle()));
+
+            }
+            return ResponseMessage.generateResponse("error", HttpStatus.OK, activiteService.Termine());
+        } catch (Exception e) {
+            // TODO: handle exception
+            return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
+        }
+    }
+
 }
