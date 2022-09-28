@@ -21,6 +21,6 @@ public class Entite {
     private String description;
 
     @ManyToOne
-    @JoinColumn(name = "activite")
-    private Activite activite;
+    @JoinColumn(name = "utilisateur")
+    private Utilisateur utilisateur;
 }

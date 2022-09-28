@@ -257,7 +257,7 @@ public class UtilisateurController {
     //// ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
     // methode pour la création d'une activité
-    @ApiOperation(value = "methode pour la création d'une activité.")
+    @ApiOperation(value = "methode pour la création d'une activité. ::::::::::::::::::::::::::::")
     @PostMapping("/activite/new/{idutilisateur}/{idsalle}/{idtype}")
     public ResponseEntity<Object> Createactivite(@RequestParam(value = "data") String acti,
             @PathVariable("idutilisateur") Long idutilisateur, @PathVariable("idsalle") Long idsalle,
@@ -270,6 +270,7 @@ public class UtilisateurController {
         try {
             activite = new JsonMapper().readValue(acti, Activite.class);
             System.out.println(activite);
+
             if (file != null) {
                 try {
                     Etat etat = etatService.recupereParStatut("A VENIR");
@@ -281,6 +282,7 @@ public class UtilisateurController {
                     activite.setSalle(salle);
                     activite.setCreateur(user);
                     activite.setEtat(etat);
+                    activite.setLeader(user);
                     activite.setDateCreation(new Date());
                     System.out.println(user);
                     activite.setLeader(user);
@@ -292,17 +294,17 @@ public class UtilisateurController {
                 } catch (Exception e) {
 
                     // TODO: handle exception
-                    return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
+                    return ResponseMessage.generateResponse("errorTTTTTT", HttpStatus.OK, e.getMessage());
                 }
             } else {
 
                 return ResponseMessage.generateResponse("error", HttpStatus.OK, "Fichier vide");
-            }
+           }
         } catch (Exception e) {
 
             System.out.println(activite);
 
-            return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
+            return ResponseMessage.generateResponse("errorVVVVVVVVVV", HttpStatus.OK, e.getMessage());
         }
 
         // application/json
@@ -337,7 +339,7 @@ public class UtilisateurController {
     }
 
     @ApiOperation(value = "methode pour la modification d'une type d' activité.")
-    @PostMapping("/TypeactiviteModif")
+    @PutMapping("/TypeactiviteModif")
     public ResponseEntity<Object> ModifTypeActivite(@RequestBody TypeActivite typeActivite) {
         try {
             return ResponseMessage.generateResponse("ok", HttpStatus.OK, typeActiviteService.update(typeActivite));

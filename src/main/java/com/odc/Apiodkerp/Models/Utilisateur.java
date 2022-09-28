@@ -48,8 +48,8 @@ public class Utilisateur extends Personne {
 
     @ManyToMany
     @JoinTable(name = "UtilisateurActivite", joinColumns = {
-            @JoinColumn(name = "id_utilisateur") }, inverseJoinColumns = {
-                    @JoinColumn(name = "id_activite") })
+            @JoinColumn(name = "id_utilisateur")}, inverseJoinColumns = {
+            @JoinColumn(name = "id_activite")})
     List<Activite> activitesFormateurs = new ArrayList<>();
 
     // relation avec salle
@@ -61,12 +61,14 @@ public class Utilisateur extends Personne {
     @ManyToOne
     private Role role;
 
-// Un utilisateur fait parti d'une entite
+    // Un utilisateur fait parti d'une entite
     @JsonIgnore
     @OneToMany(mappedBy = "activite")
     List<AouP> aoup = new ArrayList<>();
 
+
     @JsonIgnore
     @OneToMany(mappedBy = "utilisateur")
-    List<Tache> tache = new ArrayList<>();
+    List<Entite> entite = new ArrayList<>();
+
 }

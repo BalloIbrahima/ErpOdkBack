@@ -163,6 +163,7 @@ public class SuperAdminController {
                     utilisateur.setImage(SaveImage.save("user", file, utilisateur.getEmail()));
                 }
                 Utilisateur NewUser = utilisateurService.creer(utilisateur);
+                System.out.println(NewUser.getLogin());
                 return ResponseMessage.generateResponse("ok", HttpStatus.OK, NewUser);
             } else {
                 return ResponseMessage.generateResponse("error", HttpStatus.OK, "Adresse mail existante");
