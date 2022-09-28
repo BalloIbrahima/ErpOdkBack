@@ -21,10 +21,10 @@ public class Designation {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private  long id;
     private  String libelle;
-    private  String etat;
+    private  Boolean etat;
 
 
     @JsonIgnore
     @OneToMany(mappedBy = "designation")
-    List<Tache> tache = new ArrayList<>();
+    List<Tache> taches = new ArrayList<>();
 }

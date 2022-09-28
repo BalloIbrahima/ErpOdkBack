@@ -23,7 +23,6 @@ public class Salle {
     private String libelle;
     private String etage;
     private Boolean disponibilite;
-
     @Lob
     private String description;
 

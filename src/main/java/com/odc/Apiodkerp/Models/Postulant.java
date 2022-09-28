@@ -1,6 +1,7 @@
 package com.odc.Apiodkerp.Models;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.*;
@@ -20,6 +21,7 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 public class Postulant extends Personne {
     private String numero;
+    private Date DateNaissance;
 
     @ManyToMany
     @JoinTable(name = "ListepostulantPostulant", joinColumns = {

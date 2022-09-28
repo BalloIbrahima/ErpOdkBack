@@ -3,11 +3,9 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.slf4j.helpers.Util;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Entity
 @AllArgsConstructor
@@ -19,4 +17,7 @@ public class FormatEmail {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     private String libelle;
+
+    @ManyToOne
+    private Utilisateur utilisateur;
 }
