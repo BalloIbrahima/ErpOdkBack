@@ -22,6 +22,7 @@ public interface SalleService {
 
     // Afficher salle par libelle
     Salle getByLibelle(String libelle);
+    Salle getByIdsalle(long id);
 
     /// list des salles par disponiblite
     List<Salle> ParEtat(Boolean disponibilite);

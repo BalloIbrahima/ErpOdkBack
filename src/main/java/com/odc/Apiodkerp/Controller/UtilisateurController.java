@@ -369,7 +369,7 @@ public class UtilisateurController {
     // ::::::::::::::::::::::::::::::::::Modifier Utilisateur
     // :::::::::::::::::::::::::::::::::::::
 
-    @ApiOperation(value = "Modification utilisateur en fournisssant id")
+    @ApiOperation(value = "Modification utilisateur en fournissant id")
     @PutMapping("/updateUser/{id}")
     public ResponseEntity<Object> updateUtilisateur(@PathVariable Long id, @RequestParam(value = "data") String data) {
         Utilisateur utilisateur1 = utilisateurService.getById(id);

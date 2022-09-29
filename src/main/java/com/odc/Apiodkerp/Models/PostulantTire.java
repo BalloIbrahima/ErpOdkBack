@@ -21,8 +21,8 @@ public class PostulantTire {
     @Column(name = "id", nullable = false)
     private Long id;
 
-   // @ManyToOne
-    //Postulant postulant;
+    @ManyToOne
+    Postulant postulant;
 
     @ManyToOne
     Tirage tirage;
