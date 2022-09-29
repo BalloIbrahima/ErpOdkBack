@@ -37,6 +37,7 @@ import com.odc.Apiodkerp.Configuration.ExcelGenerator;
 import com.odc.Apiodkerp.Configuration.ExcelImport;
 
 import com.odc.Apiodkerp.Models.Activite;
+import com.odc.Apiodkerp.Models.Historique;
 import com.odc.Apiodkerp.Models.ListePostulant;
 import com.odc.Apiodkerp.Models.Postulant;
 
@@ -127,6 +128,10 @@ public class ResponsableController {
             if (Simpleutilisateur != null) {
                 if (Simpleutilisateur.getRole() == user && Simpleutilisateur.getActive() == true) {
 
+                    Historique historique = new Historique();
+                    historique.setDatehistorique(new Date());
+                    historique.setDescription(Simpleutilisateur.getPrenom() + " " + Simpleutilisateur.getNom()
+                            + " vient de se connecter.");
                     return ResponseMessage.generateResponse("ok", HttpStatus.OK, Simpleutilisateur);
                 } else {
                     return ResponseMessage.generateResponse("error", HttpStatus.OK, "non autorise");
@@ -144,11 +149,13 @@ public class ResponsableController {
     // ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
     // la methode pour importer une liste de postulant
     @ApiOperation(value = "la methode pour importer une liste de postulant.")
-    @PostMapping("/listpostulant/new/{libelleliste}")
+    @PostMapping("/listpostulant/new/{libelleliste}/{idUtilisateur}")
     public ResponseEntity<Object> ImportListePostulant(@PathVariable("libelleliste") String libelleliste,
+            @PathVariable("idUtilisateur") Long idUtilisateur,
             @RequestParam("file") MultipartFile file) {
 
         try {
+            Utilisateur Simpleutilisateur=utilisateurService.getById(idUtilisateur)
             ListePostulant liste = listePostulantService.retrouveParLibelle(libelleliste);
             if (liste == null) {
                 if (ExcelImport.verifier(file)) {
@@ -180,6 +187,11 @@ public class ResponsableController {
                         }
 
                     }
+
+                    Historique historique = new Historique();
+                    historique.setDatehistorique(new Date());
+                    historique.setDescription(Simpleutilisateur.getPrenom() + " " + Simpleutilisateur.getNom()
+                            + " a importer une liste.");
 
                     return ResponseMessage.generateResponse("ok", HttpStatus.OK,
                             listSaved);

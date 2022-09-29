@@ -117,6 +117,10 @@ public class UtilisateurController {
             System.out.println(Simpleutilisateur);
             if (Simpleutilisateur != null) {
                 if (Simpleutilisateur.getActive() == true) {
+                    Historique historique = new Historique();
+                    historique.setDatehistorique(new Date());
+                    historique.setDescription(Simpleutilisateur.getPrenom() + " " + Simpleutilisateur.getNom()
+                            + " vient de se connecter.");
                     return ResponseMessage.generateResponse("ok", HttpStatus.OK, Simpleutilisateur);
                 } else {
                     return ResponseMessage.generateResponse("error", HttpStatus.OK, "non autorise");

@@ -42,7 +42,7 @@ public class NotificationServiceImpl implements NotificationService {
     @Override
     public Notification getByTitre(String titre) {
         // TODO Auto-generated method stub
-        return notificationRepo.findByTire(titre);
+        return notificationRepo.findByTitre(titre);
     }
 
     @Override

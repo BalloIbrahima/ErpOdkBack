@@ -6,6 +6,6 @@ import com.odc.Apiodkerp.Models.Notification;
 
 public interface NotificationRepo extends JpaRepository<Notification, Long> {
 
-    Notification findByTire(String titre);
+    Notification findByTitre(String titre);
 
 }
