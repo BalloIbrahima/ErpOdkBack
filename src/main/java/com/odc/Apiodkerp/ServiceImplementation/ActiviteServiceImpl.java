@@ -42,6 +42,7 @@ public class ActiviteServiceImpl implements ActiviteService {
                     activite1.setDateCreation(activite1.getDateCreation());
                     activite1.setDateDebut(activite1.getDateDebut());
                     activite1.setDateFin(activite1.getDateFin());
+
                     activite1.setDescription(activite1.getDescription());
                     activite1.setImage(activite1.getImage());
 
