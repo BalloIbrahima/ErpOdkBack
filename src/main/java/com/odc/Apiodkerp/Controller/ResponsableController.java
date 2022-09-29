@@ -16,14 +16,12 @@ import com.odc.Apiodkerp.Models.PostulantTire;
 import com.odc.Apiodkerp.Models.Role;
 import com.odc.Apiodkerp.Repository.PostulantTrieRepository;
 import com.odc.Apiodkerp.Service.PostulantTrieService;
-import io.swagger.annotations.ApiOperation;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -37,6 +35,7 @@ import com.odc.Apiodkerp.Configuration.ExcelGenerator;
 import com.odc.Apiodkerp.Configuration.ExcelImport;
 
 import com.odc.Apiodkerp.Models.Activite;
+import com.odc.Apiodkerp.Models.AouP;
 import com.odc.Apiodkerp.Models.Historique;
 import com.odc.Apiodkerp.Models.ListePostulant;
 import com.odc.Apiodkerp.Models.Postulant;
@@ -44,6 +43,7 @@ import com.odc.Apiodkerp.Models.Postulant;
 import com.odc.Apiodkerp.Models.Tirage;
 
 import com.odc.Apiodkerp.Service.ActiviteService;
+import com.odc.Apiodkerp.Service.AouPService;
 import com.odc.Apiodkerp.Service.EntiteService;
 import com.odc.Apiodkerp.Service.EtatService;
 import com.odc.Apiodkerp.Service.IntervenantExterneService;
@@ -116,6 +116,9 @@ public class ResponsableController {
     @Autowired
     private NotificationService notificationService;
 
+    @Autowired
+    private AouPService aouPService;
+
     // Pour le login d'un utilisateur
     @ApiOperation(value = "Pour le login d'un utilisateur.")
     @PostMapping("/login/{login}/{password}")
@@ -155,7 +158,7 @@ public class ResponsableController {
             @RequestParam("file") MultipartFile file) {
 
         try {
-            Utilisateur Simpleutilisateur=utilisateurService.getById(idUtilisateur)
+            Utilisateur Simpleutilisateur = utilisateurService.getById(idUtilisateur);
             ListePostulant liste = listePostulantService.retrouveParLibelle(libelleliste);
             if (liste == null) {
                 if (ExcelImport.verifier(file)) {
@@ -191,7 +194,7 @@ public class ResponsableController {
                     Historique historique = new Historique();
                     historique.setDatehistorique(new Date());
                     historique.setDescription(Simpleutilisateur.getPrenom() + " " + Simpleutilisateur.getNom()
-                            + " a importer une liste.");
+                            + " a importer une liste de postulant.");
 
                     return ResponseMessage.generateResponse("ok", HttpStatus.OK,
                             listSaved);
@@ -213,15 +216,17 @@ public class ResponsableController {
     }
 
     // :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-    // la methode pour importer une liste de postulant
-    @ApiOperation(value = "la methode pour importer une liste de postulant.")
-    @PostMapping("/listparticipant/new/{idTirage}")
+    // la methode pour importer une liste de participant
+    @ApiOperation(value = "la methode pour importer une liste de participant.")
+    @PostMapping("/listparticipant/new/{idactivite}/{idUtilisateur}")
     public ResponseEntity<Object> ImportListeParticipant(@RequestParam("file") MultipartFile file,
-            @PathVariable("idTirage") Long idTirage) {
+            @PathVariable("idactivite") Long idactivite, @PathVariable("idUtilisateur") Long idUtilisateur) {
 
         try {
-            Tirage tirage = tirageService.getById(idTirage);
-            if (tirage != null) {
+            Activite activite = activiteService.GetById(idactivite);
+
+            Utilisateur Simpleutilisateur = utilisateurService.getById(idUtilisateur);
+            if (activite != null) {
                 if (ExcelImport.verifier(file)) {
 
                     List<Postulant> postulants = ExcelImport.postulantsExcel(file);
@@ -232,18 +237,34 @@ public class ResponsableController {
                                 & p.getNom() != null & p.getPrenom() != null) {
                             Postulant pc = postulantService.creer(p);
 
-                            tirageService.ajouterParticipant(pc, idTirage);
+                            AouP aprenants = new AouP();
+                            aprenants.setActivite(activite);
+                            aprenants.setPostulant(pc);
+                            aprenants.setTirage(false);
+                            aouPService.Create(aprenants);
+                            // tirageService.ajouterParticipant(pc, idTirage);
                             // p.getListePostulants().add(listePostulant);
                             // listePostulant.getPostulants().add(pc);
 
                         } else if (p.getEmail() != null & p.getNom() != null & p.getPrenom() != null) {
 
                             Postulant pc = postulantService.GetByEmail(p.getEmail());
-                            tirageService.ajouterParticipant(pc, idTirage);
+
+                            AouP aprenants = new AouP();
+                            aprenants.setActivite(activite);
+                            aprenants.setPostulant(pc);
+                            aprenants.setTirage(false);
+                            aouPService.Create(aprenants);
+                            // tirageService.ajouterParticipant(pc, idTirage);
 
                         }
 
                     }
+
+                    Historique historique = new Historique();
+                    historique.setDatehistorique(new Date());
+                    historique.setDescription(Simpleutilisateur.getPrenom() + " " + Simpleutilisateur.getNom()
+                            + " a importer une liste de participant.");
 
                     return ResponseMessage.generateResponse("ok", HttpStatus.OK,
                             null);
@@ -254,7 +275,7 @@ public class ResponsableController {
                 }
             } else {
                 // Il existe une liste avec la même libelle
-                return ResponseMessage.generateResponse("error", HttpStatus.OK, "Cette tirage n'existe deja");
+                return ResponseMessage.generateResponse("error", HttpStatus.OK, "Cette activite existe deja");
 
             }
 
@@ -266,12 +287,14 @@ public class ResponsableController {
 
     // methode pour exporter des postulants tirés
     @ApiOperation(value = "methode pour exporter des postulants tirés.")
-    @PostMapping("/export/{idtirage}")
+    @PostMapping("/export/{idtirage}/{idUtilisateur}")
     public ResponseEntity<Object> exporterTirage(@PathVariable("idtirage") Long idtirage,
+            @PathVariable("idUtilisateur") Long idUtilisateur,
             HttpServletResponse response) {
         response.setContentType("application/octet-stream");
 
         try {
+            Utilisateur Simpleutilisateur = new Utilisateur();
             Tirage tirage = tirageService.getById(idtirage);
             List<Postulant> postulantsListe = new ArrayList<>();
 
@@ -283,6 +306,12 @@ public class ResponsableController {
             ExcelGenerator generator = new ExcelGenerator(postulantsListe);
             generator.genererFichierExcel(response);
 
+            //
+            Historique historique = new Historique();
+            historique.setDatehistorique(new Date());
+            historique.setDescription(Simpleutilisateur.getPrenom() + " " + Simpleutilisateur.getNom()
+                    + " a exporter une liste de postulants tirés.");
+            //
             return ResponseMessage.generateResponse("ok", HttpStatus.OK, postulantsListe);
 
         } catch (Exception e) {
