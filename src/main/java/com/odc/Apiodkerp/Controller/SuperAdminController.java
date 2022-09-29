@@ -12,6 +12,23 @@ import org.springframework.web.multipart.MultipartFile;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.odc.Apiodkerp.Configuration.ResponseMessage;
 import com.odc.Apiodkerp.Configuration.SaveImage;
+import com.odc.Apiodkerp.Service.ActiviteService;
+import com.odc.Apiodkerp.Service.EntiteService;
+import com.odc.Apiodkerp.Service.EtatService;
+import com.odc.Apiodkerp.Service.IntervenantExterneService;
+import com.odc.Apiodkerp.Service.ListePostulantService;
+import com.odc.Apiodkerp.Service.NotificationService;
+import com.odc.Apiodkerp.Service.PostulantService;
+import com.odc.Apiodkerp.Service.PostulantTrieService;
+import com.odc.Apiodkerp.Service.PresenceService;
+import com.odc.Apiodkerp.Service.RoleService;
+import com.odc.Apiodkerp.Service.SalleService;
+import com.odc.Apiodkerp.Service.StatusService;
+import com.odc.Apiodkerp.Service.TacheService;
+import com.odc.Apiodkerp.Service.TirageService;
+import com.odc.Apiodkerp.Service.TypeActiviteService;
+import com.odc.Apiodkerp.Service.UtilisateurService;
+
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -78,6 +95,18 @@ public class SuperAdminController {
 
     @Autowired
     private TypeActiviteService typeActiviteService;
+
+    @Autowired
+    private TacheService tacheService;
+
+    @Autowired
+    private StatusService statusService;
+
+    @Autowired
+    private IntervenantExterneService intervenantExterneService;
+
+    @Autowired
+    private NotificationService notificationService;
 
     // Pour le login d'un super administrateur
     @ApiOperation(value = "Pour le login d'un super administrateur.")
@@ -819,10 +848,9 @@ public class SuperAdminController {
             return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
         }
     }
-//:::::::::::::: ::::::::::::::debut mise a jour de madame ::::::::::::::::::::
+    // :::::::::::::: ::::::::::::::debut mise a jour de madame ::::::::::::::::::::
 
-
-    //:::::::::::Liste des activites par entite ::::::::::::::::
+    // :::::::::::Liste des activites par entite ::::::::::::::::
     @ApiOperation(value = "activites par entite")
     @GetMapping("activites/entite/{identite}")
     public ResponseEntity<Object> ActivitesParEntite(@PathVariable long identite) {
@@ -835,36 +863,36 @@ public class SuperAdminController {
         }
     }
 
-//:::::::::::::::::::Liste des activites par intervalle de date : ::::::::::::::::::::
+    // :::::::::::::::::::Liste des activites par intervalle de date :
+    // ::::::::::::::::::::
     // fait avec ballo le 26/09
 
-
-
-    //::::::::::::La liste des participants par activité et par intervalle de date,
-
+    // ::::::::::::La liste des participants par activité et par intervalle de date,
 
     @ApiOperation(value = "liste participant par activite")
     @GetMapping("activites/entite/{idactivite}/{date1}/{date2}")
-    public ResponseEntity<Object> PostulantParActivite(@PathVariable long idactivite, @PathVariable Date date1, @PathVariable Date date2) {
+    public ResponseEntity<Object> PostulantParActivite(@PathVariable long idactivite, @PathVariable Date date1,
+            @PathVariable Date date2) {
         try {
-            //recupere les activites par identifiant
+            // recupere les activites par identifiant
             Activite activite = activiteService.GetById(idactivite);
-            //recupere tous les postTirés
+            // recupere tous les postTirés
             PostulantTire pt = (PostulantTire) postulantTrieService.getAll();
 
-            //recupere tous les tirages vue qu'il est le lien entre postTirer et activite
+            // recupere tous les tirages vue qu'il est le lien entre postTirer et activite
             Tirage tirage = (Tirage) tirageService.getAll();
 
-            //On recupere  les activites par intervalles de temps
-            if(activite.getDateDebut().after(date1) && activite.getDateDebut().before(date2) && activite.getDateFin().before(date2)){
+            // On recupere les activites par intervalles de temps
+            if (activite.getDateDebut().after(date1) && activite.getDateDebut().before(date2)
+                    && activite.getDateFin().before(date2)) {
 
-                         if(tirage.getActivite().getId()==activite.getId() && pt.getTirage().getId() == tirage.getId()){
+                if (tirage.getActivite().getId() == activite.getId() && pt.getTirage().getId() == tirage.getId()) {
                     return ResponseMessage.generateResponse("error", HttpStatus.OK, postulantTrieService.getAll());
-                         }else {
-                             return ResponseMessage.generateResponse("error", HttpStatus.OK, "");
+                } else {
+                    return ResponseMessage.generateResponse("error", HttpStatus.OK, "");
 
-                         }
-            }else {
+                }
+            } else {
                 return ResponseMessage.generateResponse("Erreur", HttpStatus.OK, "");
 
             }
@@ -875,11 +903,13 @@ public class SuperAdminController {
         }
     }
 
-    //La liste des activités par entité et par statut_activité (encours, à venir ou terminée).
+    // La liste des activités par entité et par statut_activité (encours, à venir ou
+    // terminée).
 
     @ApiOperation(value = "activites par entite et par statut")
     @GetMapping("activites/entite/{identite}/{idstatut}")
-    public ResponseEntity<Object> ActivitesParEntiteEtParstatut(@PathVariable long identite,@PathVariable long idstatut) {
+    public ResponseEntity<Object> ActivitesParEntiteEtParstatut(@PathVariable long identite,
+            @PathVariable long idstatut) {
         try {
              Etat etat = etatService.GetById(idstatut);//on recup l'etat en fonction de l'id
              Entite entite=entiteService.GetById(identite);
@@ -899,30 +929,36 @@ public class SuperAdminController {
              }
              else {
                  return ResponseMessage.generateResponse("error", HttpStatus.OK, "Une erreur s'est produit");
+            Etat etat = etatService.GetById(idstatut);// on recup l'etat en fonction de l'id
+            Activite activite = (Activite) activiteService.ActiviteEntiteid(identite);// recuperation des activite d'une
+                                                                                      // entite donnée
+            if (activite.getEtat() == etat.getActivite()) {
+                return ResponseMessage.generateResponse("error", HttpStatus.OK, activiteService.GetAll());
+            } else {
+                return ResponseMessage.generateResponse("error", HttpStatus.OK, "Une erreur s'est produit");
 
-             }
+            }
         } catch (Exception e) {
             // TODO: handle exception
             return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
         }
     }
 
-    //::::::::::::::::::::::
+    // ::::::::::::::::::::::
     @ApiOperation(value = "Statut d'une activite en fonction de son id")
     @GetMapping("statut/activite/{id}")
     public ResponseEntity<Object> ActivitesTermines(@PathVariable long id) {
         try {
             Activite act = new Activite();
-            act=activiteService.GetById(id);
-            Date dateTodate = new  Date();
-            if(dateTodate.after(act.getDateDebut()) && dateTodate.before(act.getDateFin())){
+            act = activiteService.GetById(id);
+            Date dateTodate = new Date();
+            if (dateTodate.after(act.getDateDebut()) && dateTodate.before(act.getDateFin())) {
                 return ResponseMessage.generateResponse("En cours", HttpStatus.OK, "L'activité est en cours");
             } else if (dateTodate.after(act.getDateFin())) {
                 return ResponseMessage.generateResponse("Terminé", HttpStatus.OK, "L'activité est terminée");
             } else if (dateTodate.before(act.getDateDebut())) {
-                return ResponseMessage.generateResponse("A Venir", HttpStatus.OK,"L'activité est à Venir");
-            }
-            else {
+                return ResponseMessage.generateResponse("A Venir", HttpStatus.OK, "L'activité est à Venir");
+            } else {
                 return ResponseMessage.generateResponse("error", HttpStatus.OK, "");
             }
 
@@ -932,19 +968,19 @@ public class SuperAdminController {
         }
     }
 
-
-    //::::::::::::::Comparaison date pour salle disponible ::::::::::::::::::::::::::::::
+    // ::::::::::::::Comparaison date pour salle disponible
+    // ::::::::::::::::::::::::::::::
     @ApiOperation(value = "Comparaison date pour salle disponible")
     @GetMapping("SalleDispo/{date1}/{date2}")
-    public ResponseEntity<Object> SalleDispoDate(@PathVariable Date date1,@PathVariable Date date2) {
+    public ResponseEntity<Object> SalleDispoDate(@PathVariable Date date1, @PathVariable Date date2) {
         try {
             Activite act = activiteService.FindAllAct();
-            List<Salle> salle =new ArrayList<>();
+            List<Salle> salle = new ArrayList<>();
 
-            if(act.getDateDebut().before(date1) && act.getDateDebut().before(date2) && act.getDateFin().after(date1)
-                    && act.getDateFin().after(date2) || act.getDateDebut().after(date1) && act.getDateDebut().after(date2)
-                    && act.getDateFin().before(date1) && act.getDateFin().before(date2)
-            ){
+            if (act.getDateDebut().before(date1) && act.getDateDebut().before(date2) && act.getDateFin().after(date1)
+                    && act.getDateFin().after(date2)
+                    || act.getDateDebut().after(date1) && act.getDateDebut().after(date2)
+                            && act.getDateFin().before(date1) && act.getDateFin().before(date2)) {
                 return ResponseMessage.generateResponse("error", HttpStatus.OK, salle.add(act.getSalle()));
 
             }
@@ -1011,6 +1047,204 @@ public class SuperAdminController {
             // TODO: handle exception
             return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
 
+        }
+    }
+
+    // /////////////////////INTERVENANT externe:::
+    @ApiOperation(value = "Nouveau intervenant")
+    @PostMapping("/intervenat/new")
+    public ResponseEntity<Object> CreateIntervenant(@RequestBody IntervenantExterne intervenantExterne) {
+
+        try {
+            return ResponseMessage.generateResponse("ok", HttpStatus.OK,
+                    intervenantExterneService.creer(intervenantExterne));
+        } catch (Exception e) {
+            // TODO: handle exception
+            return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
+        }
+
+    }
+
+    @ApiOperation(value = "Mettre à jour intervenant")
+    @PutMapping("/intervenat/update/{id}")
+    public ResponseEntity<Object> UpdateIntervenant(@RequestBody IntervenantExterne intervenantExterne,
+            @PathVariable("id") Long id) {
+
+        try {
+            IntervenantExterne iE = intervenantExterneService.getById(id);
+            return ResponseMessage.generateResponse("ok", HttpStatus.OK,
+                    intervenantExterneService.update(iE));
+        } catch (Exception e) {
+            // TODO: handle exception
+            return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
+        }
+
+    }
+
+    @ApiOperation(value = "Suprimer intervenant")
+    @DeleteMapping("/intervenat/delete/{id}")
+    public ResponseEntity<Object> DeleteIntervenant(@PathVariable("id") Long id) {
+
+        try {
+            intervenantExterneService.delete(id);
+            return ResponseMessage.generateResponse("ok", HttpStatus.OK,
+                    "Suprimer");
+        } catch (Exception e) {
+            // TODO: handle exception
+            return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
+        }
+
+    }
+
+    @ApiOperation(value = "L'ensemble des intervenant externes")
+    @GetMapping("/intervenat/all")
+    public ResponseEntity<Object> TotalIntervenant() {
+
+        try {
+            return ResponseMessage.generateResponse("ok", HttpStatus.OK,
+                    intervenantExterneService.getAll());
+        } catch (Exception e) {
+            // TODO: handle exception
+            return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
+        }
+    }
+
+    // :::::::::::::::::::::::::::::::::::
+
+    // ::::::::::::::taches
+    @ApiOperation(value = "Nouvelle tache")
+    @PostMapping("/tache/new")
+    public ResponseEntity<Object> CreateTache(@RequestBody Tache tache) {
+
+        try {
+            return ResponseMessage.generateResponse("ok", HttpStatus.OK,
+                    tacheService.creer(tache));
+        } catch (Exception e) {
+            // TODO: handle exception
+            return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
+        }
+
+    }
+
+    @ApiOperation(value = "Mettre à jour tache")
+    @PutMapping("/tache/update/{id}")
+    public ResponseEntity<Object> UpdateIntervenant(@RequestBody Tache tache,
+            @PathVariable("id") Long id) {
+
+        try {
+            Tache tache2 = tacheService.getById(id);
+            return ResponseMessage.generateResponse("ok", HttpStatus.OK,
+                    tacheService.update(tache2));
+        } catch (Exception e) {
+            // TODO: handle exception
+            return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
+        }
+
+    }
+
+    @ApiOperation(value = "Suprimer tache")
+    @DeleteMapping("/tache/delete/{id}")
+    public ResponseEntity<Object> DeleteTache(@PathVariable("id") Long id) {
+
+        try {
+            tacheService.delete(id);
+            return ResponseMessage.generateResponse("ok", HttpStatus.OK,
+                    "Suprimer");
+        } catch (Exception e) {
+            // TODO: handle exception
+            return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
+        }
+
+    }
+
+    @ApiOperation(value = "L'ensemble des taches")
+    @GetMapping("/tache/all")
+    public ResponseEntity<Object> TotalTaches() {
+
+        try {
+            return ResponseMessage.generateResponse("ok", HttpStatus.OK,
+                    tacheService.getAll());
+        } catch (Exception e) {
+            // TODO: handle exception
+            return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
+        }
+    }
+
+    // :::::::::::::::::::::::::::::::::::
+
+    // :::::::::::::::::::::::::::::::::::
+
+    // ::::::::::::::Statut
+    @ApiOperation(value = "Nouveau statut")
+    @PostMapping("/status/new")
+    public ResponseEntity<Object> CreateStatut(@RequestBody Statut status) {
+
+        try {
+            return ResponseMessage.generateResponse("ok", HttpStatus.OK,
+                    statusService.creer(status));
+        } catch (Exception e) {
+            // TODO: handle exception
+            return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
+        }
+
+    }
+
+    @ApiOperation(value = "Mettre à jour statut")
+    @PutMapping("/status/update/{id}")
+    public ResponseEntity<Object> UpdateStatut(@RequestBody Statut status,
+            @PathVariable("id") Long id) {
+
+        try {
+            Statut stat = statusService.getById(id);
+            return ResponseMessage.generateResponse("ok", HttpStatus.OK,
+                    statusService.update(stat));
+        } catch (Exception e) {
+            // TODO: handle exception
+            return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
+        }
+
+    }
+
+    @ApiOperation(value = "Suprimer statut")
+    @DeleteMapping("/status/delete/{id}")
+    public ResponseEntity<Object> DeleteStatus(@PathVariable("id") Long id) {
+
+        try {
+            tacheService.delete(id);
+            return ResponseMessage.generateResponse("ok", HttpStatus.OK,
+                    "Suprimer");
+        } catch (Exception e) {
+            // TODO: handle exception
+            return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
+        }
+
+    }
+
+    @ApiOperation(value = "L'ensemble des status")
+    @GetMapping("/status/all")
+    public ResponseEntity<Object> TotalStatus() {
+
+        try {
+            return ResponseMessage.generateResponse("ok", HttpStatus.OK,
+                    statusService.getAll());
+        } catch (Exception e) {
+            // TODO: handle exception
+            return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
+        }
+    }
+
+    // :::::::::::::::::::::::::::::::::::
+
+    @ApiOperation(value = "L'ensemble des notification")
+    @GetMapping("/notification/all")
+    public ResponseEntity<Object> TotalNotification() {
+
+        try {
+            return ResponseMessage.generateResponse("ok", HttpStatus.OK,
+                    notificationService.getAll());
+        } catch (Exception e) {
+            // TODO: handle exception
+            return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
         }
     }
 

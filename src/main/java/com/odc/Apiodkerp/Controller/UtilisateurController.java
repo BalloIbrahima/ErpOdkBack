@@ -30,12 +30,16 @@ import com.odc.Apiodkerp.Service.ActiviteService;
 import com.odc.Apiodkerp.Service.EntiteService;
 import com.odc.Apiodkerp.Service.EtatService;
 import com.odc.Apiodkerp.Service.HistoriqueService;
+import com.odc.Apiodkerp.Service.IntervenantExterneService;
 import com.odc.Apiodkerp.Service.ListePostulantService;
+import com.odc.Apiodkerp.Service.NotificationService;
 import com.odc.Apiodkerp.Service.PostulantService;
 import com.odc.Apiodkerp.Service.PostulantTrieService;
 import com.odc.Apiodkerp.Service.PresenceService;
 import com.odc.Apiodkerp.Service.RoleService;
 import com.odc.Apiodkerp.Service.SalleService;
+import com.odc.Apiodkerp.Service.StatusService;
+import com.odc.Apiodkerp.Service.TacheService;
 import com.odc.Apiodkerp.Service.TirageService;
 import com.odc.Apiodkerp.Service.TypeActiviteService;
 import com.odc.Apiodkerp.Service.UtilisateurService;
@@ -87,6 +91,18 @@ public class UtilisateurController {
 
     @Autowired
     private HistoriqueService historiqueService;
+
+    @Autowired
+    private TacheService tacheService;
+
+    @Autowired
+    private StatusService statusService;
+
+    @Autowired
+    private IntervenantExterneService intervenantExterneService;
+
+    @Autowired
+    private NotificationService notificationService;
 
     // Pour le login d'un utilisateur
     @ApiOperation(value = "Pour le login d'un utilisateur.")
@@ -299,7 +315,7 @@ public class UtilisateurController {
             } else {
 
                 return ResponseMessage.generateResponse("error", HttpStatus.OK, "Fichier vide");
-           }
+            }
         } catch (Exception e) {
 
             System.out.println(activite);
