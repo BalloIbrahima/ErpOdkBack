@@ -47,6 +47,11 @@ public class SalleServiceImpl implements SalleService {
     }
 
     @Override
+    public Salle getByIdsalle(long id) {
+        return salleRepository.getById(id);
+    }
+
+    @Override
     public List<Salle> ParEtat(Boolean disponibilite) {
         // TODO Auto-generated method stub
         return salleRepository.findByDisponibilite(disponibilite);

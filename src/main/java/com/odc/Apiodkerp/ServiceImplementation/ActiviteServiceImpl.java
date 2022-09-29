@@ -70,6 +70,7 @@ public class ActiviteServiceImpl implements ActiviteService {
     public String attribuerSalle(long idsalle, long idactivite) {
         Activite activitecourant = activiteRepository.findById(idactivite).orElse(null);
         Salle salleverifiee = salleRepository.findById(idsalle).orElse(null);
+
         if (salleverifiee != null) {
             activitecourant.setSalle(salleverifiee);
             activiteRepository.save(activitecourant);
