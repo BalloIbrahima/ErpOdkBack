@@ -27,10 +27,6 @@ public class Tache {
 
 
     @ManyToOne
-    @JoinColumn(name = "utilisateur")
-    private Utilisateur porteur;
-
-    @ManyToOne
     @JoinColumn(name = "activite")
     private Activite activite;
 

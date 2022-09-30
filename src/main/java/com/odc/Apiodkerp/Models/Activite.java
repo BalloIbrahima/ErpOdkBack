@@ -34,8 +34,8 @@ public class Activite {
     List<Utilisateur> utilisateurs = new ArrayList<>();
 
     @JsonIgnore
-    @OneToOne(mappedBy = "activite", cascade = CascadeType.ALL)
-    private Tirage tirage;
+    @OneToMany(mappedBy = "activite", cascade = CascadeType.ALL)
+    private List<Tirage> tirages = new ArrayList<>();
 
     @ManyToOne
     @JoinColumn(name = "createur")
