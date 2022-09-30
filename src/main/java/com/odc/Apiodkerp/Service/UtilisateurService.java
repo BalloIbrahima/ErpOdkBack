@@ -32,6 +32,8 @@ public interface UtilisateurService {
 
     Long TotalEntite();
 
+    Utilisateur trouverParLoginAndPass(String login, String password);
+
     List<Utilisateur> RecupererUserParEtat(Boolean bool);
 
 }
