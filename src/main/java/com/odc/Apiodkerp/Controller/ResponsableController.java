@@ -46,6 +46,7 @@ import com.odc.Apiodkerp.Service.ActiviteService;
 import com.odc.Apiodkerp.Service.AouPService;
 import com.odc.Apiodkerp.Service.EntiteService;
 import com.odc.Apiodkerp.Service.EtatService;
+import com.odc.Apiodkerp.Service.HistoriqueService;
 import com.odc.Apiodkerp.Service.IntervenantExterneService;
 import com.odc.Apiodkerp.Service.ListePostulantService;
 import com.odc.Apiodkerp.Service.NotificationService;
@@ -119,94 +120,74 @@ public class ResponsableController {
     @Autowired
     private AouPService aouPService;
 
-    // Pour le login d'un utilisateur
-    @ApiOperation(value = "Pour le login d'un utilisateur.")
-    @PostMapping("/login/{login}/{password}")
-    public ResponseEntity<Object> login(@PathVariable("login") String login,
-            @PathVariable("password") String password) {
-
-        try {
-            Utilisateur Simpleutilisateur = utilisateurService.login(login, password);
-            Role user = RoleService.GetByLibelle("RESPONSABLE");
-            if (Simpleutilisateur != null) {
-                if (Simpleutilisateur.getRole() == user && Simpleutilisateur.getActive() == true) {
-
-                    Historique historique = new Historique();
-                    historique.setDatehistorique(new Date());
-                    historique.setDescription(Simpleutilisateur.getPrenom() + " " + Simpleutilisateur.getNom()
-                            + " vient de se connecter.");
-                    return ResponseMessage.generateResponse("ok", HttpStatus.OK, Simpleutilisateur);
-                } else {
-                    return ResponseMessage.generateResponse("error", HttpStatus.OK, "non autorise");
-                }
-            } else {
-                return ResponseMessage.generateResponse("error", HttpStatus.OK, "utilisateur n'existe pas");
-            }
-
-        } catch (Exception e) {
-            // TODO: handle exception
-            return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
-        }
-    }
+    @Autowired
+    private HistoriqueService historiqueService;
 
     // ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
     // la methode pour importer une liste de postulant
     @ApiOperation(value = "la methode pour importer une liste de postulant.")
-    @PostMapping("/listpostulant/new/{libelleliste}/{idUtilisateur}")
+    @PostMapping("/listpostulant/new/{libelleliste}/{login}/{password}")
     public ResponseEntity<Object> ImportListePostulant(@PathVariable("libelleliste") String libelleliste,
-            @PathVariable("idUtilisateur") Long idUtilisateur,
+            @PathVariable("login") String login, @PathVariable("password") String password,
             @RequestParam("file") MultipartFile file) {
 
         try {
-            Utilisateur Simpleutilisateur = utilisateurService.getById(idUtilisateur);
-            ListePostulant liste = listePostulantService.retrouveParLibelle(libelleliste);
-            if (liste == null) {
-                if (ExcelImport.verifier(file)) {
-                    ListePostulant listePostulant = new ListePostulant();
+            Utilisateur Simpleutilisateur = utilisateurService.trouverParLoginAndPass(login, password);
+            if (Simpleutilisateur != null) {
+                ListePostulant liste = listePostulantService.retrouveParLibelle(libelleliste);
+                if (liste == null) {
+                    if (ExcelImport.verifier(file)) {
+                        ListePostulant listePostulant = new ListePostulant();
 
-                    listePostulant.setLibelle(libelleliste);
-                    listePostulant.setDateimport(new Date());
+                        listePostulant.setLibelle(libelleliste);
+                        listePostulant.setDateimport(new Date());
 
-                    ListePostulant listSaved = listePostulantService.creer(listePostulant);
+                        ListePostulant listSaved = listePostulantService.creer(listePostulant);
 
-                    List<Postulant> postulants = ExcelImport.postulantsExcel(file);
-                    // insertion des postulants recuperes à partir du fichier excel
-                    for (Postulant p : postulants) {
+                        List<Postulant> postulants = ExcelImport.postulantsExcel(file);
+                        // insertion des postulants recuperes à partir du fichier excel
+                        for (Postulant p : postulants) {
 
-                        if (postulantService.GetByEmail(p.getEmail()) == null
-                                & p.getNom() != null & p.getPrenom() != null) {
-                            p.getListePostulants().add(listSaved);
-                            Postulant pc = postulantService.creer(p);
+                            if (postulantService.GetByEmail(p.getEmail()) == null
+                                    & p.getNom() != null & p.getPrenom() != null) {
+                                p.getListePostulants().add(listSaved);
+                                Postulant pc = postulantService.creer(p);
 
-                            // p.getListePostulants().add(listePostulant);
-                            // listePostulant.getPostulants().add(pc);
+                                // p.getListePostulants().add(listePostulant);
+                                // listePostulant.getPostulants().add(pc);
 
-                        } else if (p.getEmail() != null & p.getNom() != null & p.getPrenom() != null) {
-                            Postulant pc = postulantService.GetByEmail(p.getEmail());
-                            pc.getListePostulants().add(listSaved);
-                            postulantService.creer(pc);
-                            // listePostulant.getPostulants().add(pc);
+                            } else if (p.getEmail() != null & p.getNom() != null & p.getPrenom() != null) {
+                                Postulant pc = postulantService.GetByEmail(p.getEmail());
+                                pc.getListePostulants().add(listSaved);
+                                postulantService.creer(pc);
+                                // listePostulant.getPostulants().add(pc);
+
+                            }
 
                         }
 
+                        Historique historique = new Historique();
+                        historique.setDatehistorique(new Date());
+                        historique.setDescription(Simpleutilisateur.getPrenom() + " " + Simpleutilisateur.getNom()
+                                + " a importer une liste de postulant.");
+
+                        historiqueService.Create(historique);
+                        return ResponseMessage.generateResponse("ok", HttpStatus.OK,
+                                listSaved);
+
+                    } else {
+                        return ResponseMessage.generateResponse("error", HttpStatus.OK,
+                                "Veuiller fournir un fichier Excel valide!");
                     }
-
-                    Historique historique = new Historique();
-                    historique.setDatehistorique(new Date());
-                    historique.setDescription(Simpleutilisateur.getPrenom() + " " + Simpleutilisateur.getNom()
-                            + " a importer une liste de postulant.");
-
-                    return ResponseMessage.generateResponse("ok", HttpStatus.OK,
-                            listSaved);
-
                 } else {
-                    return ResponseMessage.generateResponse("error", HttpStatus.OK,
-                            "Veuiller fournir un fichier Excel valide!");
-                }
-            } else {
-                // Il existe une liste avec la même libelle
-                return ResponseMessage.generateResponse("error", HttpStatus.OK, "Cette lise existe deja");
+                    // Il existe une liste avec la même libelle
+                    return ResponseMessage.generateResponse("error", HttpStatus.OK, "Cette lise existe deja");
 
+                }
+
+            } else {
+                return ResponseMessage.generateResponse("error", HttpStatus.OK,
+                        "Cet utilisateur n'existe pas !");
             }
 
         } catch (Exception e) {
@@ -218,67 +199,76 @@ public class ResponsableController {
     // :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
     // la methode pour importer une liste de participant
     @ApiOperation(value = "la methode pour importer une liste de participant.")
-    @PostMapping("/listparticipant/new/{idactivite}/{idUtilisateur}")
+    @PostMapping("/listparticipant/new/{idactivite}/{login}/{password}")
     public ResponseEntity<Object> ImportListeParticipant(@RequestParam("file") MultipartFile file,
-            @PathVariable("idactivite") Long idactivite, @PathVariable("idUtilisateur") Long idUtilisateur) {
+            @PathVariable("idactivite") Long idactivite, @PathVariable("login") String login,
+            @PathVariable("password") String password) {
 
         try {
             Activite activite = activiteService.GetById(idactivite);
 
-            Utilisateur Simpleutilisateur = utilisateurService.getById(idUtilisateur);
-            if (activite != null) {
-                if (ExcelImport.verifier(file)) {
+            Utilisateur Simpleutilisateur = utilisateurService.trouverParLoginAndPass(login, password);
+            if (Simpleutilisateur != null) {
 
-                    List<Postulant> postulants = ExcelImport.postulantsExcel(file);
-                    // insertion des postulants recuperes à partir du fichier excel
-                    for (Postulant p : postulants) {
+                if (activite != null) {
+                    if (ExcelImport.verifier(file)) {
 
-                        if (postulantService.GetByEmail(p.getEmail()) == null
-                                & p.getNom() != null & p.getPrenom() != null) {
-                            Postulant pc = postulantService.creer(p);
+                        List<Postulant> postulants = ExcelImport.postulantsExcel(file);
+                        // insertion des postulants recuperes à partir du fichier excel
+                        for (Postulant p : postulants) {
 
-                            AouP aprenants = new AouP();
-                            aprenants.setActivite(activite);
-                            aprenants.setPostulant(pc);
-                            aprenants.setTirage(false);
-                            aouPService.Create(aprenants);
-                            // tirageService.ajouterParticipant(pc, idTirage);
-                            // p.getListePostulants().add(listePostulant);
-                            // listePostulant.getPostulants().add(pc);
+                            if (postulantService.GetByEmail(p.getEmail()) == null
+                                    & p.getNom() != null & p.getPrenom() != null) {
+                                Postulant pc = postulantService.creer(p);
 
-                        } else if (p.getEmail() != null & p.getNom() != null & p.getPrenom() != null) {
+                                AouP aprenants = new AouP();
+                                aprenants.setActivite(activite);
+                                aprenants.setPostulant(pc);
+                                aprenants.setTirage(false);
+                                aouPService.Create(aprenants);
+                                // tirageService.ajouterParticipant(pc, idTirage);
+                                // p.getListePostulants().add(listePostulant);
+                                // listePostulant.getPostulants().add(pc);
 
-                            Postulant pc = postulantService.GetByEmail(p.getEmail());
+                            } else if (p.getEmail() != null & p.getNom() != null & p.getPrenom() != null) {
 
-                            AouP aprenants = new AouP();
-                            aprenants.setActivite(activite);
-                            aprenants.setPostulant(pc);
-                            aprenants.setTirage(false);
-                            aouPService.Create(aprenants);
-                            // tirageService.ajouterParticipant(pc, idTirage);
+                                Postulant pc = postulantService.GetByEmail(p.getEmail());
+
+                                AouP aprenants = new AouP();
+                                aprenants.setActivite(activite);
+                                aprenants.setPostulant(pc);
+                                aprenants.setTirage(false);
+                                aouPService.Create(aprenants);
+                                // tirageService.ajouterParticipant(pc, idTirage);
+
+                            }
 
                         }
 
+                        Historique historique = new Historique();
+                        historique.setDatehistorique(new Date());
+                        historique.setDescription(Simpleutilisateur.getPrenom() + " " + Simpleutilisateur.getNom()
+                                + " a importer une liste de participant.");
+
+                        historiqueService.Create(historique);
+
+                        return ResponseMessage.generateResponse("ok", HttpStatus.OK,
+                                null);
+
+                    } else {
+                        return ResponseMessage.generateResponse("error", HttpStatus.OK,
+                                "Veuiller fournir un fichier Excel valide !");
                     }
-
-                    Historique historique = new Historique();
-                    historique.setDatehistorique(new Date());
-                    historique.setDescription(Simpleutilisateur.getPrenom() + " " + Simpleutilisateur.getNom()
-                            + " a importer une liste de participant.");
-
-                    return ResponseMessage.generateResponse("ok", HttpStatus.OK,
-                            null);
-
                 } else {
-                    return ResponseMessage.generateResponse("error", HttpStatus.OK,
-                            "Veuiller fournir un fichier Excel valide !");
+                    // Il existe une liste avec la même libelle
+                    return ResponseMessage.generateResponse("error", HttpStatus.OK, "Cette activite existe deja");
+
                 }
+
             } else {
-                // Il existe une liste avec la même libelle
-                return ResponseMessage.generateResponse("error", HttpStatus.OK, "Cette activite existe deja");
-
+                return ResponseMessage.generateResponse("error", HttpStatus.OK,
+                        "Cet utilisateur n'existe pas !");
             }
-
         } catch (Exception e) {
             // TODO: handle exception
             return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
@@ -287,14 +277,14 @@ public class ResponsableController {
 
     // methode pour exporter des postulants tirés
     @ApiOperation(value = "methode pour exporter des postulants tirés.")
-    @PostMapping("/export/{idtirage}/{idUtilisateur}")
+    @PostMapping("/export/{idtirage}/{login}/{password}")
     public ResponseEntity<Object> exporterTirage(@PathVariable("idtirage") Long idtirage,
-            @PathVariable("idUtilisateur") Long idUtilisateur,
+            @PathVariable("login") String login, @PathVariable("password") String password,
             HttpServletResponse response) {
         response.setContentType("application/octet-stream");
 
         try {
-            Utilisateur Simpleutilisateur = new Utilisateur();
+            Utilisateur Simpleutilisateur = utilisateurService.trouverParLoginAndPass(login, password);
             Tirage tirage = tirageService.getById(idtirage);
             List<Postulant> postulantsListe = new ArrayList<>();
 
@@ -311,6 +301,9 @@ public class ResponsableController {
             historique.setDatehistorique(new Date());
             historique.setDescription(Simpleutilisateur.getPrenom() + " " + Simpleutilisateur.getNom()
                     + " a exporter une liste de postulants tirés.");
+
+            historiqueService.Create(historique);
+
             //
             return ResponseMessage.generateResponse("ok", HttpStatus.OK, postulantsListe);
 
@@ -323,16 +316,16 @@ public class ResponsableController {
 
     // la methode pour effectuer un tirage
     @ApiOperation(value = "La methode Pour effectuer un tirage.")
-    @PostMapping("/tirage/new/{libelleliste}/{idactivite}/{iduser}/{nombre}/{libelleTirage}")
+    @PostMapping("/tirage/new/{libelleliste}/{idactivite}/{login}/{password}/{nombre}/{libelleTirage}")
     public ResponseEntity<Object> DoTirage(@PathVariable("libelleliste") String libelleliste,
             @PathVariable("nombre") Long nombre, @PathVariable("idactivite") Long idactivite,
-            @PathVariable("iduser") Long iduser,
+            @PathVariable("login") String login, @PathVariable("password") String password,
             @PathVariable("libelleTirage") String libelleTirage) {
 
         Tirage exist = tirageService.findByLibelle(libelleTirage);
         if (exist == null) {
 
-            Utilisateur utilisateur = utilisateurService.getById(iduser);
+            Utilisateur utilisateur = utilisateurService.trouverParLoginAndPass(login, password);
             Activite activite = activiteService.GetById(idactivite);
 
             ListePostulant listePostulant = listePostulantService.retrouveParLibelle(libelleliste);
@@ -357,6 +350,8 @@ public class ResponsableController {
                 historique.setDatehistorique(new Date());
                 historique.setDescription(utilisateur.getPrenom() + " " + utilisateur.getNom()
                         + " a a effectuer un tirage.");
+                historiqueService.Create(historique);
+
                 //
                 return ResponseMessage.generateResponse("ok", HttpStatus.OK, postulanttires);
 
@@ -375,13 +370,14 @@ public class ResponsableController {
     // Tire---------------------------------------//
     // Creation de postulant tiré
     @ApiOperation(value = "Ajouter participant")
-    @PostMapping("/create/participant/{idactivite}/{idUtilisateur}")
+    @PostMapping("/create/participant/{idactivite}/{login}/{password}")
     public ResponseEntity<Object> createPostulantTire(@RequestBody Postulant participant,
-            @PathVariable("idactivite") Long idactivite, @PathVariable("idUtilisateur") Long idUtilisateur) {
+            @PathVariable("idactivite") Long idactivite, @PathVariable("login") String login,
+            @PathVariable("password") String password) {
 
         try {
             Activite activite = activiteService.GetById(idactivite);
-            Utilisateur utilisateur = utilisateurService.getById(idUtilisateur);
+            Utilisateur utilisateur = utilisateurService.trouverParLoginAndPass(login, password);
 
             AouP aouP = new AouP();
             aouP.setActivite(activite);
@@ -394,6 +390,8 @@ public class ResponsableController {
             historique.setDescription(utilisateur.getPrenom() + " " + utilisateur.getNom()
                     + " a a joute le participant: " + aouP.getPostulant().getEmail() + " à l'activite avec l'ID: "
                     + activite.getNom());
+            historiqueService.Create(historique);
+
             //
 
             // tirageService.ajouterParticipant(participant, idtirage);
@@ -409,12 +407,12 @@ public class ResponsableController {
 
     // Afficher de postulant tiré
     @ApiOperation(value = "Afficher participant par son id")
-    @GetMapping("/read/{id}/{idUtilisateur}")
+    @GetMapping("/read/{id}/{login}/{password}")
     public ResponseEntity<Object> readPostulantTire(@PathVariable long id,
-            @PathVariable("idUtilisateur") Long idUtilisateur) {
+            @PathVariable("login") String login, @PathVariable("password") String password) {
         try {
 
-            Utilisateur utilisateur = utilisateurService.getById(idUtilisateur);
+            Utilisateur utilisateur = utilisateurService.trouverParLoginAndPass(login, password);
             PostulantTire post = postulantTrieService.read(id);
 
             //
@@ -422,6 +420,9 @@ public class ResponsableController {
             historique.setDatehistorique(new Date());
             historique.setDescription(utilisateur.getPrenom() + " " + utilisateur.getNom()
                     + " a afficher le participant: " + post.getPostulant().getEmail());
+
+            historiqueService.Create(historique);
+
             //
             return ResponseMessage.generateResponse("ok", HttpStatus.OK, post);
 
@@ -432,18 +433,21 @@ public class ResponsableController {
 
     // Modifier de postulant tiré par son id
     @ApiOperation(value = "modifier participant par son id")
-    @PutMapping("/update/{id}/{idUtilisateur}")
+    @PutMapping("/update/{id}/{login}/{password}")
     public ResponseEntity<Object> updatePostulantTire(@RequestBody Postulant postulant, @PathVariable long id,
-            @PathVariable("idUtilisateur") Long idUtilisateur) {
+            @PathVariable("login") String login, @PathVariable("password") String password) {
         try {
             Postulant post = postulantService.update(id, postulant);
-            Utilisateur utilisateur = utilisateurService.getById(idUtilisateur);
+            Utilisateur utilisateur = utilisateurService.trouverParLoginAndPass(login, password);
 
             //
             Historique historique = new Historique();
             historique.setDatehistorique(new Date());
             historique.setDescription(utilisateur.getPrenom() + " " + utilisateur.getNom()
                     + " a modifie le participant: " + post.getEmail());
+
+            historiqueService.Create(historique);
+
             //
 
             return ResponseMessage.generateResponse("ok", HttpStatus.OK, post);
@@ -456,18 +460,21 @@ public class ResponsableController {
 
     // Supprimer Postulant tiré par son id
     @ApiOperation(value = "Supprimer participant par son id")
-    @DeleteMapping("/delete/{id}/{idUtilisateur}")
+    @DeleteMapping("/delete/{id}/{login}/{password}")
     public ResponseEntity<Object> deletePostulantTire(@PathVariable long id,
-            @PathVariable("idUtilisateur") Long idUtilisateur) {
+            @PathVariable("login") String login, @PathVariable("password") String password) {
         try {
             postulantTrieService.delete(id);
-            Utilisateur utilisateur = utilisateurService.getById(idUtilisateur);
+            Utilisateur utilisateur = utilisateurService.trouverParLoginAndPass(login, password);
 
             //
             Historique historique = new Historique();
             historique.setDatehistorique(new Date());
             historique.setDescription(utilisateur.getPrenom() + " " + utilisateur.getNom()
                     + " a suprime le postulant tire avec l'id: " + id);
+
+            historiqueService.Create(historique);
+
             //
             return ResponseMessage.generateResponse("ok", HttpStatus.OK, null);
 
@@ -481,16 +488,20 @@ public class ResponsableController {
 
     // Afficher tous les postulants
     @ApiOperation(value = "Afficher tous les participants")
-    @GetMapping("/All/{idUtilisateur}")
-    public ResponseEntity<Object> getAllPostulantTire(@PathVariable("idUtilisateur") Long idUtilisateur) {
+    @GetMapping("/All/{login}/{password}")
+    public ResponseEntity<Object> getAllPostulantTire(@PathVariable("login") String login,
+            @PathVariable("password") String password) {
         try {
-            Utilisateur utilisateur = utilisateurService.getById(idUtilisateur);
+            Utilisateur utilisateur = utilisateurService.trouverParLoginAndPass(login, password);
 
             //
             Historique historique = new Historique();
             historique.setDatehistorique(new Date());
             historique.setDescription(utilisateur.getPrenom() + " " + utilisateur.getNom()
                     + " a affiché l'ensemble des participants.");
+
+            historiqueService.Create(historique);
+
             //
             return ResponseMessage.generateResponse("ok", HttpStatus.OK, postulantTrieService.getAll());
 
