@@ -74,14 +74,19 @@ public class UtilisateurServiceImpl implements UtilisateurService {
     @Override
     public Utilisateur login(String login, String password) {
         // TODO Auto-generated method stub
-        Utilisateur utilisateur = repos.findByLogin(login);
+        try {
+            Utilisateur utilisateur = repos.findByLogin(login);
 
-        if (passwordEncoder().matches(password, utilisateur.getPassword())) {
+            if (passwordEncoder().matches(password, utilisateur.getPassword())) {
 
-            return utilisateur;
-        } else
-
+                return utilisateur;
+            } else
+                return null;
+        } catch (Exception e) {
+            // TODO: handle exception
             return null;
+        }
+
     }
 
     @Override

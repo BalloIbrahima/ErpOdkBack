@@ -32,8 +32,122 @@ public class ApiodkerpApplication {
 		TypeActiviteService typeActiviteService = ctx.getBean(TypeActiviteService.class);
 		FormatEmailService formatEmailService = ctx.getBean(FormatEmailService.class);
 		StatusService statusService = ctx.getBean(StatusService.class);
-
 		DroitService droitService = ctx.getBean(DroitService.class);
+
+		// droit
+		Droit Cactivite = new Droit();
+		Cactivite.setId(1L);
+		Cactivite.setLibelle("Create Actvite");
+		Cactivite.setDescription("Creer une activité.");
+
+		Droit Ractivite = new Droit();
+		Ractivite.setId(2L);
+		Ractivite.setLibelle("Read Actvite");
+		Ractivite.setDescription("afficher une activité.");
+
+		// aoup
+		Droit Caoup = new Droit();
+		Caoup.setId(4L);
+		Caoup.setLibelle("Create AouP");
+		Caoup.setDescription("Creer, lire, mettre à jour et suprimer un apprenant ou un participant.");
+
+		Droit Raoup = new Droit();
+		Raoup.setId(2L);
+		Raoup.setLibelle("CRUD AouP");
+		Raoup.setDescription("Creer, lire, mettre à jour et suprimer un apprenant ou un participant.");
+
+		// ::::::::::::::::::::
+
+		Droit designation = new Droit();
+		designation.setId(3L);
+		designation.setLibelle("CRUD Designation");
+		designation.setDescription("Creer, lire, mettre à jour et suprimer une designation.");
+
+		Droit entite = new Droit();
+		entite.setId(4L);
+		entite.setLibelle("CRUD Entite");
+		entite.setDescription("Creer, lire, mettre à jour et suprimer une entite.");
+
+		Droit etat = new Droit();
+		etat.setId(5L);
+		etat.setLibelle("CRUD Etat");
+		etat.setDescription("Creer, lire, mettre à jour et suprimer un etat.");
+
+		Droit formatemail = new Droit();
+		formatemail.setId(6L);
+		formatemail.setLibelle("CRUD FormatEmail");
+		formatemail.setDescription("Creer, lire, mettre à jour et suprimer un FormatEmail.");
+
+		Droit intervenant = new Droit();
+		intervenant.setId(7L);
+		intervenant.setLibelle("CRUD Intervenant");
+		intervenant.setDescription("Creer, lire, mettre à jour et suprimer un intervenant externe.");
+
+		Droit listepostulant = new Droit();
+		listepostulant.setId(8L);
+		listepostulant.setLibelle("CRUD ListePostulant");
+		listepostulant.setDescription("Creer, lire, mettre à jour et suprimer une liste de postulant.");
+
+		Droit postulant = new Droit();
+		postulant.setId(9L);
+		postulant.setLibelle("CRUD postulant");
+		postulant.setDescription("Creer, lire, mettre à jour et suprimer un postulant.");
+
+		Droit presence = new Droit();
+		presence.setId(10L);
+		presence.setLibelle("CRUD Presence");
+		presence.setDescription("Creer, lire, mettre à jour et suprimer une presence.");
+
+		Droit role = new Droit();
+		role.setId(11L);
+		role.setLibelle("CRUD Role");
+		role.setDescription("Creer, lire, mettre à jour et suprimer une role.");
+
+		Droit salle = new Droit();
+		salle.setId(12L);
+		salle.setLibelle("CRUD Salle");
+		salle.setDescription("Creer, lire, mettre à jour et suprimer une salle.");
+
+		Droit tache = new Droit();
+		tache.setId(13L);
+		tache.setLibelle("CRUD Tache");
+		tache.setDescription("Creer, lire, mettre à jour et suprimer une tache.");
+
+		Droit tirage = new Droit();
+		tirage.setId(14L);
+		tirage.setLibelle("CRUD Tirage");
+		tirage.setDescription("Creer, lire, mettre à jour et suprimer un tirage.");
+
+		Droit utilisateur = new Droit();
+		utilisateur.setId(15L);
+		utilisateur.setLibelle("CRUD Utilisateur");
+		utilisateur.setDescription("Creer, lire, mettre à jour et suprimer un tirage.");
+
+		Droit typeactivite = new Droit();
+		typeactivite.setId(16L);
+		typeactivite.setLibelle("CRUD TypeActivite");
+		typeactivite.setDescription("Creer, lire, mettre à jour et suprimer un type d'activité.");
+
+		droitService.Create(Cactivite);
+		droitService.Create(Ractivite);
+		// droitService.Create(Uactivite);
+		// droitService.Create(Dactivite);
+
+		droitService.Create(Caoup);
+		droitService.Create(designation);
+		droitService.Create(entite);
+		droitService.Create(etat);
+		droitService.Create(formatemail);
+		droitService.Create(intervenant);
+		droitService.Create(listepostulant);
+		droitService.Create(postulant);
+		droitService.Create(presence);
+		droitService.Create(role);
+		droitService.Create(salle);
+		droitService.Create(tache);
+		droitService.Create(tirage);
+		droitService.Create(typeactivite);
+		droitService.Create(utilisateur);
 
 		// creation des roles
 		Role user = new Role();
@@ -139,41 +253,6 @@ public class ApiodkerpApplication {
 		statusService.creer(encours);
 		statusService.creer(terminee);
 
-		Droit activite = new Droit();
-		activite.setLibelle("CRUD Actvite");
-		activite.setDescription("Creer, lire, mettre à jour et suprimer une activité.");
-
-		Droit aoup = new Droit();
-		aoup.setLibelle("CRUD AouP");
-		aoup.setDescription("Creer, lire, mettre à jour et suprimer un apprenant ou un participant.");
-
-		Droit designation = new Droit();
-		designation.setLibelle("CRUD Designation");
-		designation.setDescription("Creer, lire, mettre à jour et suprimer une designation.");
-
-		Droit entite = new Droit();
-		entite.setLibelle("CRUD Entite");
-		entite.setDescription("Creer, lire, mettre à jour et suprimer une entite.");
-
-		Droit etat = new Droit();
-		etat.setLibelle("CRUD Etat");
-		etat.setDescription("Creer, lire, mettre à jour et suprimer un etat.");
-
-		Droit formatemail = new Droit();
-		formatemail.setLibelle("CRUD FormatEmail");
-		formatemail.setDescription("Creer, lire, mettre à jour et suprimer un FormatEmail.");
-
-		Droit intervanant = new Droit();
-		intervanant.setLibelle("CRUD Intervenant");
-		intervanant.setDescription("Creer, lire, mettre à jour et suprimer un intervenant externe.");
-
-		Droit listepostulant = new Droit();
-		listepostulant.setLibelle("CRUD ListePostulant");
-		listepostulant.setDescription("Creer, lire, mettre à jour et suprimer une liste de postulant.");
-
-		Droit presence = new Droit();
-		presence.setLibelle("CRUD Presence");
-		presence.setDescription("Creer, lire, mettre à jour et suprimer une presence.");
 	}
 
 }
