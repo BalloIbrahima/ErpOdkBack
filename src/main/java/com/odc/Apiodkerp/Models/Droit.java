@@ -28,7 +28,7 @@ public class Droit {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String libelle;
-    @Lob
+
     private String description;
 
     @ManyToMany(mappedBy = "droits")

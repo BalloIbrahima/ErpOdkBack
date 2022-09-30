@@ -112,28 +112,30 @@ public class UtilisateurController {
         System.out.println(utilisateur.getLogin());
         System.out.println(utilisateur.getPassword());
 
-        try {
-            Utilisateur Simpleutilisateur = utilisateurService.login(utilisateur.getLogin(), utilisateur.getPassword());
-            System.out.println(Simpleutilisateur);
-            if (Simpleutilisateur != null) {
-                if (Simpleutilisateur.getActive() == true) {
-                    Historique historique = new Historique();
-                    historique.setDatehistorique(new Date());
-                    historique.setDescription(Simpleutilisateur.getPrenom() + " " + Simpleutilisateur.getNom()
-                            + " vient de se connecter.");
-                    return ResponseMessage.generateResponse("ok", HttpStatus.OK, Simpleutilisateur);
-                } else {
-                    return ResponseMessage.generateResponse("error", HttpStatus.OK, "non autorise");
-                }
+        // try {
+        Utilisateur Simpleutilisateur = utilisateurService.login(utilisateur.getLogin(), utilisateur.getPassword());
+        System.out.println(Simpleutilisateur);
+        if (Simpleutilisateur != null) {
+            if (Simpleutilisateur.getActive() == true) {
 
+                Historique historique = new Historique();
+                historique.setDatehistorique(new Date());
+                historique.setDescription(Simpleutilisateur.getPrenom() + " " + Simpleutilisateur.getNom()
+                        + " vient de se connecter.");
+                return ResponseMessage.generateResponse("ok", HttpStatus.OK, Simpleutilisateur);
             } else {
-                return ResponseMessage.generateResponse("error", HttpStatus.OK, "utilisateur n'existe pas");
+                return ResponseMessage.generateResponse("error", HttpStatus.OK, "Non autorise !");
             }
 
-        } catch (Exception e) {
-            // TODO: handle exception
-            return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
+        } else {
+            return ResponseMessage.generateResponse("error", HttpStatus.OK, "Login ou mots de passe incorrect !");
         }
+
+        // } catch (Exception e) {
+        // // TODO: handle exception
+        // return ResponseMessage.generateResponse("error", HttpStatus.OK,
+        // e.getMessage());
+        // }
     }
 
     // Modification de l'activite
@@ -389,7 +391,7 @@ public class UtilisateurController {
     // ::::::::::::::::::::::::::::::::::Modifier Utilisateur
     // :::::::::::::::::::::::::::::::::::::
 
-    @ApiOperation(value = "Modification utilisateur en fournissant id")
+    @ApiOperation(value = "Modification utilisateur en fournisssant id")
     @PutMapping("/updateUser/{id}")
     public ResponseEntity<Object> updateUtilisateur(@PathVariable Long id, @RequestParam(value = "data") String data) {
         Utilisateur utilisateur1 = utilisateurService.getById(id);
