@@ -141,21 +141,23 @@ public class UtilisateurController {
     // Modification de l'activite
     @ApiOperation(value = "Modification de l'activite en fonction de l'id")
     @PutMapping("/update/{iduser}/{id}")
-    public ResponseEntity<Object> update(@PathVariable Long id,@PathVariable Long iduser, @RequestBody Activite activite,
+    public ResponseEntity<Object> update(@PathVariable Long id, @PathVariable Long iduser,
+            @RequestBody Activite activite,
             @RequestParam(value = "file", required = false) MultipartFile file) {
         try {
-            Activite activite1  =activiteService.GetById(id);
+            Activite activite1 = activiteService.GetById(id);
             if (file != null) {
                 activite.setImage(SaveImage.save("activite", file, activite.getNom()));
             }
-            Utilisateur user =   utilisateurService.getById(iduser);
+            Utilisateur user = utilisateurService.getById(iduser);
             try {
                 Historique historique = new Historique();
                 Date datehisto = new Date();
                 historique.setDatehistorique(datehisto);
-                historique.setDescription(""+user.getPrenom()+ " "+user.getNom()+" a modifié l'activite "+activite1.getNom());
-                historiqueService.Create(historique);}
-            catch (Exception e) {
+                historique.setDescription(
+                        "" + user.getPrenom() + " " + user.getNom() + " a modifié l'activite " + activite1.getNom());
+                historiqueService.Create(historique);
+            } catch (Exception e) {
                 // TODO: handle exception
                 return ResponseMessage.generateResponse("iciiii", HttpStatus.OK, e.getMessage());
 
@@ -171,17 +173,18 @@ public class UtilisateurController {
     // affichage d'activite en fonction de l'id
     @ApiOperation(value = "Affichage de l'activite en fonction de l'id")
     @GetMapping("/afficherActivit/{iduser}/{id}")
-    public ResponseEntity<Object> AfficherActivit(@PathVariable long id,@PathVariable long iduser) {
+    public ResponseEntity<Object> AfficherActivit(@PathVariable long id, @PathVariable long iduser) {
         try {
-            Activite activite1  =activiteService.GetById(id);
-            Utilisateur user =   utilisateurService.getById(iduser);
+            Activite activite1 = activiteService.GetById(id);
+            Utilisateur user = utilisateurService.getById(iduser);
             try {
                 Historique historique = new Historique();
                 Date datehisto = new Date();
                 historique.setDatehistorique(datehisto);
-                historique.setDescription(""+user.getPrenom()+ " "+user.getNom()+" a affiché l'activite "+activite1.getNom());
-                historiqueService.Create(historique);}
-            catch (Exception e) {
+                historique.setDescription(
+                        "" + user.getPrenom() + " " + user.getNom() + " a affiché l'activite " + activite1.getNom());
+                historiqueService.Create(historique);
+            } catch (Exception e) {
                 // TODO: handle exception
                 return ResponseMessage.generateResponse("iciiii", HttpStatus.OK, e.getMessage());
 
@@ -206,14 +209,15 @@ public class UtilisateurController {
             Role admin = RoleService.GetByLibelle("ADMIN");
 
             if (activite.getCreateur() == utilisateur || utilisateur.getRole() == admin) {
-                Utilisateur user =   utilisateurService.getById(iduser);
+                Utilisateur user = utilisateurService.getById(iduser);
                 try {
                     Historique historique = new Historique();
                     Date datehisto = new Date();
                     historique.setDatehistorique(datehisto);
-                    historique.setDescription(""+user.getPrenom()+ " "+user.getNom()+" a supprimé l'activite "+activite.getNom());
-                    historiqueService.Create(historique);}
-                catch (Exception e) {
+                    historique.setDescription("" + user.getPrenom() + " " + user.getNom() + " a supprimé l'activite "
+                            + activite.getNom());
+                    historiqueService.Create(historique);
+                } catch (Exception e) {
                     // TODO: handle exception
                     return ResponseMessage.generateResponse("iciiii", HttpStatus.OK, e.getMessage());
 
@@ -234,16 +238,17 @@ public class UtilisateurController {
     // Afficher activite en fonction de l'etat
     @ApiOperation(value = "Affichage de l'activite en fonction de son etat")
     @GetMapping("/afficherActiviteEtat/{iduser}/{etat}")
-    public ResponseEntity<Object> AfficherActivite(@PathVariable Etat etat,@PathVariable long iduser) {
+    public ResponseEntity<Object> AfficherActivite(@PathVariable Etat etat, @PathVariable long iduser) {
         try {
-            Utilisateur user =   utilisateurService.getById(iduser);
+            Utilisateur user = utilisateurService.getById(iduser);
             try {
                 Historique historique = new Historique();
                 Date datehisto = new Date();
                 historique.setDatehistorique(datehisto);
-                historique.setDescription(""+user.getPrenom()+ " "+user.getNom()+" a affiché des activites en fontion de l'etat "+etat.getStatut());
-                historiqueService.Create(historique);}
-            catch (Exception e) {
+                historique.setDescription("" + user.getPrenom() + " " + user.getNom()
+                        + " a affiché des activites en fontion de l'etat " + etat.getStatut());
+                historiqueService.Create(historique);
+            } catch (Exception e) {
                 // TODO: handle exception
                 return ResponseMessage.generateResponse("iciiii", HttpStatus.OK, e.getMessage());
 
@@ -260,14 +265,15 @@ public class UtilisateurController {
     @GetMapping("/lapresence/{iduser}")
     public ResponseEntity<Object> ToutesActivite(@PathVariable long iduser) {
         try {
-            Utilisateur user =   utilisateurService.getById(iduser);
+            Utilisateur user = utilisateurService.getById(iduser);
             try {
                 Historique historique = new Historique();
                 Date datehisto = new Date();
                 historique.setDatehistorique(datehisto);
-                historique.setDescription(""+user.getPrenom()+ " "+user.getNom()+" a affiché toutes les activités ");
-                historiqueService.Create(historique);}
-            catch (Exception e) {
+                historique.setDescription(
+                        "" + user.getPrenom() + " " + user.getNom() + " a affiché toutes les activités ");
+                historiqueService.Create(historique);
+            } catch (Exception e) {
                 // TODO: handle exception
                 return ResponseMessage.generateResponse("iciiii", HttpStatus.OK, e.getMessage());
 
@@ -282,22 +288,23 @@ public class UtilisateurController {
     // Afficher une activite
     @ApiOperation(value = "Afficher une activite en fonction de l'id ")
     @GetMapping("/activite/{iduser}/{idactivite}")
-    public ResponseEntity<Object> Afficheractivite(@PathVariable long idactivite,@PathVariable long iduser ) {
+    public ResponseEntity<Object> Afficheractivite(@PathVariable long idactivite, @PathVariable long iduser) {
         try {
-            Activite activite  = activiteService.GetById(idactivite);
-            Utilisateur user =   utilisateurService.getById(iduser);
+            Activite activite = activiteService.GetById(idactivite);
+            Utilisateur user = utilisateurService.getById(iduser);
             try {
                 Historique historique = new Historique();
                 Date datehisto = new Date();
                 historique.setDatehistorique(datehisto);
-                historique.setDescription(""+user.getPrenom()+ " "+user.getNom()+" a affiché  "+activite.getNom());
-                historiqueService.Create(historique);}
-            catch (Exception e) {
+                historique.setDescription(
+                        "" + user.getPrenom() + " " + user.getNom() + " a affiché  " + activite.getNom());
+                historiqueService.Create(historique);
+            } catch (Exception e) {
                 // TODO: handle exception
                 return ResponseMessage.generateResponse("iciiii", HttpStatus.OK, e.getMessage());
 
             }
-            return ResponseMessage.generateResponse("ok", HttpStatus.OK,activite);
+            return ResponseMessage.generateResponse("ok", HttpStatus.OK, activite);
         } catch (Exception e) {
             // TODO: handle exception
             return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
@@ -308,7 +315,7 @@ public class UtilisateurController {
     @ApiOperation(value = "Creer la liste de presence ")
     @PostMapping("/lapresence/{iduser}/{idactivite}/{idpostulanttire}")
     public ResponseEntity<Object> presence(@PathVariable("idactivite") long idactivite,
-            @PathVariable("idpostulanttire") long idpostulanttire,@PathVariable long iduser) {
+            @PathVariable("idpostulanttire") long idpostulanttire, @PathVariable long iduser) {
         try {
             Presence presence = new Presence();
             Activite activite = activiteService.GetById(idactivite);
@@ -316,16 +323,17 @@ public class UtilisateurController {
             presence.setDate(new Date());
             PostulantTire postulantTire = postulantTrieService.read(idpostulanttire);
 
-           // presence.setPostulantTire(postulantTire);
+            // presence.setPostulantTire(postulantTire);
 
-            Utilisateur user =   utilisateurService.getById(iduser);
+            Utilisateur user = utilisateurService.getById(iduser);
             try {
                 Historique historique = new Historique();
                 Date datehisto = new Date();
                 historique.setDatehistorique(datehisto);
-                historique.setDescription(""+user.getPrenom()+ " "+user.getNom()+" a géré la presence de l'activité "+activite.getNom());
-                historiqueService.Create(historique);}
-            catch (Exception e) {
+                historique.setDescription("" + user.getPrenom() + " " + user.getNom()
+                        + " a géré la presence de l'activité " + activite.getNom());
+                historiqueService.Create(historique);
+            } catch (Exception e) {
                 // TODO: handle exception
                 return ResponseMessage.generateResponse("iciiii", HttpStatus.OK, e.getMessage());
 
@@ -339,18 +347,19 @@ public class UtilisateurController {
 
     @ApiOperation(value = " afficher la liste de presence en fonction de l'id de l'activite")
     @GetMapping("/lapresence/{iduser}/{idactivite}")
-    public ResponseEntity<Object> Listepresence(@PathVariable long idactivite,@PathVariable long iduser) {
+    public ResponseEntity<Object> Listepresence(@PathVariable long idactivite, @PathVariable long iduser) {
         try {
             Activite act = activiteService.GetById(idactivite);
 
-            Utilisateur user =   utilisateurService.getById(iduser);
+            Utilisateur user = utilisateurService.getById(iduser);
             try {
                 Historique historique = new Historique();
                 Date datehisto = new Date();
                 historique.setDatehistorique(datehisto);
-                historique.setDescription(""+user.getPrenom()+ " "+user.getNom()+" a affiché la liste de  presence de l'activté "+act.getNom());
-                historiqueService.Create(historique);}
-            catch (Exception e) {
+                historique.setDescription("" + user.getPrenom() + " " + user.getNom()
+                        + " a affiché la liste de  presence de l'activté " + act.getNom());
+                historiqueService.Create(historique);
+            } catch (Exception e) {
                 // TODO: handle exception
                 return ResponseMessage.generateResponse("iciiii", HttpStatus.OK, e.getMessage());
 
@@ -366,17 +375,19 @@ public class UtilisateurController {
 
     @ApiOperation(value = "Modification de l'entite en fonction de l'id")
     @PutMapping("/updateentite/{iduser}/{id}")
-    public ResponseEntity<Object> updateEntite(@PathVariable Long iduser,@PathVariable Long id, @RequestBody Entite entite) {
+    public ResponseEntity<Object> updateEntite(@PathVariable Long iduser, @PathVariable Long id,
+            @RequestBody Entite entite) {
         try {
 
-            Utilisateur user =   utilisateurService.getById(iduser);
+            Utilisateur user = utilisateurService.getById(iduser);
             try {
                 Historique historique = new Historique();
                 Date datehisto = new Date();
                 historique.setDatehistorique(datehisto);
-                historique.setDescription(""+user.getPrenom()+ " "+user.getNom()+" a modifié l'entité "+entite.getLibelleentite());
-                historiqueService.Create(historique);}
-            catch (Exception e) {
+                historique.setDescription("" + user.getPrenom() + " " + user.getNom() + " a modifié l'entité "
+                        + entite.getLibelleentite());
+                historiqueService.Create(historique);
+            } catch (Exception e) {
                 // TODO: handle exception
                 return ResponseMessage.generateResponse("iciiii", HttpStatus.OK, e.getMessage());
 
@@ -425,15 +436,16 @@ public class UtilisateurController {
 
                     activite.setImage(SaveImage.save("activite", file, activite.getNom()));
 
-                    //::::::::::::::::::::::::::::Historique ::::::::::::::::
-                  //  Utilisateur user =   utilisateurService.getById(iduser);
+                    // ::::::::::::::::::::::::::::Historique ::::::::::::::::
+                    // Utilisateur user = utilisateurService.getById(iduser);
                     try {
                         Historique historique = new Historique();
                         Date datehisto = new Date();
                         historique.setDatehistorique(datehisto);
-                        historique.setDescription(""+user.getPrenom()+ " "+user.getNom()+" a crée l'activité "+activite.getNom());
-                        historiqueService.Create(historique);}
-                    catch (Exception e) {
+                        historique.setDescription("" + user.getPrenom() + " " + user.getNom() + " a crée l'activité "
+                                + activite.getNom());
+                        historiqueService.Create(historique);
+                    } catch (Exception e) {
                         // TODO: handle exception
                         return ResponseMessage.generateResponse("iciiii", HttpStatus.OK, e.getMessage());
 
@@ -464,17 +476,19 @@ public class UtilisateurController {
 
     @ApiOperation(value = "methode pour la création d'une type d' activité.")
     @PostMapping("/TypeactiviteCreer/{iduser}")
-    public ResponseEntity<Object> CreateTypeActivite(@RequestBody TypeActivite typeActivite,@PathVariable long iduser) {
+    public ResponseEntity<Object> CreateTypeActivite(@RequestBody TypeActivite typeActivite,
+            @PathVariable long iduser) {
         try {
 
-            Utilisateur user =   utilisateurService.getById(iduser);
+            Utilisateur user = utilisateurService.getById(iduser);
             try {
                 Historique historique = new Historique();
                 Date datehisto = new Date();
                 historique.setDatehistorique(datehisto);
-                historique.setDescription(""+user.getPrenom()+ " "+user.getNom()+" a crée le type d'activte "+typeActivite.getLibelle());
-                historiqueService.Create(historique);}
-            catch (Exception e) {
+                historique.setDescription("" + user.getPrenom() + " " + user.getNom() + " a crée le type d'activte "
+                        + typeActivite.getLibelle());
+                historiqueService.Create(historique);
+            } catch (Exception e) {
                 // TODO: handle exception
                 return ResponseMessage.generateResponse("iciiii", HttpStatus.OK, e.getMessage());
 
@@ -489,18 +503,20 @@ public class UtilisateurController {
 
     @ApiOperation(value = "methode pour la Suppression d'une type d' activité.")
     @PostMapping("/TypeactiviteSupprimer/{iduser}/{id}")
-    public ResponseEntity<Object> SupprimerTypeActivite(@PathVariable long id,@PathVariable long iduser, @RequestBody TypeActivite typeActivite) {
+    public ResponseEntity<Object> SupprimerTypeActivite(@PathVariable long id, @PathVariable long iduser,
+            @RequestBody TypeActivite typeActivite) {
 
         try {
 
-            Utilisateur user =   utilisateurService.getById(iduser);
+            Utilisateur user = utilisateurService.getById(iduser);
             try {
                 Historique historique = new Historique();
                 Date datehisto = new Date();
                 historique.setDatehistorique(datehisto);
-                historique.setDescription(""+user.getPrenom()+ " "+user.getNom()+" a crée le type d'activte "+typeActivite.getLibelle());
-                historiqueService.Create(historique);}
-            catch (Exception e) {
+                historique.setDescription("" + user.getPrenom() + " " + user.getNom() + " a crée le type d'activte "
+                        + typeActivite.getLibelle());
+                historiqueService.Create(historique);
+            } catch (Exception e) {
                 // TODO: handle exception
                 return ResponseMessage.generateResponse("iciiii", HttpStatus.OK, e.getMessage());
 
@@ -547,21 +563,21 @@ public class UtilisateurController {
 
     @ApiOperation(value = "Modification utilisateur en fournisssant id")
     @PutMapping("/updateUser/{id}")
-    public ResponseEntity<Object> updateUtilisateur(@PathVariable Long id,@RequestParam(value = "data") String data) {
+    public ResponseEntity<Object> updateUtilisateur(@PathVariable Long id, @RequestParam(value = "data") String data) {
         Utilisateur utilisateur1 = utilisateurService.getById(id);
 
         try {
             Utilisateur utilisateur = new JsonMapper().readValue(data, Utilisateur.class);
             if (utilisateur1 != null && utilisateur1.getId() == utilisateur.getId()) {
 
-
                 try {
                     Historique historique = new Historique();
                     Date datehisto = new Date();
                     historique.setDatehistorique(datehisto);
-                    historique.setDescription(""+utilisateur1.getPrenom()+ " "+utilisateur1.getNom()+" a modifié l'utilisateur "+utilisateur1.getPrenom());
-                    historiqueService.Create(historique);}
-                catch (Exception e) {
+                    historique.setDescription("" + utilisateur1.getPrenom() + " " + utilisateur1.getNom()
+                            + " a modifié l'utilisateur " + utilisateur1.getPrenom());
+                    historiqueService.Create(historique);
+                } catch (Exception e) {
                     // TODO: handle exception
                     return ResponseMessage.generateResponse("iciiii", HttpStatus.OK, e.getMessage());
 
@@ -585,14 +601,15 @@ public class UtilisateurController {
     @GetMapping("/totalactivite/{iduser}")
     public ResponseEntity<Object> TotalActivite(@PathVariable long iduser) {
         try {
-            Utilisateur user =   utilisateurService.getById(iduser);
+            Utilisateur user = utilisateurService.getById(iduser);
             try {
                 Historique historique = new Historique();
                 Date datehisto = new Date();
                 historique.setDatehistorique(datehisto);
-                historique.setDescription(""+user.getPrenom()+ " "+user.getNom()+" a affiché toutes les activites ");
-                historiqueService.Create(historique);}
-            catch (Exception e) {
+                historique.setDescription(
+                        "" + user.getPrenom() + " " + user.getNom() + " a affiché toutes les activites ");
+                historiqueService.Create(historique);
+            } catch (Exception e) {
                 // TODO: handle exception
                 return ResponseMessage.generateResponse("iciiii", HttpStatus.OK, e.getMessage());
 
