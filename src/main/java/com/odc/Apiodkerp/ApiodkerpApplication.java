@@ -45,109 +45,411 @@ public class ApiodkerpApplication {
 		Ractivite.setLibelle("Read Actvite");
 		Ractivite.setDescription("afficher une activité.");
 
+		Droit Uactivite = new Droit();
+		Uactivite.setId(3L);
+		Uactivite.setLibelle("Update Actvite");
+		Uactivite.setDescription("Mettre à jour une activité.");
+
+		Droit Dactivite = new Droit();
+		Dactivite.setId(4L);
+		Dactivite.setLibelle("Delete Actvite");
+		Dactivite.setDescription("Supprimer une activité.");
+
 		// aoup
 		Droit Caoup = new Droit();
-		Caoup.setId(4L);
+		Caoup.setId(5L);
 		Caoup.setLibelle("Create AouP");
-		Caoup.setDescription("Creer, lire, mettre à jour et suprimer un apprenant ou un participant.");
+		Caoup.setDescription("Creer un apprenant ou un participant.");
 
 		Droit Raoup = new Droit();
-		Raoup.setId(2L);
-		Raoup.setLibelle("CRUD AouP");
-		Raoup.setDescription("Creer, lire, mettre à jour et suprimer un apprenant ou un participant.");
+		Raoup.setId(6L);
+		Raoup.setLibelle("Read AouP");
+		Raoup.setDescription("Afficher un apprenant ou un participant.");
+
+		Droit Uaoup = new Droit();
+		Uaoup.setId(7L);
+		Uaoup.setLibelle("Update AouP");
+		Uaoup.setDescription("mettre à jour un apprenant ou un participant.");
+
+		Droit Daoup = new Droit();
+		Daoup.setId(8L);
+		Daoup.setLibelle("Read AouP");
+		Daoup.setDescription("Supprimer un apprenant ou un participant.");
+
 
 		// ::::::::::::::::::::
 
-		Droit designation = new Droit();
-		designation.setId(3L);
-		designation.setLibelle("CRUD Designation");
-		designation.setDescription("Creer, lire, mettre à jour et suprimer une designation.");
+		Droit Cdesignation = new Droit();
+		Cdesignation.setId(9L);
+		Cdesignation.setLibelle("Create Designation");
+		Cdesignation.setDescription("Creer une designation.");
 
-		Droit entite = new Droit();
-		entite.setId(4L);
-		entite.setLibelle("CRUD Entite");
-		entite.setDescription("Creer, lire, mettre à jour et suprimer une entite.");
+		Droit Rdesignation = new Droit();
+		Rdesignation.setId(10L);
+		Rdesignation.setLibelle("Read Designation");
+		Rdesignation.setDescription("Lire une designation.");
 
-		Droit etat = new Droit();
-		etat.setId(5L);
-		etat.setLibelle("CRUD Etat");
-		etat.setDescription("Creer, lire, mettre à jour et suprimer un etat.");
+		Droit Udesignation = new Droit();
+		Udesignation.setId(11L);
+		Udesignation.setLibelle("Update Designation");
+		Udesignation.setDescription("Mettre à jour une designation.");
 
-		Droit formatemail = new Droit();
-		formatemail.setId(6L);
-		formatemail.setLibelle("CRUD FormatEmail");
-		formatemail.setDescription("Creer, lire, mettre à jour et suprimer un FormatEmail.");
+		Droit Ddesignation = new Droit();
+		Ddesignation.setId(12L);
+		Ddesignation.setLibelle("Delete Designation");
+		Ddesignation.setDescription("Suprimer une designation.");
 
-		Droit intervenant = new Droit();
-		intervenant.setId(7L);
-		intervenant.setLibelle("CRUD Intervenant");
-		intervenant.setDescription("Creer, lire, mettre à jour et suprimer un intervenant externe.");
+		Droit Centite = new Droit();
+		Centite.setId(13L);
+		Centite.setLibelle("Create Entite");
+		Centite.setDescription("Creer une entite.");
 
-		Droit listepostulant = new Droit();
-		listepostulant.setId(8L);
-		listepostulant.setLibelle("CRUD ListePostulant");
-		listepostulant.setDescription("Creer, lire, mettre à jour et suprimer une liste de postulant.");
+		Droit Rentite = new Droit();
+		Rentite.setId(14L);
+		Rentite.setLibelle("Read Entite");
+		Rentite.setDescription("Lire une entite.");
 
-		Droit postulant = new Droit();
-		postulant.setId(9L);
-		postulant.setLibelle("CRUD postulant");
-		postulant.setDescription("Creer, lire, mettre à jour et suprimer un postulant.");
 
-		Droit presence = new Droit();
-		presence.setId(10L);
-		presence.setLibelle("CRUD Presence");
-		presence.setDescription("Creer, lire, mettre à jour et suprimer une presence.");
+		Droit Uentite = new Droit();
+		Uentite.setId(15L);
+		Uentite.setLibelle("Update Entite");
+		Uentite.setDescription("Mettre à jour une entite.");
 
-		Droit role = new Droit();
-		role.setId(11L);
-		role.setLibelle("CRUD Role");
-		role.setDescription("Creer, lire, mettre à jour et suprimer une role.");
+		Droit Dentite = new Droit();
+		Dentite.setId(16L);
+		Dentite.setLibelle("Delete Entite");
+		Dentite.setDescription("Suprimer une entite.");
 
-		Droit salle = new Droit();
-		salle.setId(12L);
-		salle.setLibelle("CRUD Salle");
-		salle.setDescription("Creer, lire, mettre à jour et suprimer une salle.");
+		Droit Cetat = new Droit();
+		Cetat.setId(17L);
+		Cetat.setLibelle("Create Etat");
+		Cetat.setDescription("Creer un etat.");
 
-		Droit tache = new Droit();
-		tache.setId(13L);
-		tache.setLibelle("CRUD Tache");
-		tache.setDescription("Creer, lire, mettre à jour et suprimer une tache.");
+		Droit Retat = new Droit();
+		Retat.setId(18L);
+		Retat.setLibelle("Read Etat");
+		Retat.setDescription("Lire un etat.");
 
-		Droit tirage = new Droit();
-		tirage.setId(14L);
-		tirage.setLibelle("CRUD Tirage");
-		tirage.setDescription("Creer, lire, mettre à jour et suprimer un tirage.");
+		Droit Uetat = new Droit();
+		Uetat.setId(19L);
+		Uetat.setLibelle("Update Etat");
+		Uetat.setDescription("Mettre à jour un etat.");
 
-		Droit utilisateur = new Droit();
-		utilisateur.setId(15L);
-		utilisateur.setLibelle("CRUD Utilisateur");
-		utilisateur.setDescription("Creer, lire, mettre à jour et suprimer un tirage.");
+		Droit Detat = new Droit();
+		Detat.setId(20L);
+		Detat.setLibelle("Delete Etat");
+		Detat.setDescription("Suprimer un etat.");
 
-		Droit typeactivite = new Droit();
-		typeactivite.setId(16L);
-		typeactivite.setLibelle("CRUD TypeActivite");
-		typeactivite.setDescription("Creer, lire, mettre à jour et suprimer un type d'activité.");
+
+		Droit Cformatemail = new Droit();
+		Cformatemail.setId(21L);
+		Cformatemail.setLibelle("Create FormatEmail");
+		Cformatemail.setDescription("Creer un FormatEmail.");
+
+		Droit Rformatemail = new Droit();
+		Rformatemail.setId(22L);
+		Rformatemail.setLibelle("Read FormatEmail");
+		Rformatemail.setDescription("Lire un FormatEmail.");
+
+		Droit Uformatemail = new Droit();
+		Uformatemail.setId(23L);
+		Uformatemail.setLibelle("Update FormatEmail");
+		Uformatemail.setDescription("Mettre à jour un FormatEmail.");
+
+		Droit Dformatemail = new Droit();
+		Dformatemail.setId(24L);
+		Dformatemail.setLibelle("Delete FormatEmail");
+		Dformatemail.setDescription("Suprimer un FormatEmail.");
+
+
+		Droit Cintervenant = new Droit();
+		Cintervenant.setId(25L);
+		Cintervenant.setLibelle("Create Intervenant");
+		Cintervenant.setDescription("Creer un intervenant externe.");
+
+		Droit Rintervenant = new Droit();
+		Rintervenant.setId(26L);
+		Rintervenant.setLibelle("Read Intervenant");
+		Rintervenant.setDescription("Lire un intervenant externe.");
+
+		Droit Uintervenant = new Droit();
+		Uintervenant.setId(27L);
+		Uintervenant.setLibelle("Update Intervenant");
+		Uintervenant.setDescription("Mettre à jour un intervenant externe.");
+
+		Droit Dintervenant = new Droit();
+		Dintervenant.setId(28L);
+		Dintervenant.setLibelle("Delete Intervenant");
+		Dintervenant.setDescription("Suprimer un intervenant externe.");
+
+
+		Droit Clistepostulant = new Droit();
+		Clistepostulant.setId(29L);
+		Clistepostulant.setLibelle("Create ListePostulant");
+		Clistepostulant.setDescription("Creer une liste de postulant.");
+
+		Droit Rlistepostulant = new Droit();
+		Rlistepostulant.setId(30L);
+		Rlistepostulant.setLibelle("Read ListePostulant");
+		Rlistepostulant.setDescription("Lire une liste de postulant.");
+
+		Droit Ulistepostulant = new Droit();
+		Ulistepostulant.setId(31L);
+		Ulistepostulant.setLibelle("Update ListePostulant");
+		Ulistepostulant.setDescription("Mettre à jour une liste de postulant.");
+
+		Droit Dlistepostulant = new Droit();
+		Dlistepostulant.setId(32L);
+		Dlistepostulant.setLibelle("Delete ListePostulant");
+		Dlistepostulant.setDescription("Suprimer une liste de postulant.");
+
+
+		Droit Cpostulant = new Droit();
+		Cpostulant.setId(33L);
+		Cpostulant.setLibelle("Create postulant");
+		Cpostulant.setDescription("Creer un postulant.");
+
+		Droit Rpostulant = new Droit();
+		Rpostulant.setId(34L);
+		Rpostulant.setLibelle("Read postulant");
+		Rpostulant.setDescription("Lire un postulant.");
+
+		Droit Upostulant = new Droit();
+		Upostulant.setId(35L);
+		Upostulant.setLibelle("Update postulant");
+		Upostulant.setDescription("Mettre à jour un postulant.");
+
+		Droit Dpostulant = new Droit();
+		Dpostulant.setId(36L);
+		Dpostulant.setLibelle("Delete postulant");
+		Dpostulant.setDescription("Suprimer un postulant.");
+
+		Droit Cpresence = new Droit();
+		Cpresence.setId(37L);
+		Cpresence.setLibelle("Create Presence");
+		Cpresence.setDescription("Creer une presence.");
+
+		Droit Rpresence = new Droit();
+		Rpresence.setId(38L);
+		Rpresence.setLibelle("Read Presence");
+		Rpresence.setDescription("Lire une presence.");
+
+		Droit Upresence = new Droit();
+		Upresence.setId(39L);
+		Upresence.setLibelle("Update Presence");
+		Upresence.setDescription("Mettre à jour une presence.");
+
+		Droit Dpresence = new Droit();
+		Dpresence.setId(40L);
+		Dpresence.setLibelle("Delete Presence");
+		Dpresence.setDescription("Suprimer une presence.");
+
+
+		Droit Crole = new Droit();
+		Crole.setId(41L);
+		Crole.setLibelle("Create Role");
+		Crole.setDescription("Creer une role.");
+
+		Droit Rrole = new Droit();
+		Rrole.setId(42L);
+		Rrole.setLibelle("Read Role");
+		Rrole.setDescription("Lire une role.");
+
+		Droit Urole = new Droit();
+		Urole.setId(43L);
+		Urole.setLibelle("Update Role");
+		Urole.setDescription("Mettre à jour une role.");
+
+		Droit Drole = new Droit();
+		Drole.setId(44L);
+		Drole.setLibelle("Delete Role");
+		Drole.setDescription("Suprimer une role.");
+
+
+		Droit Csalle = new Droit();
+		Csalle.setId(45L);
+		Csalle.setLibelle("Create Salle");
+		Csalle.setDescription("Creer une salle.");
+
+		Droit Rsalle = new Droit();
+		Rsalle.setId(46L);
+		Rsalle.setLibelle("Read Salle");
+		Rsalle.setDescription("Lire une salle.");
+
+		Droit Usalle = new Droit();
+		Usalle.setId(47L);
+		Usalle.setLibelle("Update Salle");
+		Usalle.setDescription("Mettre à jour une salle.");
+
+		Droit Dsalle = new Droit();
+		Dsalle.setId(48L);
+		Dsalle.setLibelle("Delete Salle");
+		Dsalle.setDescription("Suprimer une salle.");
+
+
+		Droit Ctache = new Droit();
+		Ctache.setId(49L);
+		Ctache.setLibelle("Create Tache");
+		Ctache.setDescription("Creer une tache.");
+
+		Droit Rtache = new Droit();
+		Rtache.setId(50L);
+		Rtache.setLibelle("Read Tache");
+		Rtache.setDescription("Lire une tache.");
+
+		Droit Utache = new Droit();
+		Utache.setId(51L);
+		Utache.setLibelle("Update Tache");
+		Utache.setDescription("Mettre à jour une tache.");
+
+		Droit Dtache = new Droit();
+		Dtache.setId(52L);
+		Dtache.setLibelle("Delete Tache");
+		Dtache.setDescription("Suprimer une tache.");
+
+
+		Droit Ctirage = new Droit();
+		Ctirage.setId(53L);
+		Ctirage.setLibelle("Create Tirage");
+		Ctirage.setDescription("Creer un tirage.");
+
+		Droit Rtirage = new Droit();
+		Rtirage.setId(54L);
+		Rtirage.setLibelle("Read Tirage");
+		Rtirage.setDescription("Lire un tirage.");
+
+		Droit Utirage = new Droit();
+		Utirage.setId(55L);
+		Utirage.setLibelle("Update Tirage");
+		Utirage.setDescription("Mettre à jour un tirage.");
+
+		Droit Dtirage = new Droit();
+		Dtirage.setId(56L);
+		Dtirage.setLibelle("Delete Tirage");
+		Dtirage.setDescription("Suprimer un tirage.");
+
+
+		Droit Cutilisateur = new Droit();
+		Cutilisateur.setId(57L);
+		Cutilisateur.setLibelle("Create Utilisateur");
+		Cutilisateur.setDescription("Creer un tirage.");
+
+		Droit Rutilisateur = new Droit();
+		Rutilisateur.setId(58L);
+		Rutilisateur.setLibelle("Read Utilisateur");
+		Rutilisateur.setDescription("Lire un tirage.");
+
+		Droit Uutilisateur = new Droit();
+		Uutilisateur.setId(59L);
+		Uutilisateur.setLibelle("Update Utilisateur");
+		Uutilisateur.setDescription("Mettre à jour un tirage.");
+
+		Droit Dutilisateur = new Droit();
+		Dutilisateur.setId(60L);
+		Dutilisateur.setLibelle("Delete Utilisateur");
+		Dutilisateur.setDescription("Suprimer un tirage.");
+
+
+		Droit Ctypeactivite = new Droit();
+		Ctypeactivite.setId(51L);
+		Ctypeactivite.setLibelle("Create TypeActivite");
+		Ctypeactivite.setDescription("Creer un type d'activité.");
+
+		Droit Rtypeactivite = new Droit();
+		Rtypeactivite.setId(62L);
+		Rtypeactivite.setLibelle("Read TypeActivite");
+		Rtypeactivite.setDescription("Lire un type d'activité.");
+
+		Droit Utypeactivite = new Droit();
+		Utypeactivite.setId(63L);
+		Utypeactivite.setLibelle("Update TypeActivite");
+		Utypeactivite.setDescription("Mettre à jour un type d'activité.");
+
+		Droit Dtypeactivite = new Droit();
+		Dtypeactivite.setId(64L);
+		Dtypeactivite.setLibelle("Delete TypeActivite");
+		Dtypeactivite.setDescription("Suprimer un type d'activité.");
+
 
 		droitService.Create(Cactivite);
 		droitService.Create(Ractivite);
-		// droitService.Create(Uactivite);
-		// droitService.Create(Dactivite);
+		droitService.Create(Uactivite);
+		droitService.Create(Dactivite);
 
 		droitService.Create(Caoup);
-		droitService.Create(designation);
-		droitService.Create(entite);
-		droitService.Create(etat);
-		droitService.Create(formatemail);
-		droitService.Create(intervenant);
-		droitService.Create(listepostulant);
-		droitService.Create(postulant);
-		droitService.Create(presence);
-		droitService.Create(role);
-		droitService.Create(salle);
-		droitService.Create(tache);
-		droitService.Create(tirage);
-		droitService.Create(typeactivite);
-		droitService.Create(utilisateur);
+		droitService.Create(Raoup);
+		droitService.Create(Uaoup);
+		droitService.Create(Daoup);
+
+		droitService.Create(Cdesignation);
+		droitService.Create(Rdesignation);
+		droitService.Create(Udesignation);
+		droitService.Create(Ddesignation);
+
+		droitService.Create(Centite);
+		droitService.Create(Rentite);
+		droitService.Create(Uentite);
+		droitService.Create(Dentite);
+
+		droitService.Create(Cetat);
+		droitService.Create(Retat);
+		droitService.Create(Uetat);
+		droitService.Create(Detat);
+
+		droitService.Create(Cformatemail);
+		droitService.Create(Rformatemail);
+		droitService.Create(Uformatemail);
+		droitService.Create(Dformatemail);
+
+		droitService.Create(Cintervenant);
+		droitService.Create(Rintervenant);
+		droitService.Create(Uintervenant);
+		droitService.Create(Dintervenant);
+
+		droitService.Create(Clistepostulant);
+		droitService.Create(Rlistepostulant);
+		droitService.Create(Ulistepostulant);
+		droitService.Create(Dlistepostulant);
+
+		droitService.Create(Cpostulant);
+		droitService.Create(Rpostulant);
+		droitService.Create(Upostulant);
+		droitService.Create(Dpostulant);
+
+		droitService.Create(Cpresence);
+		droitService.Create(Rpresence);
+		droitService.Create(Upresence);
+		droitService.Create(Dpresence);
+
+		droitService.Create(Crole);
+		droitService.Create(Rrole);
+		droitService.Create(Urole);
+		droitService.Create(Drole);
+
+		droitService.Create(Csalle);
+		droitService.Create(Rsalle);
+		droitService.Create(Usalle);
+		droitService.Create(Dsalle);
+
+		droitService.Create(Ctache);
+		droitService.Create(Rtache);
+		droitService.Create(Utache);
+		droitService.Create(Dtache);
+
+		droitService.Create(Ctirage);
+		droitService.Create(Rtirage);
+		droitService.Create(Utirage);
+		droitService.Create(Dtirage);
+
+		droitService.Create(Ctypeactivite);
+		droitService.Create(Rtypeactivite);
+		droitService.Create(Utypeactivite);
+		droitService.Create(Dtypeactivite);
+
+		droitService.Create(Cutilisateur);
+		droitService.Create(Rutilisateur);
+		droitService.Create(Uutilisateur);
+		droitService.Create(Dutilisateur);
 
 		// creation des roles
 		Role user = new Role();
