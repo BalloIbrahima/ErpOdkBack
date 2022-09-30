@@ -351,7 +351,7 @@ public class ApiodkerpApplication {
 
 
 		Droit Ctypeactivite = new Droit();
-		Ctypeactivite.setId(51L);
+		Ctypeactivite.setId(61L);
 		Ctypeactivite.setLibelle("Create TypeActivite");
 		Ctypeactivite.setDescription("Creer un type d'activité.");
 
