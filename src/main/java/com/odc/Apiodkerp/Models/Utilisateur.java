@@ -76,11 +76,6 @@ public class Utilisateur extends Personne {
 
 
 
-    @JsonIgnore
-    @OneToMany(mappedBy = "porteur")
-    List<Tache> mestaches = new ArrayList<>();
-
-
     @ManyToMany(mappedBy = "commissions")
     List<Tache> commissions = new ArrayList<>();
 
