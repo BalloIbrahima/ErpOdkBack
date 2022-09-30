@@ -5,12 +5,18 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
 
 import com.odc.Apiodkerp.Enum.Genre;
+import com.odc.Apiodkerp.Models.Droit;
 import com.odc.Apiodkerp.Models.Etat;
+import com.odc.Apiodkerp.Models.FormatEmail;
 import com.odc.Apiodkerp.Models.Role;
+import com.odc.Apiodkerp.Models.Statut;
 import com.odc.Apiodkerp.Models.TypeActivite;
 import com.odc.Apiodkerp.Models.Utilisateur;
+import com.odc.Apiodkerp.Service.DroitService;
 import com.odc.Apiodkerp.Service.EtatService;
+import com.odc.Apiodkerp.Service.FormatEmailService;
 import com.odc.Apiodkerp.Service.RoleService;
+import com.odc.Apiodkerp.Service.StatusService;
 import com.odc.Apiodkerp.Service.TypeActiviteService;
 import com.odc.Apiodkerp.Service.UtilisateurService;
 
@@ -23,8 +29,11 @@ public class ApiodkerpApplication {
 		UtilisateurService utilisateurService = ctx.getBean(UtilisateurService.class);
 		RoleService roleService = ctx.getBean(RoleService.class);
 		EtatService etatService = ctx.getBean(EtatService.class);
-
 		TypeActiviteService typeActiviteService = ctx.getBean(TypeActiviteService.class);
+		FormatEmailService formatEmailService = ctx.getBean(FormatEmailService.class);
+		StatusService statusService = ctx.getBean(StatusService.class);
+
+		DroitService droitService = ctx.getBean(DroitService.class);
 
 		// creation des roles
 		Role user = new Role();
@@ -115,6 +124,56 @@ public class ApiodkerpApplication {
 		typeActiviteService.creer(evenement);
 		typeActiviteService.creer(formations);
 
+		/// format email
+		FormatEmail formatOrang = new FormatEmail();
+		formatOrang.setLibelle("@orangemali.com");
+		formatEmailService.Create(formatOrang);
+
+		// status
+		Statut encours = new Statut();
+		encours.setLibelle("ENCOUR");
+
+		Statut terminee = new Statut();
+		terminee.setLibelle("TERMINE");
+
+		statusService.creer(encours);
+		statusService.creer(terminee);
+
+		Droit activite = new Droit();
+		activite.setLibelle("CRUD Actvite");
+		activite.setDescription("Creer, lire, mettre à jour et suprimer une activité.");
+
+		Droit aoup = new Droit();
+		aoup.setLibelle("CRUD AouP");
+		aoup.setDescription("Creer, lire, mettre à jour et suprimer un apprenant ou un participant.");
+
+		Droit designation = new Droit();
+		designation.setLibelle("CRUD Designation");
+		designation.setDescription("Creer, lire, mettre à jour et suprimer une designation.");
+
+		Droit entite = new Droit();
+		entite.setLibelle("CRUD Entite");
+		entite.setDescription("Creer, lire, mettre à jour et suprimer une entite.");
+
+		Droit etat = new Droit();
+		etat.setLibelle("CRUD Etat");
+		etat.setDescription("Creer, lire, mettre à jour et suprimer un etat.");
+
+		Droit formatemail = new Droit();
+		formatemail.setLibelle("CRUD FormatEmail");
+		formatemail.setDescription("Creer, lire, mettre à jour et suprimer un FormatEmail.");
+
+		Droit intervanant = new Droit();
+		intervanant.setLibelle("CRUD Intervenant");
+		intervanant.setDescription("Creer, lire, mettre à jour et suprimer un intervenant externe.");
+
+		Droit listepostulant = new Droit();
+		listepostulant.setLibelle("CRUD ListePostulant");
+		listepostulant.setDescription("Creer, lire, mettre à jour et suprimer une liste de postulant.");
+
+		Droit presence = new Droit();
+		presence.setLibelle("CRUD Presence");
+		presence.setDescription("Creer, lire, mettre à jour et suprimer une presence.");
 	}
 
 }

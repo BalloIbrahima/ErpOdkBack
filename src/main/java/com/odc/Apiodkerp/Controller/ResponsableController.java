@@ -351,6 +351,13 @@ public class ResponsableController {
             List<Postulant> postulanttires = tirageService.creer(tirage, listePostulant.getPostulants(), nombre);
 
             try {
+
+                //
+                Historique historique = new Historique();
+                historique.setDatehistorique(new Date());
+                historique.setDescription(utilisateur.getPrenom() + " " + utilisateur.getNom()
+                        + " a a effectuer un tirage.");
+                //
                 return ResponseMessage.generateResponse("ok", HttpStatus.OK, postulanttires);
 
             } catch (Exception e) {
@@ -368,12 +375,28 @@ public class ResponsableController {
     // Tire---------------------------------------//
     // Creation de postulant tiré
     @ApiOperation(value = "Ajouter participant")
-    @PostMapping("/create/participant/{idtirage}")
+    @PostMapping("/create/participant/{idactivite}/{idUtilisateur}")
     public ResponseEntity<Object> createPostulantTire(@RequestBody Postulant participant,
-            @PathVariable("idtirage") Long idtirage) {
+            @PathVariable("idactivite") Long idactivite, @PathVariable("idUtilisateur") Long idUtilisateur) {
 
         try {
-            tirageService.ajouterParticipant(participant, idtirage);
+            Activite activite = activiteService.GetById(idactivite);
+            Utilisateur utilisateur = utilisateurService.getById(idUtilisateur);
+
+            AouP aouP = new AouP();
+            aouP.setActivite(activite);
+            aouP.setPostulant(participant);
+            aouP.setTirage(false);
+
+            //
+            Historique historique = new Historique();
+            historique.setDatehistorique(new Date());
+            historique.setDescription(utilisateur.getPrenom() + " " + utilisateur.getNom()
+                    + " a a joute le participant: " + aouP.getPostulant().getEmail() + " à l'activite avec l'ID: "
+                    + activite.getNom());
+            //
+
+            // tirageService.ajouterParticipant(participant, idtirage);
             return ResponseMessage.generateResponse("ok", HttpStatus.OK, null);
 
         } catch (Exception e) {
@@ -386,10 +409,20 @@ public class ResponsableController {
 
     // Afficher de postulant tiré
     @ApiOperation(value = "Afficher participant par son id")
-    @GetMapping("/read/{id}")
-    public ResponseEntity<Object> readPostulantTire(@PathVariable long id) {
+    @GetMapping("/read/{id}/{idUtilisateur}")
+    public ResponseEntity<Object> readPostulantTire(@PathVariable long id,
+            @PathVariable("idUtilisateur") Long idUtilisateur) {
         try {
+
+            Utilisateur utilisateur = utilisateurService.getById(idUtilisateur);
             PostulantTire post = postulantTrieService.read(id);
+
+            //
+            Historique historique = new Historique();
+            historique.setDatehistorique(new Date());
+            historique.setDescription(utilisateur.getPrenom() + " " + utilisateur.getNom()
+                    + " a afficher le participant: " + post.getPostulant().getEmail());
+            //
             return ResponseMessage.generateResponse("ok", HttpStatus.OK, post);
 
         } catch (Exception e) {
@@ -399,10 +432,20 @@ public class ResponsableController {
 
     // Modifier de postulant tiré par son id
     @ApiOperation(value = "modifier participant par son id")
-    @PutMapping("/update/{id}")
-    public ResponseEntity<Object> updatePostulantTire(@RequestBody Postulant postulant, @PathVariable long id) {
+    @PutMapping("/update/{id}/{idUtilisateur}")
+    public ResponseEntity<Object> updatePostulantTire(@RequestBody Postulant postulant, @PathVariable long id,
+            @PathVariable("idUtilisateur") Long idUtilisateur) {
         try {
             Postulant post = postulantService.update(id, postulant);
+            Utilisateur utilisateur = utilisateurService.getById(idUtilisateur);
+
+            //
+            Historique historique = new Historique();
+            historique.setDatehistorique(new Date());
+            historique.setDescription(utilisateur.getPrenom() + " " + utilisateur.getNom()
+                    + " a modifie le participant: " + post.getEmail());
+            //
+
             return ResponseMessage.generateResponse("ok", HttpStatus.OK, post);
 
         } catch (Exception e) {
@@ -413,10 +456,19 @@ public class ResponsableController {
 
     // Supprimer Postulant tiré par son id
     @ApiOperation(value = "Supprimer participant par son id")
-    @DeleteMapping("/delete/{id}")
-    public ResponseEntity<Object> deletePostulantTire(@PathVariable long id) {
+    @DeleteMapping("/delete/{id}/{idUtilisateur}")
+    public ResponseEntity<Object> deletePostulantTire(@PathVariable long id,
+            @PathVariable("idUtilisateur") Long idUtilisateur) {
         try {
             postulantTrieService.delete(id);
+            Utilisateur utilisateur = utilisateurService.getById(idUtilisateur);
+
+            //
+            Historique historique = new Historique();
+            historique.setDatehistorique(new Date());
+            historique.setDescription(utilisateur.getPrenom() + " " + utilisateur.getNom()
+                    + " a suprime le postulant tire avec l'id: " + id);
+            //
             return ResponseMessage.generateResponse("ok", HttpStatus.OK, null);
 
         } catch (Exception e) {
@@ -429,9 +481,17 @@ public class ResponsableController {
 
     // Afficher tous les postulants
     @ApiOperation(value = "Afficher tous les participants")
-    @GetMapping("/All")
-    public ResponseEntity<Object> getAllPostulantTire() {
+    @GetMapping("/All/{idUtilisateur}")
+    public ResponseEntity<Object> getAllPostulantTire(@PathVariable("idUtilisateur") Long idUtilisateur) {
         try {
+            Utilisateur utilisateur = utilisateurService.getById(idUtilisateur);
+
+            //
+            Historique historique = new Historique();
+            historique.setDatehistorique(new Date());
+            historique.setDescription(utilisateur.getPrenom() + " " + utilisateur.getNom()
+                    + " a affiché l'ensemble des participants.");
+            //
             return ResponseMessage.generateResponse("ok", HttpStatus.OK, postulantTrieService.getAll());
 
         } catch (Exception e) {
