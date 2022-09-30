@@ -3,6 +3,7 @@ package com.odc.Apiodkerp.Service;
 import java.util.List;
 
 import com.odc.Apiodkerp.Models.Activite;
+import com.odc.Apiodkerp.Models.AouP;
 import com.odc.Apiodkerp.Models.PostulantTire;
 import com.odc.Apiodkerp.Models.Presence;
 
@@ -17,7 +18,7 @@ public interface PresenceService {
 
     Presence getById(Long id);
 
-    Presence getByPostulantTire(PostulantTire postulantTire);
+    Presence getByaoup(AouP aouP);
 
     List<Presence> getByActivite(Activite activite);
 

@@ -2,6 +2,7 @@ package com.odc.Apiodkerp.ServiceImplementation;
 
 import java.util.List;
 
+import com.odc.Apiodkerp.Models.AouP;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -44,16 +45,16 @@ public class PresenceServiceImpl implements PresenceService {
     }
 
     @Override
+    public Presence getByaoup(AouP aoup) {
+        return repos.findByAouP(aoup);
+    }
+
+    @Override
     public List<Presence> getAll() {
         // TODO Auto-generated method stub
         return repos.findAll();
     }
 
-    @Override
-    public Presence getByPostulantTire(PostulantTire postulantTire) {
-        // TODO Auto-generated method stub
-        return repos.findByPostulantTire(postulantTire);
-    }
 
     @Override
     public List<Presence> getByActivite(Activite activite) {

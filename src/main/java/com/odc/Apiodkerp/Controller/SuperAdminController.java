@@ -248,7 +248,7 @@ public class SuperAdminController {
     @ApiOperation(value = "Creer un utilisateur.")
     @PostMapping("/create/user/{idadmin}")
     public ResponseEntity<Object> createUser(@RequestParam(value = "data") String data,@PathVariable long idadmin,
-            @RequestParam(value = "file", required = false) MultipartFile file) {
+            @RequestParam(value = "file", required = false) MultipartFile file,@RequestBody Utilisateur utilis) {
         try {
             Utilisateur user =   utilisateurService.getById(idadmin);
 
@@ -873,6 +873,11 @@ public class SuperAdminController {
         }
 
     }
+
+    // tOTAL PERSONNEL ACTIVE
+
+
+
 
     // :::::::::::::::::::::::::::::::::::total entite ::::::::::::::::::::::::::::::::::::::
     @ApiOperation(value = "totalentite")
