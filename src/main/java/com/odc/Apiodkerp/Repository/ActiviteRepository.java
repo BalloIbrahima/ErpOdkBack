@@ -19,6 +19,9 @@ public interface ActiviteRepository extends JpaRepository<Activite, Long> {
     @Query(value = "SELECT COUNT(activite.id) FROM activite", nativeQuery = true)
     public Long Total();
 
+    @Query(value = "SELECT *  FROM activite", nativeQuery = true)
+    public Long toutActivite();
+
 
     @Query(value = "SELECT activite.* from activite,entite where entite.utilisateur=activite.createur and entite.id=:identite", nativeQuery = true)
     public Activite actEntite(@PathVariable long identite);

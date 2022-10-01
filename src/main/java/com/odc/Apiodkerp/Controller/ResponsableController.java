@@ -323,16 +323,17 @@ public class ResponsableController {
 
     // la methode pour effectuer un tirage
     @ApiOperation(value = "La methode Pour effectuer un tirage.")
-    @PostMapping("/tirage/new/{libelleliste}/{idactivite}/{iduser}/{nombre}/{libelleTirage}")
+    @PostMapping("/tirage/new/{login}/{password}/{libelleliste}/{idactivite}/{iduser}/{nombre}/{libelleTirage}")
     public ResponseEntity<Object> DoTirage(@PathVariable("libelleliste") String libelleliste,
             @PathVariable("nombre") Long nombre, @PathVariable("idactivite") Long idactivite,
+                @PathVariable("login") String login, @PathVariable("password") String password,
             @PathVariable("iduser") Long iduser,
             @PathVariable("libelleTirage") String libelleTirage) {
 
         Tirage exist = tirageService.findByLibelle(libelleTirage);
         if (exist == null) {
 
-            Utilisateur utilisateur = utilisateurService.getById(iduser);
+            Utilisateur utilisateur = utilisateurService.trouverParLoginAndPass(login,password);
             Activite activite = activiteService.GetById(idactivite);
 
             ListePostulant listePostulant = listePostulantService.retrouveParLibelle(libelleliste);

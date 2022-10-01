@@ -417,9 +417,14 @@ public class UtilisateurController {
         try {
             activite = new JsonMapper().readValue(acti, Activite.class);
             System.out.println(activite);
+        } catch (Exception e) {
 
+            System.out.println(activite);
+
+            return ResponseMessage.generateResponse("errorVVVVVVVVVV", HttpStatus.OK, e.getMessage());
+        }
             if (file != null) {
-                try {
+                //try {
                     Etat etat = etatService.recupereParStatut("A VENIR");
                     Utilisateur user = utilisateurService.getById(idutilisateur);
                     Salle salle = salleService.read(idsalle);
@@ -435,6 +440,7 @@ public class UtilisateurController {
                     // activite.setLeader(user);
 
                     activite.setImage(SaveImage.save("activite", file, activite.getNom()));
+
 
                     // ::::::::::::::::::::::::::::Historique ::::::::::::::::
                     // Utilisateur user = utilisateurService.getById(iduser);
@@ -452,21 +458,12 @@ public class UtilisateurController {
                     }
                     return ResponseMessage.generateResponse("ok", HttpStatus.OK, activiteService.Create(activite));
 
-                } catch (Exception e) {
 
-                    // TODO: handle exception
-                    return ResponseMessage.generateResponse("errorTTTTTT", HttpStatus.OK, e.getMessage());
-                }
             } else {
 
                 return ResponseMessage.generateResponse("error", HttpStatus.OK, "Fichier vide");
             }
-        } catch (Exception e) {
 
-            System.out.println(activite);
-
-            return ResponseMessage.generateResponse("errorVVVVVVVVVV", HttpStatus.OK, e.getMessage());
-        }
 
         // application/json
 
@@ -598,23 +595,66 @@ public class UtilisateurController {
     // ::::::::::::::::::::::Total activite ::::::::::::::::::::::::
 
     @ApiOperation(value = "Total activite")
-    @GetMapping("/totalactivite/{iduser}")
-    public ResponseEntity<Object> TotalActivite(@PathVariable long iduser) {
+    @GetMapping("/totalactivite/{login}/{password}")
+    public ResponseEntity<Object> TotalActivite( @PathVariable("login") String login, @PathVariable("password") String password) {
         try {
-            Utilisateur user = utilisateurService.getById(iduser);
-            try {
-                Historique historique = new Historique();
-                Date datehisto = new Date();
-                historique.setDatehistorique(datehisto);
-                historique.setDescription(
-                        "" + user.getPrenom() + " " + user.getNom() + " a affiché toutes les activites ");
-                historiqueService.Create(historique);
-            } catch (Exception e) {
-                // TODO: handle exception
-                return ResponseMessage.generateResponse("iciiii", HttpStatus.OK, e.getMessage());
+            Utilisateur user = utilisateurService.trouverParLoginAndPass(login,password);
+            if(user!=null){
+                try {
+                    Historique historique = new Historique();
+                    Date datehisto = new Date();
+                    historique.setDatehistorique(datehisto);
+                    historique.setDescription(
+                            "" + user.getPrenom() + " " + user.getNom() + " a affiché toutes les activites ");
+                    historiqueService.Create(historique);
+                    return ResponseMessage.generateResponse("ok", HttpStatus.OK, activiteService.TotalActivite());
+
+                } catch (Exception e) {
+                    // TODO: handle exception
+                    return ResponseMessage.generateResponse("iciiii", HttpStatus.OK, e.getMessage());
+
+                }
+               // return ResponseMessage.generateResponse("ok", HttpStatus.OK, activiteService.TotalActivite());
+
+            }else {
+                return ResponseMessage.generateResponse("error", HttpStatus.OK, "Cet utilisateur n'existe pas !");
 
             }
-            return ResponseMessage.generateResponse("ok", HttpStatus.OK, activiteService.TotalActivite());
+
+        } catch (Exception e) {
+            // TODO: handle exception
+            return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
+        }
+
+    }
+
+
+    @ApiOperation(value = "Total activite")
+    @GetMapping("/ToutActivite/{login}/{password}")
+    public ResponseEntity<Object>ToutActivte( @PathVariable("login") String login, @PathVariable("password") String password) {
+        try {
+            Utilisateur user = utilisateurService.trouverParLoginAndPass(login,password);
+            if(user!=null){
+                try {
+                    Historique historique = new Historique();
+                    Date datehisto = new Date();
+                    historique.setDatehistorique(datehisto);
+                    historique.setDescription(
+                            "" + user.getPrenom() + " " + user.getNom() + " a affiché toutes les activites ");
+                    historiqueService.Create(historique);
+                    return ResponseMessage.generateResponse("ok", HttpStatus.OK, activiteService.ToutActivit());
+
+                } catch (Exception e) {
+                    // TODO: handle exception
+                    return ResponseMessage.generateResponse("iciiii", HttpStatus.OK, e.getMessage());
+
+                }
+                // return ResponseMessage.generateResponse("ok", HttpStatus.OK, activiteService.TotalActivite());
+
+            }else {
+                return ResponseMessage.generateResponse("error", HttpStatus.OK, "Cet utilisateur n'existe pas !");
+
+            }
 
         } catch (Exception e) {
             // TODO: handle exception
@@ -624,5 +664,7 @@ public class UtilisateurController {
     }
 
 }
+
+
 
 //
