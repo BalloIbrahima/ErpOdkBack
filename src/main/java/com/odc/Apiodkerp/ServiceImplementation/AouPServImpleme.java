@@ -9,11 +9,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+
 @Service
 public class AouPServImpleme implements AouPService {
 
     @Autowired
     AouPReposy aouprepos;
+
     @Override
     public AouP Create(AouP aoup) {
         return aouprepos.save(aoup);
@@ -41,4 +43,5 @@ public class AouPServImpleme implements AouPService {
     public AouP GetById(long id) {
         return aouprepos.findById(id).get();
     }
+
 }
