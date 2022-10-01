@@ -357,6 +357,7 @@ public class ResponsableController {
         if (exist == null) {
             Droit createTirage = droitService.GetLibelle("Create Tirage");
 
+
             Utilisateur utilisateur = utilisateurService.trouverParLoginAndPass(login, password);
             Activite activite = activiteService.GetById(idactivite);
 

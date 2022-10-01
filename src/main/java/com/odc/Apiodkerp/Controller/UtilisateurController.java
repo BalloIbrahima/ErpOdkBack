@@ -561,9 +561,14 @@ public class UtilisateurController {
         try {
             activite = new JsonMapper().readValue(acti, Activite.class);
             System.out.println(activite);
+        } catch (Exception e) {
 
+            System.out.println(activite);
+
+            return ResponseMessage.generateResponse("errorVVVVVVVVVV", HttpStatus.OK, e.getMessage());
+        }
             if (file != null) {
-                try {
+                //try {
                     Etat etat = etatService.recupereParStatut("A VENIR");
                     Utilisateur user = utilisateurService.trouverParLoginAndPass(login, password);
                     Droit createType = droitService.GetLibelle("Create TypeActivite");
@@ -581,6 +586,7 @@ public class UtilisateurController {
                     // activite.setLeader(user);
 
                     activite.setImage(SaveImage.save("activite", file, activite.getNom()));
+
 
                     // ::::::::::::::::::::::::::::Historique ::::::::::::::::
                     // Utilisateur user = utilisateurService.getById(iduser);
@@ -614,21 +620,12 @@ public class UtilisateurController {
 
                     }
 
-                } catch (Exception e) {
 
-                    // TODO: handle exception
-                    return ResponseMessage.generateResponse("errorTTTTTT", HttpStatus.OK, e.getMessage());
-                }
             } else {
 
                 return ResponseMessage.generateResponse("error", HttpStatus.OK, "Fichier vide");
             }
-        } catch (Exception e) {
 
-            System.out.println(activite);
-
-            return ResponseMessage.generateResponse("errorVVVVVVVVVV", HttpStatus.OK, e.getMessage());
-        }
 
         // application/json
 
@@ -835,8 +832,7 @@ public class UtilisateurController {
 
     // ::::::::::::::::::::::Total activite ::::::::::::::::::::::::
 
-    @ApiOperation(value = "Total activite")
-    @GetMapping("/totalactivite/{login}/{password}")
+
     public ResponseEntity<Object> TotalActivite(@PathVariable("login") String login,
             @PathVariable("password") String password) {
         try {
@@ -877,5 +873,7 @@ public class UtilisateurController {
     }
 
 }
+
+
 
 //

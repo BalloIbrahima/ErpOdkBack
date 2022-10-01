@@ -85,6 +85,14 @@ public class ActiviteServiceImpl implements ActiviteService {
     }
 
     @Override
+    public Long ToutActivite() {
+        return activiteRepository.toutActivite();
+    }
+
+    public List<Activite> ToutActivit(){
+        return  activiteRepository.findAll();
+    }
+    @Override
     public Activite GetByEtat(Etat etat) {
         return activiteRepository.findByEtat(etat);
     }

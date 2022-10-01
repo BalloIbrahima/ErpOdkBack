@@ -106,24 +106,25 @@ public class SuperAdminController {
 
     ////
     @ApiOperation(value = "Lien pour créer une salle")
-    @PostMapping("/creersalle/{iduser}")
-    public ResponseEntity<Object> creerSalle(@RequestBody Salle salle, @PathVariable("iduser") Long iduser) {
+    @PostMapping("/creersalle/{login}/{password}")
+    public ResponseEntity<Object> creerSalle(@RequestBody Salle salle, @PathVariable("login") String login, @PathVariable("password") String password) {
         try {
-            Utilisateur user =   utilisateurService.getById(iduser);
-            try {
-                Historique historique = new Historique();
-                Date datehisto = new Date();
-                historique.setDatehistorique(datehisto);
-                historique.setDescription(""+user.getPrenom()+ " "+user.getNom()+" a crée une salle du nom de "+salle.getLibelle());
-                historiqueService.Create(historique);}
-            catch (Exception e) {
-                // TODO: handle exception
-                return ResponseMessage.generateResponse("iciiii", HttpStatus.OK, e.getMessage());
+           // Utilisateur user =   utilisateurService.trouverParLoginAndPass(login,password);
 
-            }
-            Utilisateur utilisateur = utilisateurService.getById(iduser);
+            Utilisateur utilisateur = utilisateurService.trouverParLoginAndPass(login,password);
             System.out.println(utilisateur);
             if (utilisateur.getRole() == RoleService.GetByLibelle("ADMIN")) {
+                try {
+                    Historique historique = new Historique();
+                    Date datehisto = new Date();
+                    historique.setDatehistorique(datehisto);
+                    historique.setDescription(""+utilisateur.getPrenom()+ " "+utilisateur.getNom()+" a crée une salle du nom de "+salle.getLibelle());
+                    historiqueService.Create(historique);}
+                catch (Exception e) {
+                    // TODO: handle exception
+                    return ResponseMessage.generateResponse("iciiii", HttpStatus.OK, e.getMessage());
+
+                }
                 salle.setUtilisateur(utilisateur);
                 return ResponseMessage.generateResponse("ok", HttpStatus.OK, salleService.create(salle));
             } else {
@@ -136,10 +137,10 @@ public class SuperAdminController {
 
     // ::::::::::Recuperer salle par id
     @ApiOperation(value = "Recuperer salle par id")
-    @GetMapping("getSalle/{iduser}/{id}")
-    public ResponseEntity<Object> getSalle(@PathVariable("id") Long id,@PathVariable("iduser") Long iduser) {
+    @GetMapping("getSalle/{login}/{password}/{id}")
+    public ResponseEntity<Object> getSalle(@PathVariable("id") Long id, @PathVariable("login") String login, @PathVariable("password") String password) {
         try {
-            Utilisateur user =   utilisateurService.getById(iduser);
+            Utilisateur user =   utilisateurService.trouverParLoginAndPass(login,password);
             Salle salle = new Salle();
 
             try {
@@ -163,10 +164,10 @@ public class SuperAdminController {
     }
 
     @ApiOperation(value = "Lien pour modifier une salle")
-    @PutMapping("/modifiersalle/{iduser}/{id}")
-    public ResponseEntity<Object> modifier(@RequestBody Salle salle, @PathVariable long id,@PathVariable long iduser) {
+    @PutMapping("/modifiersalle/{login}/{password}/{id}")
+    public ResponseEntity<Object> modifier(@RequestBody Salle salle, @PathVariable long id, @PathVariable("login") String login, @PathVariable("password") String password) {
         try {
-            Utilisateur user =   utilisateurService.getById(iduser);
+            Utilisateur user =   utilisateurService.trouverParLoginAndPass(login,password);
             try {
                 Historique historique = new Historique();
                 Date datehisto = new Date();
@@ -185,7 +186,7 @@ public class SuperAdminController {
     }
 
     @ApiOperation(value = "Lien pour suprimer une salle")
-    @DeleteMapping("/supprimersalle/{iduser}/{id}")
+    @DeleteMapping("/supprimersalle/{login}/{password}/{id}")
     public ResponseEntity<Object> supprimer(@PathVariable long id,@PathVariable long iduser) {
         try {
             Utilisateur user =   utilisateurService.getById(iduser);
@@ -910,11 +911,11 @@ public class SuperAdminController {
 
     // activités en avenir
     @ApiOperation(value = "activites/avenir")
-    @GetMapping("activites/avenir/{iduser}")
-    public ResponseEntity<Object> ActivitesAvenir(@PathVariable long iduser) {
+    @GetMapping("activites/avenir/{login}/{password}")
+    public ResponseEntity<Object> ActivitesAvenir(@PathVariable String login,@PathVariable String password) {
         try {
 
-            Utilisateur users =   utilisateurService.getById(iduser);
+            Utilisateur users =   utilisateurService.trouverParLoginAndPass(login,password);
             try {
                 Historique historique = new Historique();
                 Date datehisto = new Date();
@@ -935,22 +936,24 @@ public class SuperAdminController {
 
     // activités en cour
     @ApiOperation(value = "activites/encour")
-    @GetMapping("activites/encour/{iduser}")
-    public ResponseEntity<Object> ActivitesEncour(@PathVariable long iduser) {
+    @GetMapping("activites/encour/{login}/{password}")
+    public ResponseEntity<Object> ActivitesEncour(@PathVariable String login,@PathVariable String password) {
         try {
-            Utilisateur users =   utilisateurService.getById(iduser);
+            Utilisateur users =   utilisateurService.trouverParLoginAndPass(login,password);
             try {
                 Historique historique = new Historique();
                 Date datehisto = new Date();
                 historique.setDatehistorique(datehisto);
                 historique.setDescription(""+users.getPrenom()+ " "+users.getNom()+" a affiché les activités en cour ");
-                historiqueService.Create(historique);}
+                historiqueService.Create(historique);
+
+                return ResponseMessage.generateResponse("error", HttpStatus.OK, activiteService.Encour());}
             catch (Exception e) {
                 // TODO: handle exception
                 return ResponseMessage.generateResponse("iciiii", HttpStatus.OK, e.getMessage());
 
             }
-            return ResponseMessage.generateResponse("error", HttpStatus.OK, activiteService.Encour());
+
         } catch (Exception e) {
             // TODO: handle exception
             return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
@@ -1147,11 +1150,11 @@ public class SuperAdminController {
 
     // :::::::::::::::::::::::Les users active
     @ApiOperation(value = "Les utilisateurs active")
-    @GetMapping("/getUsers/active/{iduser}")
-    public ResponseEntity<Object> getUsersActives(@PathVariable long iduser) {
+    @GetMapping("/getUsers/active/{login}/{password}")
+    public ResponseEntity<Object> getUsersActives( @PathVariable("login") String login, @PathVariable("password") String password) {
         try {
             //hisorique
-            Utilisateur user =   utilisateurService.getById(iduser);
+            Utilisateur user =   utilisateurService.trouverParLoginAndPass(login,password);
             try {
                 Historique historique = new Historique();
                 Date datehisto = new Date();
