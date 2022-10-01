@@ -130,4 +130,10 @@ public class UtilisateurServiceImpl implements UtilisateurService {
         // TODO Auto-generated method stub
         return repos.findByActive(bool);
     }
+
+    @Override
+    public Utilisateur trouverParLoginAndPass(String login, String password) {
+        // TODO Auto-generated method stub
+        return repos.findByLoginAndPassword(login, password);
+    }
 }

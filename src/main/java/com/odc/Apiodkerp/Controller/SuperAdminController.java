@@ -12,22 +12,6 @@ import org.springframework.web.multipart.MultipartFile;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.odc.Apiodkerp.Configuration.ResponseMessage;
 import com.odc.Apiodkerp.Configuration.SaveImage;
-import com.odc.Apiodkerp.Service.ActiviteService;
-import com.odc.Apiodkerp.Service.EntiteService;
-import com.odc.Apiodkerp.Service.EtatService;
-import com.odc.Apiodkerp.Service.IntervenantExterneService;
-import com.odc.Apiodkerp.Service.ListePostulantService;
-import com.odc.Apiodkerp.Service.NotificationService;
-import com.odc.Apiodkerp.Service.PostulantService;
-import com.odc.Apiodkerp.Service.PostulantTrieService;
-import com.odc.Apiodkerp.Service.PresenceService;
-import com.odc.Apiodkerp.Service.RoleService;
-import com.odc.Apiodkerp.Service.SalleService;
-import com.odc.Apiodkerp.Service.StatusService;
-import com.odc.Apiodkerp.Service.TacheService;
-import com.odc.Apiodkerp.Service.TirageService;
-import com.odc.Apiodkerp.Service.TypeActiviteService;
-import com.odc.Apiodkerp.Service.UtilisateurService;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -56,6 +40,7 @@ public class SuperAdminController {
     @Autowired
     private EtatService etatService;
 
+
     @Autowired
     private DesignationService designationService;
 
@@ -68,8 +53,10 @@ public class SuperAdminController {
     @Autowired
     private PostulantService postulantService;
 
+
     @Autowired
     private AouPService aouPService;
+
 
     @Autowired
     private PostulantTrieService postulantTrieService;
@@ -91,18 +78,6 @@ public class SuperAdminController {
 
     @Autowired
     private TypeActiviteService typeActiviteService;
-
-    @Autowired
-    private TacheService tacheService;
-
-    @Autowired
-    private StatusService statusService;
-
-    @Autowired
-    private IntervenantExterneService intervenantExterneService;
-
-    @Autowired
-    private NotificationService notificationService;
 
     // Pour le login d'un super administrateur
     @ApiOperation(value = "Pour le login d'un super administrateur.")
@@ -134,15 +109,14 @@ public class SuperAdminController {
     @PostMapping("/creersalle/{iduser}")
     public ResponseEntity<Object> creerSalle(@RequestBody Salle salle, @PathVariable("iduser") Long iduser) {
         try {
-            Utilisateur user = utilisateurService.getById(iduser);
+            Utilisateur user =   utilisateurService.getById(iduser);
             try {
                 Historique historique = new Historique();
                 Date datehisto = new Date();
                 historique.setDatehistorique(datehisto);
-                historique.setDescription("" + user.getPrenom() + " " + user.getNom() + " a crée une salle du nom de "
-                        + salle.getLibelle());
-                historiqueService.Create(historique);
-            } catch (Exception e) {
+                historique.setDescription(""+user.getPrenom()+ " "+user.getNom()+" a crée une salle du nom de "+salle.getLibelle());
+                historiqueService.Create(historique);}
+            catch (Exception e) {
                 // TODO: handle exception
                 return ResponseMessage.generateResponse("iciiii", HttpStatus.OK, e.getMessage());
 
@@ -163,19 +137,18 @@ public class SuperAdminController {
     // ::::::::::Recuperer salle par id
     @ApiOperation(value = "Recuperer salle par id")
     @GetMapping("getSalle/{iduser}/{id}")
-    public ResponseEntity<Object> getSalle(@PathVariable("id") Long id, @PathVariable("iduser") Long iduser) {
+    public ResponseEntity<Object> getSalle(@PathVariable("id") Long id,@PathVariable("iduser") Long iduser) {
         try {
-            Utilisateur user = utilisateurService.getById(iduser);
+            Utilisateur user =   utilisateurService.getById(iduser);
             Salle salle = new Salle();
 
             try {
                 Historique historique = new Historique();
                 Date datehisto = new Date();
                 historique.setDatehistorique(datehisto);
-                historique.setDescription("" + user.getPrenom() + " " + user.getNom()
-                        + " a recuperer une salle du nom de " + salle.getId());
-                historiqueService.Create(historique);
-            } catch (Exception e) {
+                historique.setDescription(""+user.getPrenom()+ " "+user.getNom()+" a recuperer une salle du nom de "+salle.getId());
+                historiqueService.Create(historique);}
+            catch (Exception e) {
                 // TODO: handle exception
                 return ResponseMessage.generateResponse("iciiii", HttpStatus.OK, e.getMessage());
 
@@ -191,17 +164,16 @@ public class SuperAdminController {
 
     @ApiOperation(value = "Lien pour modifier une salle")
     @PutMapping("/modifiersalle/{iduser}/{id}")
-    public ResponseEntity<Object> modifier(@RequestBody Salle salle, @PathVariable long id, @PathVariable long iduser) {
+    public ResponseEntity<Object> modifier(@RequestBody Salle salle, @PathVariable long id,@PathVariable long iduser) {
         try {
-            Utilisateur user = utilisateurService.getById(iduser);
+            Utilisateur user =   utilisateurService.getById(iduser);
             try {
                 Historique historique = new Historique();
                 Date datehisto = new Date();
                 historique.setDatehistorique(datehisto);
-                historique.setDescription("" + user.getPrenom() + " " + user.getNom()
-                        + " a modifier une salle du nom de " + salleService.getByIdsalle(id).getLibelle());
-                historiqueService.Create(historique);
-            } catch (Exception e) {
+                historique.setDescription(""+user.getPrenom()+ " "+user.getNom()+" a modifier une salle du nom de "+salleService.getByIdsalle(id).getLibelle());
+                historiqueService.Create(historique);}
+            catch (Exception e) {
                 // TODO: handle exception
                 return ResponseMessage.generateResponse("iciiii", HttpStatus.OK, e.getMessage());
 
@@ -214,17 +186,16 @@ public class SuperAdminController {
 
     @ApiOperation(value = "Lien pour suprimer une salle")
     @DeleteMapping("/supprimersalle/{iduser}/{id}")
-    public ResponseEntity<Object> supprimer(@PathVariable long id, @PathVariable long iduser) {
+    public ResponseEntity<Object> supprimer(@PathVariable long id,@PathVariable long iduser) {
         try {
-            Utilisateur user = utilisateurService.getById(iduser);
+            Utilisateur user =   utilisateurService.getById(iduser);
             try {
                 Historique historique = new Historique();
                 Date datehisto = new Date();
                 historique.setDatehistorique(datehisto);
-                historique.setDescription(
-                        "" + user.getPrenom() + " " + user.getNom() + " a supprimé une salle du nom de ");
-                historiqueService.Create(historique);
-            } catch (Exception e) {
+                historique.setDescription(""+user.getPrenom()+ " "+user.getNom()+" a supprimé une salle du nom de ");
+                historiqueService.Create(historique);}
+            catch (Exception e) {
                 // TODO: handle exception
                 return ResponseMessage.generateResponse("iciiii", HttpStatus.OK, e.getMessage());
 
@@ -238,19 +209,16 @@ public class SuperAdminController {
 
     @ApiOperation(value = "Lien pour lier une salle à une activite")
     @GetMapping("/attribuersalle/{iduser}/{idsalle}/{idactivite}")
-    public ResponseEntity<Object> attribuerSalle(@PathVariable long idsalle, @PathVariable long idactivite,
-            @PathVariable long iduser) {
+    public ResponseEntity<Object> attribuerSalle(@PathVariable long idsalle, @PathVariable long idactivite,@PathVariable long iduser) {
         try {
-            Utilisateur user = utilisateurService.getById(iduser);
+            Utilisateur user =   utilisateurService.getById(iduser);
             try {
                 Historique historique = new Historique();
                 Date datehisto = new Date();
                 historique.setDatehistorique(datehisto);
-                historique.setDescription("" + user.getPrenom() + " " + user.getNom()
-                        + " a attribué  une salle du nom de  " + salleService.getByIdsalle(idsalle) + " à l'activte "
-                        + activiteService.GetById(idactivite));
-                historiqueService.Create(historique);
-            } catch (Exception e) {
+                historique.setDescription(""+user.getPrenom()+ " "+user.getNom()+" a attribué  une salle du nom de  "+salleService.getByIdsalle(idsalle)+ " à l'activte "+activiteService.GetById(idactivite));
+                historiqueService.Create(historique);}
+            catch (Exception e) {
                 // TODO: handle exception
                 return ResponseMessage.generateResponse("iciiii", HttpStatus.OK, e.getMessage());
 
@@ -279,10 +247,11 @@ public class SuperAdminController {
     // USER-------------------------------------------------------------->
     @ApiOperation(value = "Creer un utilisateur.")
     @PostMapping("/create/user/{idadmin}")
-    public ResponseEntity<Object> createUser(@RequestParam(value = "data") String data, @PathVariable long idadmin,
-            @RequestParam(value = "file", required = false) MultipartFile file) {
+    public ResponseEntity<Object> createUser(@RequestParam(value = "data") String data,@PathVariable long idadmin,
+            @RequestParam(value = "file", required = false) MultipartFile file,@RequestBody Utilisateur utilis) {
         try {
-            Utilisateur user = utilisateurService.getById(idadmin);
+            Utilisateur user =   utilisateurService.getById(idadmin);
+
 
             Utilisateur utilisateur = new JsonMapper().readValue(data, Utilisateur.class);
 
@@ -294,15 +263,14 @@ public class SuperAdminController {
                     utilisateur.setImage(SaveImage.save("user", file, utilisateur.getEmail()));
                 }
 
-                // Historique
+                //Historique
                 try {
                     Historique historique = new Historique();
                     Date datehisto = new Date();
                     historique.setDatehistorique(datehisto);
-                    historique.setDescription("" + user.getPrenom() + " " + user.getNom()
-                            + " a crée un utilisateur du nom de " + utilisateur.getNom());
-                    historiqueService.Create(historique);
-                } catch (Exception e) {
+                    historique.setDescription(""+user.getPrenom()+ " "+user.getNom()+" a crée un utilisateur du nom de "+utilisateur.getNom());
+                    historiqueService.Create(historique);}
+                catch (Exception e) {
                     // TODO: handle exception
                     return ResponseMessage.generateResponse("iciiii", HttpStatus.OK, e.getMessage());
 
@@ -331,16 +299,15 @@ public class SuperAdminController {
             if (file != null) {
                 SaveImage.save("user", file, utilisateur.getEmail());
             }
-            // Historique
-            Utilisateur user = utilisateurService.getById(idadmin);
+            //Historique
+            Utilisateur user =   utilisateurService.getById(idadmin);
             try {
                 Historique historique = new Historique();
                 Date datehisto = new Date();
                 historique.setDatehistorique(datehisto);
-                historique.setDescription(
-                        "" + user.getPrenom() + " " + user.getNom() + " a modifier un utilisateur du nom de ");
-                historiqueService.Create(historique);
-            } catch (Exception e) {
+                historique.setDescription(""+user.getPrenom()+ " "+user.getNom()+" a modifier un utilisateur du nom de ");
+                historiqueService.Create(historique);}
+            catch (Exception e) {
                 // TODO: handle exception
                 return ResponseMessage.generateResponse("iciiii", HttpStatus.OK, e.getMessage());
 
@@ -360,20 +327,19 @@ public class SuperAdminController {
 
     @ApiOperation(value = "Supprimer un utilisateur")
     @DeleteMapping("/delete/user/{idadmin}/{id}")
-    public ResponseEntity<Object> deleteUser(@PathVariable Long id, @PathVariable Long idadmin) {
+    public ResponseEntity<Object> deleteUser(@PathVariable Long id,@PathVariable Long idadmin) {
         try {
             utilisateurService.delete(id);
 
-            // Historique
-            Utilisateur user = utilisateurService.getById(idadmin);
+            //Historique
+            Utilisateur user =   utilisateurService.getById(idadmin);
             try {
                 Historique historique = new Historique();
                 Date datehisto = new Date();
                 historique.setDatehistorique(datehisto);
-                historique.setDescription("" + user.getPrenom() + " " + user.getNom()
-                        + " a supprimé un utilisateur du nom de " + utilisateurService.getById(id));
-                historiqueService.Create(historique);
-            } catch (Exception e) {
+                historique.setDescription(""+user.getPrenom()+ " "+user.getNom()+" a supprimé un utilisateur du nom de "+utilisateurService.getById(id));
+                historiqueService.Create(historique);}
+            catch (Exception e) {
                 // TODO: handle exception
                 return ResponseMessage.generateResponse("iciiii", HttpStatus.OK, e.getMessage());
 
@@ -389,27 +355,28 @@ public class SuperAdminController {
 
     @ApiOperation(value = "Affichager tout les utilisateurs")
     @GetMapping("/getAll/user/{iduser}")
-    public ResponseEntity<Object> GetAllUser(@PathVariable long iduser) {
+    public ResponseEntity<Object> GetAllUser(@PathVariable long  iduser) {
         try {
-            Utilisateur user = utilisateurService.getById(iduser);
+            Utilisateur user =   utilisateurService.getById(iduser);
             try {
-                Historique historique = new Historique();
-                Date datehisto = new Date();
-                historique.setDatehistorique(datehisto);
-                historique.setDescription("" + user.getPrenom() + "a affiché tous les utilisateurs");
-                historiqueService.Create(historique);
+            Historique historique = new Historique();
+            Date datehisto = new Date();
+            historique.setDatehistorique(datehisto);
+            historique.setDescription(""+user.getPrenom()+ "a affiché tous les utilisateurs");
+            historiqueService.Create(historique);
 
-                System.out.println(historique.getDescription());
+            System.out.println(historique.getDescription());
 
-                Role uRole = RoleService.GetByLibelle("USER");
-                List<Utilisateur> getAllUtilisateur = utilisateurService.RetrouverParRole(uRole);
-                return ResponseMessage.generateResponse("ok", HttpStatus.OK, getAllUtilisateur);
+            Role uRole = RoleService.GetByLibelle("USER");
+            List<Utilisateur> getAllUtilisateur = utilisateurService.RetrouverParRole(uRole);
+            return ResponseMessage.generateResponse("ok", HttpStatus.OK, getAllUtilisateur);
 
             } catch (Exception e) {
                 // TODO: handle exception
                 return ResponseMessage.generateResponse("iciiii", HttpStatus.OK, e.getMessage());
 
             }
+
 
         } catch (Exception e) {
             // TODO: handle exception
@@ -421,18 +388,17 @@ public class SuperAdminController {
 
     @ApiOperation(value = "Affichager un utilisateur")
     @GetMapping("/get/user/{iduser}/{id}")
-    public ResponseEntity<Object> GetIdUtilisateur(@PathVariable("id") Long id, @PathVariable("iduser") Long iduser) {
+    public ResponseEntity<Object> GetIdUtilisateur(@PathVariable("id") Long id,@PathVariable("iduser") Long iduser) {
         try {
 
-            Utilisateur user = utilisateurService.getById(iduser);
+            Utilisateur user =   utilisateurService.getById(iduser);
             try {
                 Historique historique = new Historique();
                 Date datehisto = new Date();
                 historique.setDatehistorique(datehisto);
-                historique.setDescription("" + user.getPrenom() + " " + user.getNom()
-                        + " a afficher  un utilisateur du nom de " + utilisateurService.getById(id));
-                historiqueService.Create(historique);
-            } catch (Exception e) {
+                historique.setDescription(""+user.getPrenom()+ " "+user.getNom()+" a afficher  un utilisateur du nom de "+utilisateurService.getById(id));
+                historiqueService.Create(historique);}
+            catch (Exception e) {
                 // TODO: handle exception
                 return ResponseMessage.generateResponse("iciiii", HttpStatus.OK, e.getMessage());
 
@@ -477,21 +443,20 @@ public class SuperAdminController {
 
                     }
 
-                    // Histoirque
-                    Utilisateur user = utilisateurService.getById(idAdmin);
+                    //Histoirque
+                    Utilisateur user =   utilisateurService.getById(idAdmin);
                     try {
                         Historique historique = new Historique();
                         Date datehisto = new Date();
                         historique.setDatehistorique(datehisto);
-                        historique.setDescription(
-                                "" + user.getPrenom() + " " + user.getNom() + " a crée un responsable du nom de "
-                                        + utilisateur.getNom() + " " + utilisateur.getPrenom());
-                        historiqueService.Create(historique);
-                    } catch (Exception e) {
+                        historique.setDescription(""+user.getPrenom()+ " "+user.getNom()+" a crée un responsable du nom de "+utilisateur.getNom()+" "+utilisateur.getPrenom());
+                        historiqueService.Create(historique);}
+                    catch (Exception e) {
                         // TODO: handle exception
                         return ResponseMessage.generateResponse("iciiii", HttpStatus.OK, e.getMessage());
 
                     }
+
 
                     Utilisateur NewResponsable = utilisateurService.creer(utilisateur);
                     return ResponseMessage.generateResponse("ok", HttpStatus.OK, NewResponsable);
@@ -545,16 +510,15 @@ public class SuperAdminController {
             Utilisateur admin = utilisateurService.getById(idAdmin);
             if (admin.getRole() == RoleService.GetByLibelle("ADMIN")) {
 
-                Utilisateur user = utilisateurService.getById(idAdmin);
-                Utilisateur respon = utilisateurService.getById(idResponsable);
+                Utilisateur user =   utilisateurService.getById(idAdmin);
+                Utilisateur respon =   utilisateurService.getById(idResponsable);
                 try {
                     Historique historique = new Historique();
                     Date datehisto = new Date();
                     historique.setDatehistorique(datehisto);
-                    historique.setDescription("" + user.getPrenom() + " " + user.getNom()
-                            + " a supprimé un responsable du nom de " + respon.getNom() + " " + respon.getPrenom());
-                    historiqueService.Create(historique);
-                } catch (Exception e) {
+                    historique.setDescription(""+user.getPrenom()+ " "+user.getNom()+" a supprimé un responsable du nom de "+respon.getNom()+" "+respon.getPrenom());
+                    historiqueService.Create(historique);}
+                catch (Exception e) {
                     // TODO: handle exception
                     return ResponseMessage.generateResponse("iciiii", HttpStatus.OK, e.getMessage());
 
@@ -578,19 +542,18 @@ public class SuperAdminController {
     public ResponseEntity<Object> GetAllResponsable(@PathVariable long iduser) {
         try {
 
-            Utilisateur user = utilisateurService.getById(iduser);
+            Utilisateur user =   utilisateurService.getById(iduser);
             try {
                 Historique historique = new Historique();
                 Date datehisto = new Date();
                 historique.setDatehistorique(datehisto);
-                historique.setDescription(
-                        "" + user.getPrenom() + " " + user.getNom() + " a affiché tous les responsables");
-                historiqueService.Create(historique);
-            } catch (Exception e) {
-                // TODO: handle exception
-                return ResponseMessage.generateResponse("iciiii", HttpStatus.OK, e.getMessage());
+                historique.setDescription(""+user.getPrenom()+ " "+user.getNom()+" a affiché tous les responsables");
+                historiqueService.Create(historique);}
+             catch (Exception e) {
+                    // TODO: handle exception
+                    return ResponseMessage.generateResponse("iciiii", HttpStatus.OK, e.getMessage());
 
-            }
+                }
             Role reponsable = RoleService.GetByLibelle("RESPONSABLE");
             List<Utilisateur> getAllResponsable = utilisateurService.RetrouverParRole(reponsable);
             return ResponseMessage.generateResponse("ok", HttpStatus.OK, getAllResponsable);
@@ -603,10 +566,23 @@ public class SuperAdminController {
     }
 
     @ApiOperation(value = "Affichager un responsable")
-    @GetMapping("/get/responsable/{id}")
-    public ResponseEntity<Object> GetIdResponsable(@PathVariable("id") Long id, @RequestBody Utilisateur utilisateur) {
+    @GetMapping("/get/responsable/{iduser}/{id}")
+    public ResponseEntity<Object> GetIdResponsable(@PathVariable("id") Long id, @PathVariable("iduser") Long iduser,@RequestBody Utilisateur utilisateur) {
         try {
             Utilisateur idResponsable = utilisateurService.getById(id);
+
+            Utilisateur user =   utilisateurService.getById(iduser);
+            try {
+                Historique historique = new Historique();
+                Date datehisto = new Date();
+                historique.setDatehistorique(datehisto);
+                historique.setDescription(""+user.getPrenom()+ " "+user.getNom()+" a affiché le responsable du nom de "+idResponsable.getNom()+" "+idResponsable.getPrenom());
+                historiqueService.Create(historique);}
+            catch (Exception e) {
+                // TODO: handle exception
+                return ResponseMessage.generateResponse("iciiii", HttpStatus.OK, e.getMessage());
+
+            }
             return ResponseMessage.generateResponse("ok", HttpStatus.OK, idResponsable);
 
         } catch (Exception e) {
@@ -618,9 +594,22 @@ public class SuperAdminController {
     // ---------------------------CRUD
     // ENTITE-------------------------------------------------------------->
     @ApiOperation(value = "Creer un entite.")
-    @PostMapping("/create/entite")
-    public ResponseEntity<Object> createEntite(@RequestBody Entite entite) {
+    @PostMapping("/create/entite/{iduser}")
+    public ResponseEntity<Object> createEntite(@RequestBody Entite entite,@PathVariable("iduser") Long iduser) {
         try {
+
+            Utilisateur user =   utilisateurService.getById(iduser);
+            try {
+                Historique historique = new Historique();
+                Date datehisto = new Date();
+                historique.setDatehistorique(datehisto);
+                historique.setDescription(""+user.getPrenom()+ " "+user.getNom()+" a crée  une nouvelle entite ");
+                historiqueService.Create(historique);}
+            catch (Exception e) {
+                // TODO: handle exception
+                return ResponseMessage.generateResponse("iciiii", HttpStatus.OK, e.getMessage());
+
+            }
             Entite NewEntite = entiteService.Create(entite);
             return ResponseMessage.generateResponse("ok", HttpStatus.OK, NewEntite);
         } catch (Exception e) {
@@ -630,7 +619,7 @@ public class SuperAdminController {
 
     }
 
-    @ApiOperation(value = "Modifier un entite.")
+    @ApiOperation(value = "Modifier un entite")
     @PutMapping("/update/entite/{id}")
     public ResponseEntity<Object> updateEntite(@PathVariable("id") Long id, @RequestBody Entite entite) {
         try {
@@ -692,8 +681,25 @@ public class SuperAdminController {
         try {
             Utilisateur admin = utilisateurService.getById(idAmin);
             if (admin.getRole() == RoleService.GetByLibelle("ADMIN")) {
+
+
+
                 Utilisateur user = utilisateurService.getById(idUser);
                 user.setActive(true);
+
+                //Historique
+                Utilisateur users =   utilisateurService.getById(idAmin);
+                try {
+                    Historique historique = new Historique();
+                    Date datehisto = new Date();
+                    historique.setDatehistorique(datehisto);
+                    historique.setDescription(""+users.getPrenom()+ " "+users.getNom()+" a activé un utilisateur du nom de "+user.getNom()+" "+user.getPrenom());
+                    historiqueService.Create(historique);}
+                catch (Exception e) {
+                    // TODO: handle exception
+                    return ResponseMessage.generateResponse("iciiii", HttpStatus.OK, e.getMessage());
+
+                }
                 // System.out.println(user.getPassword());
                 // user.setPassword("");
 
@@ -719,6 +725,20 @@ public class SuperAdminController {
             if (admin.getRole() == RoleService.GetByLibelle("ADMIN")) {
                 Utilisateur user = utilisateurService.getById(idUser);
                 user.setActive(false);
+
+                //Historique
+                Utilisateur users =   utilisateurService.getById(idAmin);
+                try {
+                    Historique historique = new Historique();
+                    Date datehisto = new Date();
+                    historique.setDatehistorique(datehisto);
+                    historique.setDescription(""+users.getPrenom()+ " "+users.getNom()+" a desactivé un utilisateur du nom de "+user.getNom()+" "+user.getPrenom());
+                    historiqueService.Create(historique);}
+                catch (Exception e) {
+                    // TODO: handle exception
+                    return ResponseMessage.generateResponse("iciiii", HttpStatus.OK, e.getMessage());
+
+                }
                 // System.out.println(user.getPassword());
                 // user.setPassword("");
                 return ResponseMessage.generateResponse("ok", HttpStatus.OK, utilisateurService.modifierRole(user));
@@ -734,10 +754,23 @@ public class SuperAdminController {
 
     ///////// type activite
     @ApiOperation(value = "methode pour la création d'une type d' activité.")
-    @PostMapping("/Typeactivite/creer")
-    public ResponseEntity<Object> CreateTypeActivite(@RequestBody TypeActivite typeActivite) {
+    @PostMapping("/Typeactivite/creer/{iduser}")
+    public ResponseEntity<Object> CreateTypeActivite(@RequestBody TypeActivite typeActivite,@PathVariable long iduser) {
         try {
             if (typeActiviteService.getByLibelle(typeActivite.getLibelle()) == null) {
+
+                Utilisateur users =   utilisateurService.getById(iduser);
+                try {
+                    Historique historique = new Historique();
+                    Date datehisto = new Date();
+                    historique.setDatehistorique(datehisto);
+                    historique.setDescription(""+users.getPrenom()+ " "+users.getNom()+" a crée un type d'activite  de libelle "+typeActivite.getLibelle());
+                    historiqueService.Create(historique);}
+                catch (Exception e) {
+                    // TODO: handle exception
+                    return ResponseMessage.generateResponse("iciiii", HttpStatus.OK, e.getMessage());
+
+                }
                 return ResponseMessage.generateResponse("ok", HttpStatus.OK, typeActiviteService.creer(typeActivite));
             } else {
                 return ResponseMessage.generateResponse("error", HttpStatus.OK, "libelle existant");
@@ -750,9 +783,22 @@ public class SuperAdminController {
     }
 
     @ApiOperation(value = "methode pour la Suppression d'une type d' activité.")
-    @PostMapping("/Typeactivite/{id}")
-    public ResponseEntity<Object> SupprimerTypeActivite(@PathVariable long id, @RequestBody TypeActivite typeActivite) {
+    @PostMapping("/Typeactivite/{iduser}/{id}")
+    public ResponseEntity<Object> SupprimerTypeActivite(@PathVariable long id,@PathVariable long iduser, @RequestBody TypeActivite typeActivite) {
         try {
+                    //historique
+            Utilisateur users =   utilisateurService.getById(iduser);
+            try {
+                Historique historique = new Historique();
+                Date datehisto = new Date();
+                historique.setDatehistorique(datehisto);
+                historique.setDescription(""+users.getPrenom()+ " "+users.getNom()+" a supprimé un type d'activte du nom de "+typeActivite.getLibelle());
+                historiqueService.Create(historique);}
+            catch (Exception e) {
+                // TODO: handle exception
+                return ResponseMessage.generateResponse("iciiii", HttpStatus.OK, e.getMessage());
+
+            }
             return ResponseMessage.generateResponse("ok", HttpStatus.OK, typeActiviteService.delete(id));
 
         } catch (Exception e) {
@@ -763,9 +809,22 @@ public class SuperAdminController {
     }
 
     @ApiOperation(value = "methode pour la modification d'une type d' activité.")
-    @PostMapping("/Typeactivite/modification")
-    public ResponseEntity<Object> ModifTypeActivite(@RequestBody TypeActivite typeActivite) {
+    @PostMapping("/Typeactivite/modification/{iduser}")
+    public ResponseEntity<Object> ModifTypeActivite(@PathVariable long iduser,@RequestBody TypeActivite typeActivite) {
         try {
+
+            Utilisateur users =   utilisateurService.getById(iduser);
+            try {
+                Historique historique = new Historique();
+                Date datehisto = new Date();
+                historique.setDatehistorique(datehisto);
+                historique.setDescription(""+users.getPrenom()+ " "+users.getNom()+" a modifié un type d'activte");
+                historiqueService.Create(historique);}
+            catch (Exception e) {
+                // TODO: handle exception
+                return ResponseMessage.generateResponse("iciiii", HttpStatus.OK, e.getMessage());
+
+            }
             return ResponseMessage.generateResponse("ok", HttpStatus.OK, typeActiviteService.update(typeActivite));
 
         } catch (Exception e) {
@@ -791,9 +850,21 @@ public class SuperAdminController {
     // :::::::::::::::total postulant ::::::::::::::::::::
 
     @ApiOperation(value = "Total postulant")
-    @GetMapping("/totalpersonnel")
-    public ResponseEntity<Object> TotalPostulant() {
+    @GetMapping("/totalpersonnel/{iduser}")
+    public ResponseEntity<Object> TotalPostulant(@PathVariable long iduser) {
         try {
+            Utilisateur users =   utilisateurService.getById(iduser);
+            try {
+                Historique historique = new Historique();
+                Date datehisto = new Date();
+                historique.setDatehistorique(datehisto);
+                historique.setDescription(""+users.getPrenom()+ " "+users.getNom()+" a affiché tous les postulants ");
+                historiqueService.Create(historique);}
+            catch (Exception e) {
+                // TODO: handle exception
+                return ResponseMessage.generateResponse("iciiii", HttpStatus.OK, e.getMessage());
+
+            }
             return ResponseMessage.generateResponse("ok", HttpStatus.OK, utilisateurService.TotalPersonnel());
 
         } catch (Exception e) {
@@ -803,12 +874,28 @@ public class SuperAdminController {
 
     }
 
-    // :::::::::::::::total entite ::::::::::::::::::::
+    // tOTAL PERSONNEL ACTIVE
 
+
+
+
+    // :::::::::::::::::::::::::::::::::::total entite ::::::::::::::::::::::::::::::::::::::
     @ApiOperation(value = "totalentite")
-    @GetMapping("/totalentite")
-    public ResponseEntity<Object> TotalEntite() {
+    @GetMapping("/totalentite/{iduser}")
+    public ResponseEntity<Object> TotalEntite(@PathVariable long iduser) {
         try {
+            Utilisateur users =   utilisateurService.getById(iduser);
+            try {
+                Historique historique = new Historique();
+                Date datehisto = new Date();
+                historique.setDatehistorique(datehisto);
+                historique.setDescription(""+users.getPrenom()+ " "+users.getNom()+" a affiché toutes les entités ");
+                historiqueService.Create(historique);}
+            catch (Exception e) {
+                // TODO: handle exception
+                return ResponseMessage.generateResponse("iciiii", HttpStatus.OK, e.getMessage());
+
+            }
             return ResponseMessage.generateResponse("ok", HttpStatus.OK, utilisateurService.TotalEntite());
 
         } catch (Exception e) {
@@ -823,9 +910,22 @@ public class SuperAdminController {
 
     // activités en avenir
     @ApiOperation(value = "activites/avenir")
-    @GetMapping("activites/avenir")
-    public ResponseEntity<Object> ActivitesAvenir() {
+    @GetMapping("activites/avenir/{iduser}")
+    public ResponseEntity<Object> ActivitesAvenir(@PathVariable long iduser) {
         try {
+
+            Utilisateur users =   utilisateurService.getById(iduser);
+            try {
+                Historique historique = new Historique();
+                Date datehisto = new Date();
+                historique.setDatehistorique(datehisto);
+                historique.setDescription(""+users.getPrenom()+ " "+users.getNom()+" a affiché les activités à venir ");
+                historiqueService.Create(historique);}
+            catch (Exception e) {
+                // TODO: handle exception
+                return ResponseMessage.generateResponse("iciiii", HttpStatus.OK, e.getMessage());
+
+            }
             return ResponseMessage.generateResponse("error", HttpStatus.OK, activiteService.Avenir());
         } catch (Exception e) {
             // TODO: handle exception
@@ -835,9 +935,21 @@ public class SuperAdminController {
 
     // activités en cour
     @ApiOperation(value = "activites/encour")
-    @GetMapping("activites/encour")
-    public ResponseEntity<Object> ActivitesEncour() {
+    @GetMapping("activites/encour/{iduser}")
+    public ResponseEntity<Object> ActivitesEncour(@PathVariable long iduser) {
         try {
+            Utilisateur users =   utilisateurService.getById(iduser);
+            try {
+                Historique historique = new Historique();
+                Date datehisto = new Date();
+                historique.setDatehistorique(datehisto);
+                historique.setDescription(""+users.getPrenom()+ " "+users.getNom()+" a affiché les activités en cour ");
+                historiqueService.Create(historique);}
+            catch (Exception e) {
+                // TODO: handle exception
+                return ResponseMessage.generateResponse("iciiii", HttpStatus.OK, e.getMessage());
+
+            }
             return ResponseMessage.generateResponse("error", HttpStatus.OK, activiteService.Encour());
         } catch (Exception e) {
             // TODO: handle exception
@@ -847,7 +959,7 @@ public class SuperAdminController {
 
     // activités termines
     @ApiOperation(value = "activites/termines")
-    @GetMapping("activites/termines")
+    @GetMapping("activites/termines/")
     public ResponseEntity<Object> ActivitesTermines() {
         try {
             return ResponseMessage.generateResponse("error", HttpStatus.OK, activiteService.Termine());
@@ -856,13 +968,26 @@ public class SuperAdminController {
             return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
         }
     }
-    // :::::::::::::: ::::::::::::::debut mise a jour de madame ::::::::::::::::::::
+//:::::::::::::: ::::::::::::::debut mise a jour de madame ::::::::::::::::::::
 
-    // :::::::::::Liste des activites par entite ::::::::::::::::
+
+    //:::::::::::Liste des activites par entite ::::::::::::::::
     @ApiOperation(value = "activites par entite")
-    @GetMapping("activites/entite/{identite}")
-    public ResponseEntity<Object> ActivitesParEntite(@PathVariable long identite) {
+    @GetMapping("activites/entite/{iduser}/{identite}")
+    public ResponseEntity<Object> ActivitesParEntite(@PathVariable long identite,@PathVariable long iduser) {
         try {
+            Utilisateur users =   utilisateurService.getById(iduser);
+            try {
+                Historique historique = new Historique();
+                Date datehisto = new Date();
+                historique.setDatehistorique(datehisto);
+                historique.setDescription(""+users.getPrenom()+ " "+users.getNom()+" a affiché les activités par entite ");
+                historiqueService.Create(historique);}
+            catch (Exception e) {
+                // TODO: handle exception
+                return ResponseMessage.generateResponse("iciiii", HttpStatus.OK, e.getMessage());
+
+            }
 
             return ResponseMessage.generateResponse("error", HttpStatus.OK, activiteService.ActiviteEntiteid(identite));
         } catch (Exception e) {
@@ -871,36 +996,51 @@ public class SuperAdminController {
         }
     }
 
-    // :::::::::::::::::::Liste des activites par intervalle de date :
-    // ::::::::::::::::::::
+//:::::::::::::::::::Liste des activites par intervalle de date : ::::::::::::::::::::
     // fait avec ballo le 26/09
 
-    // ::::::::::::La liste des participants par activité et par intervalle de date,
+
+
+    //::::::::::::La liste des participants par activité et par intervalle de date,
+
 
     @ApiOperation(value = "liste participant par activite")
-    @GetMapping("activites/entite/{idactivite}/{date1}/{date2}")
-    public ResponseEntity<Object> PostulantParActivite(@PathVariable long idactivite, @PathVariable Date date1,
-            @PathVariable Date date2) {
+    @GetMapping("activites/entite/iduser}/{idactivite}/{date1}/{date2}")
+    public ResponseEntity<Object> PostulantParActivite(@PathVariable long iduser, @PathVariable long idactivite,@PathVariable Date date1, @PathVariable Date date2) {
         try {
-            // recupere les activites par identifiant
+            //recupere les activites par identifiant
             Activite activite = activiteService.GetById(idactivite);
-            // recupere tous les postTirés
+            //recupere tous les postTirés
             PostulantTire pt = (PostulantTire) postulantTrieService.getAll();
 
-            // recupere tous les tirages vue qu'il est le lien entre postTirer et activite
+            //recupere tous les tirages vue qu'il est le lien entre postTirer et activite
             Tirage tirage = (Tirage) tirageService.getAll();
 
-            // On recupere les activites par intervalles de temps
-            if (activite.getDateDebut().after(date1) && activite.getDateDebut().before(date2)
-                    && activite.getDateFin().before(date2)) {
+            //On recupere  les activites par intervalles de temps
+            if(activite.getDateDebut().after(date1) && activite.getDateDebut().before(date2) && activite.getDateFin().before(date2)){
 
-                if (tirage.getActivite().getId() == activite.getId() && pt.getTirage().getId() == tirage.getId()) {
+                         if(tirage.getActivite().getId()==activite.getId() && pt.getTirage().getId() == tirage.getId()){
+
+                             //:::::::::::::::::::::::::::::Histroque::::::::::::::::::::::::::::::::::
+
+                             Utilisateur users =   utilisateurService.getById(iduser);
+                             try {
+                                 Historique historique = new Historique();
+                                 Date datehisto = new Date();
+                                 historique.setDatehistorique(datehisto);
+                                 historique.setDescription(""+users.getPrenom()+ " "+users.getNom()+" a affiché des postulant de l'activite "+activite.getNom());
+                                 historiqueService.Create(historique);}
+                             catch (Exception e) {
+                                 // TODO: handle exception
+                                 return ResponseMessage.generateResponse("iciiii", HttpStatus.OK, e.getMessage());
+
+                             }
                     return ResponseMessage.generateResponse("error", HttpStatus.OK, postulantTrieService.getAll());
-                } else {
-                    return ResponseMessage.generateResponse("error", HttpStatus.OK, "");
+                         }else {
+                             return ResponseMessage.generateResponse("error", HttpStatus.OK, "");
 
-                }
-            } else {
+                         }
+            }else {
                 return ResponseMessage.generateResponse("Erreur", HttpStatus.OK, "");
 
             }
@@ -911,56 +1051,54 @@ public class SuperAdminController {
         }
     }
 
-    // La liste des activités par entité et par statut_activité (encours, à venir ou
-    // terminée).
+    //La liste des activités par entité et par statut_activité (encours, à venir ou terminée).
 
     @ApiOperation(value = "activites par entite et par statut")
     @GetMapping("activites/entite/{identite}/{idstatut}")
-    public ResponseEntity<Object> ActivitesParEntiteEtParstatut(@PathVariable long identite,
-            @PathVariable long idstatut) {
+    public ResponseEntity<Object> ActivitesParEntiteEtParstatut(@PathVariable long identite,@PathVariable long idstatut) {
         try {
-            Etat etat = etatService.GetById(idstatut);// on recup l'etat en fonction de l'id
-            Entite entite = entiteService.GetById(identite);
+             Etat etat = etatService.GetById(idstatut);//on recup l'etat en fonction de l'id
+             Entite entite=entiteService.GetById(identite);
 
-            // activite de l'estat forni
-            List<Activite> etatActivite = etat.getActivite();
-            List<Activite> aRetourner = new ArrayList<>();
-            for (Activite a : etatActivite) {
-                if (a.getCreateur().getMonEntite() == entite) {
-                    aRetourner.add(a);
-                }
-            }
+             //activite de l'estat forni
+             List<Activite> etatActivite=etat.getActivite();
+             List<Activite> aRetourner=new ArrayList<>();
+             for(Activite a:etatActivite){
+                 if(a.getCreateur().getMonEntite()==entite){
+                     aRetourner.add(a);
+                 }
+             }
 
-            Activite activite = (Activite) activiteService.ActiviteEntiteid(identite);// recuperation des activite d'une
-                                                                                      // entite donnée
-            if (activite.getEtat() == etat.getActivite()) {
-                return ResponseMessage.generateResponse("error", HttpStatus.OK, activiteService.GetAll());
-            } else {
-                return ResponseMessage.generateResponse("error", HttpStatus.OK, "Une erreur s'est produit");
-            }
-            // entite donnée
+            Activite activite = (Activite) activiteService.ActiviteEntiteid(identite);// recuperation des activite d'une entite donnée
+             if(activite.getEtat()== etat.getActivite()){
+                 return ResponseMessage.generateResponse("ok", HttpStatus.OK, activiteService.GetAll());
+             }
+             else {
+                 return ResponseMessage.generateResponse("error", HttpStatus.OK, "Une erreur s'est produit");
 
+             }
         } catch (Exception e) {
             // TODO: handle exception
             return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
         }
     }
 
-    // ::::::::::::::::::::::
+    //::::::::::::::::::::::
     @ApiOperation(value = "Statut d'une activite en fonction de son id")
     @GetMapping("statut/activite/{id}")
     public ResponseEntity<Object> ActivitesTermines(@PathVariable long id) {
         try {
             Activite act = new Activite();
-            act = activiteService.GetById(id);
-            Date dateTodate = new Date();
-            if (dateTodate.after(act.getDateDebut()) && dateTodate.before(act.getDateFin())) {
+            act=activiteService.GetById(id);
+            Date dateTodate = new  Date();
+            if(dateTodate.after(act.getDateDebut()) && dateTodate.before(act.getDateFin())){
                 return ResponseMessage.generateResponse("En cours", HttpStatus.OK, "L'activité est en cours");
             } else if (dateTodate.after(act.getDateFin())) {
                 return ResponseMessage.generateResponse("Terminé", HttpStatus.OK, "L'activité est terminée");
             } else if (dateTodate.before(act.getDateDebut())) {
-                return ResponseMessage.generateResponse("A Venir", HttpStatus.OK, "L'activité est à Venir");
-            } else {
+                return ResponseMessage.generateResponse("A Venir", HttpStatus.OK,"L'activité est à Venir");
+            }
+            else {
                 return ResponseMessage.generateResponse("error", HttpStatus.OK, "");
             }
 
@@ -970,19 +1108,33 @@ public class SuperAdminController {
         }
     }
 
-    // ::::::::::::::Comparaison date pour salle disponible
-    // ::::::::::::::::::::::::::::::
+    //::::::::::::::Comparaison date pour salle disponible ::::::::::::::::::::::::::::::
     @ApiOperation(value = "Comparaison date pour salle disponible")
-    @GetMapping("SalleDispo/{date1}/{date2}")
-    public ResponseEntity<Object> SalleDispoDate(@PathVariable Date date1, @PathVariable Date date2) {
+    @GetMapping("SalleDispo/{iduser}/{date1}/{date2}")
+    public ResponseEntity<Object> SalleDispoDate(@PathVariable long  iduser,@PathVariable Date date1,@PathVariable Date date2) {
         try {
             Activite act = activiteService.FindAllAct();
-            List<Salle> salle = new ArrayList<>();
+            List<Salle> salle =new ArrayList<>();
 
-            if (act.getDateDebut().before(date1) && act.getDateDebut().before(date2) && act.getDateFin().after(date1)
-                    && act.getDateFin().after(date2)
-                    || act.getDateDebut().after(date1) && act.getDateDebut().after(date2)
-                            && act.getDateFin().before(date1) && act.getDateFin().before(date2)) {
+            if(act.getDateDebut().before(date1) && act.getDateDebut().before(date2) && act.getDateFin().after(date1)
+                    && act.getDateFin().after(date2) || act.getDateDebut().after(date1) && act.getDateDebut().after(date2)
+                    && act.getDateFin().before(date1) && act.getDateFin().before(date2)
+            ){
+                //Historique
+                Utilisateur user =   utilisateurService.getById(iduser);
+                try {
+                    Historique historique = new Historique();
+                    Date datehisto = new Date();
+                    historique.setDatehistorique(datehisto);
+                    historique.setDescription(""+user.getPrenom()+ " "+user.getNom()+" a afficher  salle disponible dans l'intervalle "+date1+" et "+date2);
+                    historiqueService.Create(historique);}
+                catch (Exception e) {
+                    // TODO: handle exception
+                    return ResponseMessage.generateResponse("iciiii", HttpStatus.OK, e.getMessage());
+
+                }
+
+
                 return ResponseMessage.generateResponse("error", HttpStatus.OK, salle.add(act.getSalle()));
 
             }
@@ -995,9 +1147,23 @@ public class SuperAdminController {
 
     // :::::::::::::::::::::::Les users active
     @ApiOperation(value = "Les utilisateurs active")
-    @GetMapping("/getUsers/active")
-    public ResponseEntity<Object> getUsersActives() {
+    @GetMapping("/getUsers/active/{iduser}")
+    public ResponseEntity<Object> getUsersActives(@PathVariable long iduser) {
         try {
+            //hisorique
+            Utilisateur user =   utilisateurService.getById(iduser);
+            try {
+                Historique historique = new Historique();
+                Date datehisto = new Date();
+                historique.setDatehistorique(datehisto);
+                historique.setDescription(""+user.getPrenom()+ " "+user.getNom()+" a afficher  un utilisateur active");
+                historiqueService.Create(historique);}
+            catch (Exception e) {
+                // TODO: handle exception
+                return ResponseMessage.generateResponse("iciiii", HttpStatus.OK, e.getMessage());
+
+            }
+
             return ResponseMessage.generateResponse("ok", HttpStatus.OK, utilisateurService.RecupererUserParEtat(true));
 
         } catch (Exception e) {
@@ -1009,9 +1175,22 @@ public class SuperAdminController {
 
     // :::::::::::::::::::::::Les users desactives
     @ApiOperation(value = "Les utilisateurs desactives")
-    @GetMapping("/getUsers/desactive")
-    public ResponseEntity<Object> getUsersDesactives() {
+    @GetMapping("/getUsers/desactive/{iduser}")
+    public ResponseEntity<Object> getUsersDesactives(@PathVariable long iduser) {
         try {
+
+            Utilisateur user =   utilisateurService.getById(iduser);
+            try {
+                Historique historique = new Historique();
+                Date datehisto = new Date();
+                historique.setDatehistorique(datehisto);
+                historique.setDescription(""+user.getPrenom()+ " "+user.getNom()+" a afficher  un utilisateur desactive");
+                historiqueService.Create(historique);}
+            catch (Exception e) {
+                // TODO: handle exception
+                return ResponseMessage.generateResponse("iciiii", HttpStatus.OK, e.getMessage());
+
+            }
             return ResponseMessage.generateResponse("ok", HttpStatus.OK,
                     utilisateurService.RecupererUserParEtat(false));
 
@@ -1025,9 +1204,22 @@ public class SuperAdminController {
 
     // :::::::::::::::::::::::Les salles disponible
     @ApiOperation(value = "Les salles disponible")
-    @GetMapping("/getSalles/disponible")
-    public ResponseEntity<Object> getSallesDispo() {
+    @GetMapping("/getSalles/disponible/{iduser}")
+    public ResponseEntity<Object> getSallesDispo(@PathVariable long iduser) {
         try {
+
+            Utilisateur user =   utilisateurService.getById(iduser);
+            try {
+                Historique historique = new Historique();
+                Date datehisto = new Date();
+                historique.setDatehistorique(datehisto);
+                historique.setDescription(""+user.getPrenom()+ " "+user.getNom()+" a afficher  les salles disponible");
+                historiqueService.Create(historique);}
+            catch (Exception e) {
+                // TODO: handle exception
+                return ResponseMessage.generateResponse("iciiii", HttpStatus.OK, e.getMessage());
+
+            }
             return ResponseMessage.generateResponse("ok", HttpStatus.OK, salleService.ParEtat(true));
 
         } catch (Exception e) {
@@ -1039,9 +1231,22 @@ public class SuperAdminController {
 
     // :::::::::::::::::::::::Les salles indisponible
     @ApiOperation(value = "Les salles indisponible")
-    @GetMapping("/getSalles/indisponible")
-    public ResponseEntity<Object> getSallesIndispo() {
+    @GetMapping("/getSalles/indisponible/{iduser}")
+    public ResponseEntity<Object> getSallesIndispo(@PathVariable long iduser) {
         try {
+
+            Utilisateur user =   utilisateurService.getById(iduser);
+            try {
+                Historique historique = new Historique();
+                Date datehisto = new Date();
+                historique.setDatehistorique(datehisto);
+                historique.setDescription(""+user.getPrenom()+ " "+user.getNom()+" a afficher  les salles indisponible");
+                historiqueService.Create(historique);}
+            catch (Exception e) {
+                // TODO: handle exception
+                return ResponseMessage.generateResponse("iciiii", HttpStatus.OK, e.getMessage());
+
+            }
             return ResponseMessage.generateResponse("ok", HttpStatus.OK,
                     salleService.ParEtat(false));
 
@@ -1052,210 +1257,26 @@ public class SuperAdminController {
         }
     }
 
-    // /////////////////////INTERVENANT externe:::
-    @ApiOperation(value = "Nouveau intervenant")
-    @PostMapping("/intervenat/new")
-    public ResponseEntity<Object> CreateIntervenant(@RequestBody IntervenantExterne intervenantExterne) {
 
-        try {
-            return ResponseMessage.generateResponse("ok", HttpStatus.OK,
-                    intervenantExterneService.creer(intervenantExterne));
-        } catch (Exception e) {
-            // TODO: handle exception
-            return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
-        }
 
-    }
-
-    @ApiOperation(value = "Mettre à jour intervenant")
-    @PutMapping("/intervenat/update/{id}")
-    public ResponseEntity<Object> UpdateIntervenant(@RequestBody IntervenantExterne intervenantExterne,
-            @PathVariable("id") Long id) {
-
-        try {
-            IntervenantExterne iE = intervenantExterneService.getById(id);
-            return ResponseMessage.generateResponse("ok", HttpStatus.OK,
-                    intervenantExterneService.update(iE));
-        } catch (Exception e) {
-            // TODO: handle exception
-            return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
-        }
-
-    }
-
-    @ApiOperation(value = "Suprimer intervenant")
-    @DeleteMapping("/intervenat/delete/{id}")
-    public ResponseEntity<Object> DeleteIntervenant(@PathVariable("id") Long id) {
-
-        try {
-            intervenantExterneService.delete(id);
-            return ResponseMessage.generateResponse("ok", HttpStatus.OK,
-                    "Suprimer");
-        } catch (Exception e) {
-            // TODO: handle exception
-            return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
-        }
-
-    }
-
-    @ApiOperation(value = "L'ensemble des intervenant externes")
-    @GetMapping("/intervenat/all")
-    public ResponseEntity<Object> TotalIntervenant() {
-
-        try {
-            return ResponseMessage.generateResponse("ok", HttpStatus.OK,
-                    intervenantExterneService.getAll());
-        } catch (Exception e) {
-            // TODO: handle exception
-            return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
-        }
-    }
-
-    // :::::::::::::::::::::::::::::::::::
-
-    // ::::::::::::::taches
-    @ApiOperation(value = "Nouvelle tache")
-    @PostMapping("/tache/new")
-    public ResponseEntity<Object> CreateTache(@RequestBody Tache tache) {
-
-        try {
-            return ResponseMessage.generateResponse("ok", HttpStatus.OK,
-                    tacheService.creer(tache));
-        } catch (Exception e) {
-            // TODO: handle exception
-            return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
-        }
-
-    }
-
-    @ApiOperation(value = "Mettre à jour tache")
-    @PutMapping("/tache/update/{id}")
-    public ResponseEntity<Object> UpdateIntervenant(@RequestBody Tache tache,
-            @PathVariable("id") Long id) {
-
-        try {
-            Tache tache2 = tacheService.getById(id);
-            return ResponseMessage.generateResponse("ok", HttpStatus.OK,
-                    tacheService.update(tache2));
-        } catch (Exception e) {
-            // TODO: handle exception
-            return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
-        }
-
-    }
-
-    @ApiOperation(value = "Suprimer tache")
-    @DeleteMapping("/tache/delete/{id}")
-    public ResponseEntity<Object> DeleteTache(@PathVariable("id") Long id) {
-
-        try {
-            tacheService.delete(id);
-            return ResponseMessage.generateResponse("ok", HttpStatus.OK,
-                    "Suprimer");
-        } catch (Exception e) {
-            // TODO: handle exception
-            return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
-        }
-
-    }
-
-    @ApiOperation(value = "L'ensemble des taches")
-    @GetMapping("/tache/all")
-    public ResponseEntity<Object> TotalTaches() {
-
-        try {
-            return ResponseMessage.generateResponse("ok", HttpStatus.OK,
-                    tacheService.getAll());
-        } catch (Exception e) {
-            // TODO: handle exception
-            return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
-        }
-    }
-
-    // :::::::::::::::::::::::::::::::::::
-
-    // :::::::::::::::::::::::::::::::::::
-
-    // ::::::::::::::Statut
-    @ApiOperation(value = "Nouveau statut")
-    @PostMapping("/status/new")
-    public ResponseEntity<Object> CreateStatut(@RequestBody Statut status) {
-
-        try {
-            return ResponseMessage.generateResponse("ok", HttpStatus.OK,
-                    statusService.creer(status));
-        } catch (Exception e) {
-            // TODO: handle exception
-            return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
-        }
-
-    }
-
-    @ApiOperation(value = "Mettre à jour statut")
-    @PutMapping("/status/update/{id}")
-    public ResponseEntity<Object> UpdateStatut(@RequestBody Statut status,
-            @PathVariable("id") Long id) {
-
-        try {
-            Statut stat = statusService.getById(id);
-            return ResponseMessage.generateResponse("ok", HttpStatus.OK,
-                    statusService.update(stat));
-        } catch (Exception e) {
-            // TODO: handle exception
-            return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
-        }
-
-    }
-
-    @ApiOperation(value = "Suprimer statut")
-    @DeleteMapping("/status/delete/{id}")
-    public ResponseEntity<Object> DeleteStatus(@PathVariable("id") Long id) {
-
-        try {
-            tacheService.delete(id);
-            return ResponseMessage.generateResponse("ok", HttpStatus.OK,
-                    "Suprimer");
-        } catch (Exception e) {
-            // TODO: handle exception
-            return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
-        }
-
-    }
-
-    @ApiOperation(value = "L'ensemble des status")
-    @GetMapping("/status/all")
-    public ResponseEntity<Object> TotalStatus() {
-
-        try {
-            return ResponseMessage.generateResponse("ok", HttpStatus.OK,
-                    statusService.getAll());
-        } catch (Exception e) {
-            // TODO: handle exception
-            return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
-        }
-    }
-
-    // :::::::::::::::::::::::::::::::::::
-
-    @ApiOperation(value = "L'ensemble des notification")
-    @GetMapping("/notification/all")
-    public ResponseEntity<Object> TotalNotification() {
-
-        try {
-            return ResponseMessage.generateResponse("ok", HttpStatus.OK,
-                    notificationService.getAll());
-        } catch (Exception e) {
-            // TODO: handle exception
-            return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
-        }
-    }
-
-    // :::::::::::::::::::::::::::::::::::::::Apprenants ou Participant
-    // :::::::::::::::::::::::::::::::
+    // :::::::::::::::::::::::::::::::::::::::Apprenants ou Participant :::::::::::::::::::::::::::::::
     @ApiOperation(value = "Ajouterr AppouParticipant")
-    @PostMapping("/aoup")
-    public ResponseEntity<Object> ajouterAouP(@RequestBody AouP aoup) {
+    @PostMapping("/aoup/{iduser}")
+    public ResponseEntity<Object> ajouterAouP(@RequestBody AouP aoup,@PathVariable long iduser) {
         try {
+
+            Utilisateur user =   utilisateurService.getById(iduser);
+            try {
+                Historique historique = new Historique();
+                Date datehisto = new Date();
+                historique.setDatehistorique(datehisto);
+                historique.setDescription(""+user.getPrenom()+ " "+user.getNom()+" a enregistré des apprenants ou participants");
+                historiqueService.Create(historique);}
+            catch (Exception e) {
+                // TODO: handle exception
+                return ResponseMessage.generateResponse("iciiii", HttpStatus.OK, e.getMessage());
+
+            }
             return ResponseMessage.generateResponse("ok", HttpStatus.OK,
                     aouPService.Create(aoup));
         } catch (Exception e) {
@@ -1265,27 +1286,53 @@ public class SuperAdminController {
         }
     }
 
-    // ::::::::::::::::::::::::::::::::::: Modifier AouP
-    // ::::::::::::::::::::::::::::::::::::
+
+//::::::::::::::::::::::::::::::::::: Modifier AouP ::::::::::::::::::::::::::::::::::::
     @ApiOperation(value = "Modifier AppouParticipant")
-    @PutMapping("/aoup/modifier/{id}")
-    public ResponseEntity<Object> ModifierAouP(@PathVariable long id, @RequestBody AouP aoup) {
+    @PutMapping("/aoup/modifier/{iduser}/{id}")
+    public ResponseEntity<Object> ModifierAouP(@PathVariable long id,@PathVariable long iduser, @RequestBody AouP aoup) {
         try {
+                 AouP aouP =aouPService.GetById(id);
+            Utilisateur user =   utilisateurService.getById(iduser);
+            try {
+                Historique historique = new Historique();
+                Date datehisto = new Date();
+                historique.setDatehistorique(datehisto);
+                historique.setDescription(""+user.getPrenom()+ " "+user.getNom()+" a modifié l' apprenants ou le participant sur l'activite "+aouP.getActivite());
+                historiqueService.Create(historique);}
+            catch (Exception e) {
+                // TODO: handle exception
+                return ResponseMessage.generateResponse("iciiii", HttpStatus.OK, e.getMessage());
+
+            }
             return ResponseMessage.generateResponse("ok", HttpStatus.OK,
-                    aouPService.Update(id, aoup));
+                    aouPService.Update(id,aoup));
         } catch (Exception e) {
             // TODO: handle exception
             return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
 
         }
     }
-    // ::::::::::::::::::::::::::::::::::: Supprimer AouP
-    // ::::::::::::::::::::::::::::::::::::
+//::::::::::::::::::::::::::::::::::: Supprimer AouP ::::::::::::::::::::::::::::::::::::
 
     @ApiOperation(value = "Supprimer AouP")
     @DeleteMapping("/aoup/supprimer/{id}")
-    public ResponseEntity<Object> SupprimerAouP(@PathVariable long id) {
+    public ResponseEntity<Object> SupprimerAouP(@PathVariable long id,@PathVariable long iduser) {
         try {
+            AouP aouP =aouPService.GetById(id);
+            Utilisateur user =   utilisateurService.getById(iduser);
+            try {
+                Historique historique = new Historique();
+                Date datehisto = new Date();
+                historique.setDatehistorique(datehisto);
+                historique.setDescription(""+user.getPrenom()+ " "+user.getNom()+" a supprimé l' apprenants ou le participant sur l'activite "+aouP.getActivite());
+                historiqueService.Create(historique);}
+            catch (Exception e) {
+                // TODO: handle exception
+                return ResponseMessage.generateResponse("iciiii", HttpStatus.OK, e.getMessage());
+
+            }
+
             return ResponseMessage.generateResponse("ok", HttpStatus.OK,
                     aouPService.Delete(id));
         } catch (Exception e) {
@@ -1295,15 +1342,29 @@ public class SuperAdminController {
         }
     }
 
-    // ::::::::::::::::::::::::::::::::::: Get pzr id AouP
-    // ::::::::::::::::::::::::::::::::::::
+    //::::::::::::::::::::::::::::::::::: Get par id AouP ::::::::::::::::::::::::::::::::::::
 
     @ApiOperation(value = "Apprenant ou participant par id")
-    @GetMapping("/aoup/GetId/{id}")
-    public ResponseEntity<Object> GetAouPparId(@PathVariable long id) {
+    @GetMapping("/aoup/GetId/{iduser}/{id}")
+    public ResponseEntity<Object> GetAouPparId(@PathVariable long id,@PathVariable long iduser) {
         try {
+            //Histroique
+            Utilisateur user =   utilisateurService.getById(iduser);
+            try {
+                Historique historique = new Historique();
+                Date datehisto = new Date();
+                historique.setDatehistorique(datehisto);
+                historique.setDescription(""+user.getPrenom()+ " "+user.getNom()+" a affiché un apprenant ou un participant ");
+                historiqueService.Create(historique);}
+            catch (Exception e) {
+                // TODO: handle exception
+                return ResponseMessage.generateResponse("iciiii", HttpStatus.OK, e.getMessage());
+
+            }
             return ResponseMessage.generateResponse("ok", HttpStatus.OK,
                     aouPService.GetById(id));
+
+
         } catch (Exception e) {
             // TODO: handle exception
             return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
@@ -1311,12 +1372,26 @@ public class SuperAdminController {
         }
     }
 
-    // :::::::::::::::::::::::::::::::::::::::DESIGNATION
-    // :::::::::::::::::::::::::::::::
+
+    // :::::::::::::::::::::::::::::::::::::::DESIGNATION :::::::::::::::::::::::::::::::
     @ApiOperation(value = "Ajouterr Designation")
-    @PostMapping("/designation")
-    public ResponseEntity<Object> ajouterDesignation(@RequestBody Designation designation) {
+    @PostMapping("/designation/{iduser}")
+    public ResponseEntity<Object> ajouterDesignation(@RequestBody Designation designation,@PathVariable long iduser) {
         try {
+
+            //Histroique
+            Utilisateur user =   utilisateurService.getById(iduser);
+            try {
+                Historique historique = new Historique();
+                Date datehisto = new Date();
+                historique.setDatehistorique(datehisto);
+                historique.setDescription(""+user.getPrenom()+ " "+user.getNom()+" a ajouté la desigantion "+designation.getLibelle());
+                historiqueService.Create(historique);}
+            catch (Exception e) {
+                // TODO: handle exception
+                return ResponseMessage.generateResponse("iciiii", HttpStatus.OK, e.getMessage());
+
+            }
             return ResponseMessage.generateResponse("ok", HttpStatus.OK,
                     designationService.Create(designation));
         } catch (Exception e) {
@@ -1326,27 +1401,55 @@ public class SuperAdminController {
         }
     }
 
-    // ::::::::::::::::::::::::::::::::::: Modifier Designation
-    // ::::::::::::::::::::::::::::::::::::
+
+    //::::::::::::::::::::::::::::::::::: Modifier Designation ::::::::::::::::::::::::::::::::::::
     @ApiOperation(value = "Modifier Desi")
-    @PutMapping("/designation/modifier/{id}")
-    public ResponseEntity<Object> ModifierDesignation(@PathVariable long id, @RequestBody Designation designation) {
+    @PutMapping("/designation/modifier/{iduser}/{id}")
+    public ResponseEntity<Object> ModifierDesignation(@PathVariable long id,@PathVariable long iduser, @RequestBody Designation designation) {
         try {
+
+            //Historique
+            Utilisateur user =   utilisateurService.getById(iduser);
+            try {
+                Historique historique = new Historique();
+                Date datehisto = new Date();
+                historique.setDatehistorique(datehisto);
+                historique.setDescription(""+user.getPrenom()+ " "+user.getNom()+" a modifié la desigantion "+designation.getLibelle());
+                historiqueService.Create(historique);}
+            catch (Exception e) {
+                // TODO: handle exception
+                return ResponseMessage.generateResponse("iciiii", HttpStatus.OK, e.getMessage());
+
+            }
             return ResponseMessage.generateResponse("ok", HttpStatus.OK,
-                    designationService.Update(id, designation));
+                    designationService.Update(id,designation));
         } catch (Exception e) {
             // TODO: handle exception
             return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
 
         }
     }
-    // ::::::::::::::::::::::::::::::::::: Supprimer AouP
-    // ::::::::::::::::::::::::::::::::::::
+//::::::::::::::::::::::::::::::::::: Supprimer AouP ::::::::::::::::::::::::::::::::::::
 
     @ApiOperation(value = "Supprimer Designation")
-    @DeleteMapping("/designation/supprimer/{id}")
-    public ResponseEntity<Object> SupprimerDesignation(@PathVariable long id) {
+    @DeleteMapping("/designation/supprimer/{iduser}/{id}")
+    public ResponseEntity<Object> SupprimerDesignation(@PathVariable long id,@PathVariable long iduser) {
         try {
+            Designation designation = designationService.GetById(id);
+
+            //Histroique
+            Utilisateur user =   utilisateurService.getById(iduser);
+            try {
+                Historique historique = new Historique();
+                Date datehisto = new Date();
+                historique.setDatehistorique(datehisto);
+                historique.setDescription(""+user.getPrenom()+ " "+user.getNom()+" a supprimé la desigantion "+designation.getLibelle());
+                historiqueService.Create(historique);}
+            catch (Exception e) {
+                // TODO: handle exception
+                return ResponseMessage.generateResponse("iciiii", HttpStatus.OK, e.getMessage());
+
+            }
             return ResponseMessage.generateResponse("ok", HttpStatus.OK,
                     designationService.Delete(id));
         } catch (Exception e) {
@@ -1355,13 +1458,26 @@ public class SuperAdminController {
 
         }
     }
-    // ::::::::::::::::::::::::::::::::::: Get pzr id AouP
-    // ::::::::::::::::::::::::::::::::::::
+    //::::::::::::::::::::::::::::::::::: Get pzr id AouP ::::::::::::::::::::::::::::::::::::
 
     @ApiOperation(value = "Designation par id")
-    @GetMapping("/Designation/GetId/{id}")
-    public ResponseEntity<Object> GetDesigantionparId(@PathVariable long id) {
+    @GetMapping("/Designation/GetId/{iduser}/{id}")
+    public ResponseEntity<Object> GetDesigantionparId(@PathVariable long id,@PathVariable long iduser) {
         try {
+
+            //Histroique
+            Utilisateur user =   utilisateurService.getById(iduser);
+            try {
+                Historique historique = new Historique();
+                Date datehisto = new Date();
+                historique.setDatehistorique(datehisto);
+                historique.setDescription(""+user.getPrenom()+ " "+user.getNom()+" a affiché une designation ");
+                historiqueService.Create(historique);}
+            catch (Exception e) {
+                // TODO: handle exception
+                return ResponseMessage.generateResponse("iciiii", HttpStatus.OK, e.getMessage());
+
+            }
             return ResponseMessage.generateResponse("ok", HttpStatus.OK,
                     designationService.GetById(id));
         } catch (Exception e) {
@@ -1371,11 +1487,27 @@ public class SuperAdminController {
         }
     }
 
+
+
+
     // :::::::::::::::::::::::::::::::::::::::Droit :::::::::::::::::::::::::::::::
     @ApiOperation(value = "Ajouter Droit")
-    @PostMapping("/droit")
-    public ResponseEntity<Object> ajouterDroit(@RequestBody Droit droit) {
+    @PostMapping("/droit/{iduser}")
+    public ResponseEntity<Object> ajouterDroit(@RequestBody Droit droit,@PathVariable long iduser) {
         try {
+            //Histroique
+            Utilisateur user =   utilisateurService.getById(iduser);
+            try {
+                Historique historique = new Historique();
+                Date datehisto = new Date();
+                historique.setDatehistorique(datehisto);
+                historique.setDescription(""+user.getPrenom()+ " "+user.getNom()+" a ajouté le droit "+droit.getLibelle());
+                historiqueService.Create(historique);}
+            catch (Exception e) {
+                // TODO: handle exception
+                return ResponseMessage.generateResponse("iciiii", HttpStatus.OK, e.getMessage());
+
+            }
             return ResponseMessage.generateResponse("ok", HttpStatus.OK,
                     droitService.Create(droit));
         } catch (Exception e) {
@@ -1385,27 +1517,54 @@ public class SuperAdminController {
         }
     }
 
-    // ::::::::::::::::::::::::::::::::::: Modifier Droit
-    // ::::::::::::::::::::::::::::::::::::
+
+    //::::::::::::::::::::::::::::::::::: Modifier Droit ::::::::::::::::::::::::::::::::::::
     @ApiOperation(value = "Modifier Droit")
-    @PutMapping("/droit/modifier/{id}")
-    public ResponseEntity<Object> ModifierDroit(@PathVariable long id, @RequestBody Droit droit) {
+    @PutMapping("/droit/modifier/{iduser}/{id}")
+    public ResponseEntity<Object> ModifierDroit(@PathVariable long id,@PathVariable long iduser, @RequestBody Droit droit) {
         try {
+
+            //Histroique
+            Utilisateur user =   utilisateurService.getById(iduser);
+            try {
+                Historique historique = new Historique();
+                Date datehisto = new Date();
+                historique.setDatehistorique(datehisto);
+                historique.setDescription(""+user.getPrenom()+ " "+user.getNom()+" a modifié le droit "+droit.getLibelle());
+                historiqueService.Create(historique);}
+            catch (Exception e) {
+                // TODO: handle exception
+                return ResponseMessage.generateResponse("iciiii", HttpStatus.OK, e.getMessage());
+
+            }
             return ResponseMessage.generateResponse("ok", HttpStatus.OK,
-                    droitService.Update(id, droit));
+                    droitService.Update(id,droit));
         } catch (Exception e) {
             // TODO: handle exception
             return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
 
         }
     }
-    // ::::::::::::::::::::::::::::::::::: Supprimer droit
-    // ::::::::::::::::::::::::::::::::::::
+//::::::::::::::::::::::::::::::::::: Supprimer droit ::::::::::::::::::::::::::::::::::::
 
     @ApiOperation(value = "Supprimer Droit")
-    @DeleteMapping("/droit/supprimer/{id}")
-    public ResponseEntity<Object> SupprimerDroit(@PathVariable long id) {
+    @DeleteMapping("/droit/supprimer/{iduser}/{id}")
+    public ResponseEntity<Object> SupprimerDroit(@PathVariable long id,@PathVariable long iduser) {
         try {
+
+            //Histroique
+            Utilisateur user =   utilisateurService.getById(iduser);
+            try {
+                Historique historique = new Historique();
+                Date datehisto = new Date();
+                historique.setDatehistorique(datehisto);
+                historique.setDescription(""+user.getPrenom()+ " "+user.getNom()+" a supprimé un droit ");
+                historiqueService.Create(historique);}
+            catch (Exception e) {
+                // TODO: handle exception
+                return ResponseMessage.generateResponse("iciiii", HttpStatus.OK, e.getMessage());
+
+            }
             return ResponseMessage.generateResponse("ok", HttpStatus.OK,
                     droitService.Delete(id));
         } catch (Exception e) {
@@ -1414,13 +1573,27 @@ public class SuperAdminController {
 
         }
     }
-    // ::::::::::::::::::::::::::::::::::: Get pzr id AouP
-    // ::::::::::::::::::::::::::::::::::::
+    //::::::::::::::::::::::::::::::::::: Get pzr id AouP ::::::::::::::::::::::::::::::::::::
 
     @ApiOperation(value = "Droit par id")
-    @GetMapping("/droit/GetId/{id}")
-    public ResponseEntity<Object> GetDroitparId(@PathVariable long id) {
+    @GetMapping("/droit/GetId/{iduser}/{id}")
+    public ResponseEntity<Object> GetDroitparId(@PathVariable long id,@PathVariable long iduser) {
         try {
+            Droit droit  = droitService.GetById(id);
+            //Histroique
+            Utilisateur user =   utilisateurService.getById(iduser);
+            try {
+                Historique historique = new Historique();
+                Date datehisto = new Date();
+                historique.setDatehistorique(datehisto);
+                historique.setDescription(""+user.getPrenom()+ " "+user.getNom()+" a affiché le droit "+droit.getLibelle());
+                historiqueService.Create(historique);}
+            catch (Exception e) {
+                // TODO: handle exception
+                return ResponseMessage.generateResponse("iciiii", HttpStatus.OK, e.getMessage());
+
+            }
+
             return ResponseMessage.generateResponse("ok", HttpStatus.OK,
                     droitService.GetById(id));
         } catch (Exception e) {
@@ -1430,13 +1603,26 @@ public class SuperAdminController {
         }
     }
 
-    // :::::::::::::::::::::::::::Droit par libelle
-    // ::::::::::::::::::::::::::::::::::
+
+    // :::::::::::::::::::::::::::Droit par libelle ::::::::::::::::::::::::::::::::::
 
     @ApiOperation(value = "Droit par libelle")
-    @GetMapping("/droit/GetLibelle/{libelle}")
-    public ResponseEntity<Object> GetDroitparLibelle(@PathVariable String libelle) {
+    @GetMapping("/droit/GetLibelle/{iduser}/{libelle}")
+    public ResponseEntity<Object> GetDroitparLibelle(@PathVariable String libelle,@PathVariable long iduser) {
         try {
+
+            Utilisateur user =   utilisateurService.getById(iduser);
+            try {
+                Historique historique = new Historique();
+                Date datehisto = new Date();
+                historique.setDatehistorique(datehisto);
+                historique.setDescription(""+user.getPrenom()+ " "+user.getNom()+" a affiché le droit "+libelle);
+                historiqueService.Create(historique);}
+            catch (Exception e) {
+                // TODO: handle exception
+                return ResponseMessage.generateResponse("iciiii", HttpStatus.OK, e.getMessage());
+
+            }
             return ResponseMessage.generateResponse("ok", HttpStatus.OK,
                     droitService.GetLibelle(libelle));
         } catch (Exception e) {
@@ -1446,9 +1632,12 @@ public class SuperAdminController {
         }
     }
 
-    // :::::::::::::::::::::::::::::::::::::::FormationEmail
-    // :::::::::::::::::::::::::::::::
-    @ApiOperation(value = "Ajouter FormatEmail")
+
+
+
+
+    // :::::::::::::::::::::::::::::::::::::::FormationEmail :::::::::::::::::::::::::::::::
+        @ApiOperation(value = "Ajouter FormatEmail")
     @PostMapping("/formaemail")
     public ResponseEntity<Object> ajouterFormatEmail(@RequestBody FormatEmail formatEmail) {
         try {
@@ -1461,22 +1650,21 @@ public class SuperAdminController {
         }
     }
 
-    // ::::::::::::::::::::::::::::::::::: Modifier FormatEmail
-    // ::::::::::::::::::::::::::::::::::::
+
+    //::::::::::::::::::::::::::::::::::: Modifier FormatEmail ::::::::::::::::::::::::::::::::::::
     @ApiOperation(value = "Modifier formatEmail")
     @PutMapping("/formatemail/modifier/{id}")
     public ResponseEntity<Object> ModifierFormatEmail(@PathVariable long id, @RequestBody FormatEmail formatEmail) {
         try {
             return ResponseMessage.generateResponse("ok", HttpStatus.OK,
-                    formatEmailService.Update(id, formatEmail));
+                    formatEmailService.Update(id,formatEmail));
         } catch (Exception e) {
             // TODO: handle exception
             return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
 
         }
     }
-    // ::::::::::::::::::::::::::::::::::: Supprimer FormatEmail
-    // ::::::::::::::::::::::::::::::::::::
+//::::::::::::::::::::::::::::::::::: Supprimer FormatEmail ::::::::::::::::::::::::::::::::::::
 
     @ApiOperation(value = "Supprimer Format Email")
     @DeleteMapping("/formatemail/supprimer/{id}")
@@ -1490,8 +1678,7 @@ public class SuperAdminController {
 
         }
     }
-    // ::::::::::::::::::::::::::::::::::: Get pzr id FormatEmail
-    // ::::::::::::::::::::::::::::::::::::
+    //::::::::::::::::::::::::::::::::::: Get pzr id FormatEmail ::::::::::::::::::::::::::::::::::::
 
     @ApiOperation(value = "Format email par id")
     @GetMapping("/formatEmail/GetId/{id}")
