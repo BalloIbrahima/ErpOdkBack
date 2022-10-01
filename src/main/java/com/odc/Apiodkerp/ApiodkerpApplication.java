@@ -323,22 +323,22 @@ public class ApiodkerpApplication {
 		Droit Cutilisateur = new Droit();
 		Cutilisateur.setId(57L);
 		Cutilisateur.setLibelle("Create Utilisateur");
-		Cutilisateur.setDescription("Creer un tirage.");
+		Cutilisateur.setDescription("Creer un utilisateur.");
 
 		Droit Rutilisateur = new Droit();
 		Rutilisateur.setId(58L);
 		Rutilisateur.setLibelle("Read Utilisateur");
-		Rutilisateur.setDescription("Lire un tirage.");
+		Rutilisateur.setDescription("Lire un utilisateur.");
 
 		Droit Uutilisateur = new Droit();
 		Uutilisateur.setId(59L);
 		Uutilisateur.setLibelle("Update Utilisateur");
-		Uutilisateur.setDescription("Mettre à jour un tirage.");
+		Uutilisateur.setDescription("Mettre à jour un utilisateur.");
 
 		Droit Dutilisateur = new Droit();
 		Dutilisateur.setId(60L);
 		Dutilisateur.setLibelle("Delete Utilisateur");
-		Dutilisateur.setDescription("Suprimer un tirage.");
+		Dutilisateur.setDescription("Suprimer un utilisateur.");
 
 		Droit Ctypeactivite = new Droit();
 		Ctypeactivite.setId(61L);

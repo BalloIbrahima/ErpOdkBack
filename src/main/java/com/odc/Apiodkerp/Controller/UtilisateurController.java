@@ -567,65 +567,62 @@ public class UtilisateurController {
 
             return ResponseMessage.generateResponse("errorVVVVVVVVVV", HttpStatus.OK, e.getMessage());
         }
-            if (file != null) {
-                //try {
-                    Etat etat = etatService.recupereParStatut("A VENIR");
-                    Utilisateur user = utilisateurService.trouverParLoginAndPass(login, password);
-                    Droit createType = droitService.GetLibelle("Create TypeActivite");
+        if (file != null) {
+            // try {
+            Etat etat = etatService.recupereParStatut("A VENIR");
+            Utilisateur user = utilisateurService.trouverParLoginAndPass(login, password);
+            Droit createType = droitService.GetLibelle("Create TypeActivite");
 
-                    Salle salle = salleService.read(idsalle);
-                    TypeActivite type = typeActiviteService.getById(idtype);
+            Salle salle = salleService.read(idsalle);
+            TypeActivite type = typeActiviteService.getById(idtype);
 
-                    activite.setTypeActivite(type);
-                    activite.setSalle(salle);
-                    activite.setCreateur(user);
-                    activite.setEtat(etat);
-                    activite.setLeader(user);
-                    activite.setDateCreation(new Date());
-                    System.out.println(user);
-                    // activite.setLeader(user);
+            activite.setTypeActivite(type);
+            activite.setSalle(salle);
+            activite.setCreateur(user);
+            activite.setEtat(etat);
+            activite.setLeader(user);
+            activite.setDateCreation(new Date());
+            System.out.println(user);
+            // activite.setLeader(user);
 
-                    activite.setImage(SaveImage.save("activite", file, activite.getNom()));
+            activite.setImage(SaveImage.save("activite", file, activite.getNom()));
 
-
-                    // ::::::::::::::::::::::::::::Historique ::::::::::::::::
-                    // Utilisateur user = utilisateurService.getById(iduser);
-                    if (user != null) {
-                        if (user.getRole().getDroits().contains(createType)) {
-                            try {
-                                Historique historique = new Historique();
-                                Date datehisto = new Date();
-                                historique.setDatehistorique(datehisto);
-                                historique
-                                        .setDescription(
-                                                "" + user.getPrenom() + " " + user.getNom() + " a crée l'activité "
-                                                        + activite.getNom());
-                                historiqueService.Create(historique);
-                            } catch (Exception e) {
-                                // TODO: handle exception
-                                return ResponseMessage.generateResponse("iciiii", HttpStatus.OK, e.getMessage());
-
-                            }
-                            return ResponseMessage.generateResponse("ok", HttpStatus.OK,
-                                    activiteService.Create(activite));
-
-                        } else {
-                            return ResponseMessage.generateResponse("error", HttpStatus.OK, "Non autorisé");
-
-                        }
-
-                    } else {
-                        return ResponseMessage.generateResponse("error", HttpStatus.OK,
-                                "Cet utilisateur n'existe pas !");
+            // ::::::::::::::::::::::::::::Historique ::::::::::::::::
+            // Utilisateur user = utilisateurService.getById(iduser);
+            if (user != null) {
+                if (user.getRole().getDroits().contains(createType)) {
+                    try {
+                        Historique historique = new Historique();
+                        Date datehisto = new Date();
+                        historique.setDatehistorique(datehisto);
+                        historique
+                                .setDescription(
+                                        "" + user.getPrenom() + " " + user.getNom() + " a crée l'activité "
+                                                + activite.getNom());
+                        historiqueService.Create(historique);
+                    } catch (Exception e) {
+                        // TODO: handle exception
+                        return ResponseMessage.generateResponse("iciiii", HttpStatus.OK, e.getMessage());
 
                     }
+                    return ResponseMessage.generateResponse("ok", HttpStatus.OK,
+                            activiteService.Create(activite));
 
+                } else {
+                    return ResponseMessage.generateResponse("error", HttpStatus.OK, "Non autorisé");
+
+                }
 
             } else {
+                return ResponseMessage.generateResponse("error", HttpStatus.OK,
+                        "Cet utilisateur n'existe pas !");
 
-                return ResponseMessage.generateResponse("error", HttpStatus.OK, "Fichier vide");
             }
 
+        } else {
+
+            return ResponseMessage.generateResponse("error", HttpStatus.OK, "Fichier vide");
+        }
 
         // application/json
 
@@ -678,7 +675,7 @@ public class UtilisateurController {
     }
 
     @ApiOperation(value = "methode pour la Suppression d'une type d' activité.")
-    @PostMapping("/TypeactiviteSupprimer/{id}/{login}/{password}")
+    @DeleteMapping("/TypeactiviteSupprimer/{id}/{login}/{password}")
     public ResponseEntity<Object> SupprimerTypeActivite(@PathVariable long id, @PathVariable("login") String login,
             @PathVariable("password") String password,
             @RequestBody TypeActivite typeActivite) {
@@ -832,7 +829,6 @@ public class UtilisateurController {
 
     // ::::::::::::::::::::::Total activite ::::::::::::::::::::::::
 
-
     public ResponseEntity<Object> TotalActivite(@PathVariable("login") String login,
             @PathVariable("password") String password) {
         try {
@@ -873,7 +869,5 @@ public class UtilisateurController {
     }
 
 }
-
-
 
 //
