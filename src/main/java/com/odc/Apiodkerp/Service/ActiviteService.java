@@ -26,6 +26,9 @@ public interface ActiviteService {
 
     Long TotalActivite();
 
+
+    Long ToutActivite();
+    List<Activite> ToutActivit();
     List<Activite> Avenir();
 
     List<Activite> Encour();

@@ -8,7 +8,6 @@ import java.util.List;
 
 public interface AouPService {
 
-
     AouP Create(AouP aoup);
 
     List<AouP> GetAll();
@@ -19,11 +18,6 @@ public interface AouPService {
 
     AouP GetById(long id);
 
-
-
     // Activite en fonction de l'etat
-
-
-
 
 }
