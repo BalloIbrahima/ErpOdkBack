@@ -2338,4 +2338,52 @@ public class SuperAdminController {
         }
     }
 
+    @ApiOperation(value = "Nombre de participants feminin")
+    @GetMapping("/partcipantfeminins/{login}/{password}")
+    public ResponseEntity<Object> participantsFeminins(@PathVariable("login") String login,
+            @PathVariable("password") String password) {
+        try {
+            Utilisateur user = utilisateurService.trouverParLoginAndPass(login, password);
+
+            Droit RAoup = droitService.GetLibelle("Read AouP");
+
+            if (user.getRole().getDroits().contains(RAoup)) {
+                return ResponseMessage.generateResponse("ok", HttpStatus.OK,
+                        aouPService.listFeminins());
+            } else {
+                return ResponseMessage.generateResponse("error", HttpStatus.OK, "Non autorisé");
+
+            }
+
+        } catch (Exception e) {
+            // TODO: handle exception
+            return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
+
+        }
+    }
+
+    @ApiOperation(value = "Nombre de participants enfants")
+    @GetMapping("/partcipantenfants/{login}/{password}")
+    public ResponseEntity<Object> participantsEnfants(@PathVariable("login") String login,
+            @PathVariable("password") String password) {
+        try {
+            Utilisateur user = utilisateurService.trouverParLoginAndPass(login, password);
+
+            Droit RAoup = droitService.GetLibelle("Read AouP");
+
+            if (user.getRole().getDroits().contains(RAoup)) {
+                return ResponseMessage.generateResponse("ok", HttpStatus.OK,
+                        aouPService.listEnfants());
+            } else {
+                return ResponseMessage.generateResponse("error", HttpStatus.OK, "Non autorisé");
+
+            }
+
+        } catch (Exception e) {
+            // TODO: handle exception
+            return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
+
+        }
+    }
+
 }
