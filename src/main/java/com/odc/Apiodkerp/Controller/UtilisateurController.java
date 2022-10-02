@@ -594,7 +594,7 @@ public class UtilisateurController {
 
     // ::::::::::::::::::::::Total activite ::::::::::::::::::::::::
 
-    @ApiOperation(value = "Total activite")
+   /* @ApiOperation(value = "Total activite")
     @GetMapping("/totalactivite/{login}/{password}")
     public ResponseEntity<Object> TotalActivite( @PathVariable("login") String login, @PathVariable("password") String password) {
         try {
@@ -626,14 +626,16 @@ public class UtilisateurController {
             return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
         }
 
-    }
+    }*/
 
 
     @ApiOperation(value = "Total activite")
-    @GetMapping("/ToutActivite/{login}/{password}")
-    public ResponseEntity<Object>ToutActivte( @PathVariable("login") String login, @PathVariable("password") String password) {
+    //@GetMapping("/ToutActivite/{login}/{password}")
+    //@PathVariable("login") String login, @PathVariable("password") String password
+    @GetMapping("/ToutActivite/{iduser}")
+    public ResponseEntity<Object>ToutActivte(@PathVariable("iduser") long iduser) {
         try {
-            Utilisateur user = utilisateurService.trouverParLoginAndPass(login,password);
+            Utilisateur user = utilisateurService.getById(iduser);
             if(user!=null){
                 try {
                     Historique historique = new Historique();

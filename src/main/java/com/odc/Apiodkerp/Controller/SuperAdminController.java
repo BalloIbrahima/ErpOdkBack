@@ -911,11 +911,11 @@ public class SuperAdminController {
 
     // activités en avenir
     @ApiOperation(value = "activites/avenir")
-    @GetMapping("activites/avenir/{login}/{password}")
-    public ResponseEntity<Object> ActivitesAvenir(@PathVariable String login,@PathVariable String password) {
+    @GetMapping("activites/avenir/{id}")
+    public ResponseEntity<Object> ActivitesAvenir(@PathVariable long id) {
         try {
 
-            Utilisateur users =   utilisateurService.trouverParLoginAndPass(login,password);
+            Utilisateur users =   utilisateurService.getById(id);
             try {
                 Historique historique = new Historique();
                 Date datehisto = new Date();
@@ -936,10 +936,10 @@ public class SuperAdminController {
 
     // activités en cour
     @ApiOperation(value = "activites/encour")
-    @GetMapping("activites/encour/{login}/{password}")
-    public ResponseEntity<Object> ActivitesEncour(@PathVariable String login,@PathVariable String password) {
+    @GetMapping("activites/encour/{id}")
+    public ResponseEntity<Object> ActivitesEncour(@PathVariable long id) {
         try {
-            Utilisateur users =   utilisateurService.trouverParLoginAndPass(login,password);
+            Utilisateur users =   utilisateurService.getById(id);
             try {
                 Historique historique = new Historique();
                 Date datehisto = new Date();
