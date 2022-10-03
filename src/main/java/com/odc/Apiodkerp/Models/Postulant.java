@@ -30,7 +30,6 @@ public class Postulant extends Personne {
     List<ListePostulant> listePostulants = new ArrayList<>();
 
 
-
     @JsonIgnore
     @OneToMany(mappedBy = "postulant")
     List<AouP> aoup = new ArrayList<>();

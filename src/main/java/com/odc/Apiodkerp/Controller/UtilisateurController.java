@@ -829,7 +829,8 @@ public class UtilisateurController {
     }
 
     // ::::::::::::::::::::::Total activite ::::::::::::::::::::::::
-
+    @ApiOperation(value = "Nombre total d'activite")
+    @GetMapping("/totalactivite/{login}/{password}")
     public ResponseEntity<Object> TotalActivite(@PathVariable("login") String login,
             @PathVariable("password") String password) {
         try {
