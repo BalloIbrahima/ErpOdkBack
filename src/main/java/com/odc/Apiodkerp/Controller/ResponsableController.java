@@ -31,6 +31,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.odc.Apiodkerp.Configuration.ExcelGenerator;
 import com.odc.Apiodkerp.Configuration.ExcelImport;
 
@@ -131,13 +132,17 @@ public class ResponsableController {
     // ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
     // la methode pour importer une liste de postulant
     @ApiOperation(value = "la methode pour importer une liste de postulant.")
-    @PostMapping("/listpostulant/new/{libelleliste}/{login}/{password}")
+    @PostMapping("/listpostulant/new/{libelleliste}")
     public ResponseEntity<Object> ImportListePostulant(@PathVariable("libelleliste") String libelleliste,
-            @PathVariable("login") String login, @PathVariable("password") String password,
+            @RequestParam(value = "user") String userVenant,
             @RequestParam("file") MultipartFile file) {
 
         try {
-            Utilisateur Simpleutilisateur = utilisateurService.trouverParLoginAndPass(login, password);
+
+            Utilisateur utilisateur = new JsonMapper().readValue(userVenant, Utilisateur.class);
+
+            Utilisateur Simpleutilisateur = utilisateurService.trouverParLoginAndPass(utilisateur.getLogin(),
+                    utilisateur.getPassword());
 
             Droit createListe = droitService.GetLibelle("Create ListePostulant");
 
@@ -212,15 +217,17 @@ public class ResponsableController {
     // :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
     // la methode pour importer une liste de participant
     @ApiOperation(value = "la methode pour importer une liste de participant.")
-    @PostMapping("/listparticipant/new/{idactivite}/{login}/{password}")
+    @PostMapping("/listparticipant/new/{idactivite}")
     public ResponseEntity<Object> ImportListeParticipant(@RequestParam("file") MultipartFile file,
-            @PathVariable("idactivite") Long idactivite, @PathVariable("login") String login,
-            @PathVariable("password") String password) {
+            @PathVariable("idactivite") Long idactivite, @RequestParam(value = "user") String userVenant) {
 
         try {
             Activite activite = activiteService.GetById(idactivite);
 
-            Utilisateur Simpleutilisateur = utilisateurService.trouverParLoginAndPass(login, password);
+            Utilisateur utilisateur = new JsonMapper().readValue(userVenant, Utilisateur.class);
+
+            Utilisateur Simpleutilisateur = utilisateurService.trouverParLoginAndPass(utilisateur.getLogin(),
+                    utilisateur.getPassword());
 
             Droit createAoup = droitService.GetLibelle("Create AouP");
 
@@ -297,14 +304,18 @@ public class ResponsableController {
 
     // methode pour exporter des postulants tirés
     @ApiOperation(value = "methode pour exporter des postulants tirés.")
-    @PostMapping("/export/{idtirage}/{login}/{password}")
+    @PostMapping("/export/{idtirage}")
     public ResponseEntity<Object> exporterTirage(@PathVariable("idtirage") Long idtirage,
-            @PathVariable("login") String login, @PathVariable("password") String password,
+            @RequestParam(value = "user") String userVenant,
             HttpServletResponse response) {
         response.setContentType("application/octet-stream");
 
         try {
-            Utilisateur Simpleutilisateur = utilisateurService.trouverParLoginAndPass(login, password);
+            Utilisateur utilisateur = new JsonMapper().readValue(userVenant, Utilisateur.class);
+
+            Utilisateur Simpleutilisateur = utilisateurService.trouverParLoginAndPass(utilisateur.getLogin(),
+                    utilisateur.getPassword());
+
             Tirage tirage = tirageService.getById(idtirage);
             List<Postulant> postulantsListe = new ArrayList<>();
 
@@ -356,7 +367,6 @@ public class ResponsableController {
         Tirage exist = tirageService.findByLibelle(libelleTirage);
         if (exist == null) {
             Droit createTirage = droitService.GetLibelle("Create Tirage");
-
 
             Utilisateur utilisateur = utilisateurService.trouverParLoginAndPass(login, password);
             Activite activite = activiteService.GetById(idactivite);
@@ -464,7 +474,7 @@ public class ResponsableController {
 
     // Afficher de postulant tiré
     @ApiOperation(value = "Afficher participant par son id")
-    @GetMapping("/read/{id}/{login}/{password}")
+    @PostMapping("/read/{id}/{login}/{password}")
     public ResponseEntity<Object> readPostulantTire(@PathVariable long id,
             @PathVariable("login") String login, @PathVariable("password") String password) {
         try {
@@ -577,7 +587,7 @@ public class ResponsableController {
 
     // Afficher tous les postulants
     @ApiOperation(value = "Afficher tous les participants")
-    @GetMapping("/All/{login}/{password}")
+    @PostMapping("/All/{login}/{password}")
     public ResponseEntity<Object> getAllPostulantTire(@PathVariable("login") String login,
             @PathVariable("password") String password) {
         try {

@@ -333,7 +333,7 @@ public class UtilisateurController {
 
     // afficher toutes les activites
     @ApiOperation(value = "Afficher toutes les  activite  ")
-    @GetMapping("/lapresence/{login}/{password}")
+    @GetMapping("/allactivite/{login}/{password}")
     public ResponseEntity<Object> ToutesActivite(@PathVariable("login") String login,
             @PathVariable("password") String password) {
         try {
@@ -349,12 +349,14 @@ public class UtilisateurController {
                         historique.setDescription(
                                 "" + user.getPrenom() + " " + user.getNom() + " a affiché toutes les activités ");
                         historiqueService.Create(historique);
+
+                        return ResponseMessage.generateResponse("ok", HttpStatus.OK, activiteService.FindAllAct());
+
                     } catch (Exception e) {
                         // TODO: handle exception
                         return ResponseMessage.generateResponse("iciiii", HttpStatus.OK, e.getMessage());
 
                     }
-                    return ResponseMessage.generateResponse("ok", HttpStatus.OK, activiteService.FindAllAct());
                 } else {
                     return ResponseMessage.generateResponse("error", HttpStatus.OK, "Non autorisé");
                 }
@@ -827,29 +829,36 @@ public class UtilisateurController {
 
     }
 
-    // ::::::::::::::::::::::Total activite ::::::::::::::::::::::::
-
-    public ResponseEntity<Object> TotalActivite(@PathVariable("login") String login,
-            @PathVariable("password") String password) {
+    // ::::::::::::::::::::::Total nombre activite ::::::::::::::::::::::::
+    @ApiOperation(value = "Modification utilisateur en fournisssant id")
+    @PostMapping("/totalactivite")
+    public ResponseEntity<Object> TotalActivite(@RequestParam(value = "user") String userVenant) {
         try {
-            Utilisateur user = utilisateurService.trouverParLoginAndPass(login, password);
+            Utilisateur utilisateur = new JsonMapper().readValue(userVenant, Utilisateur.class);
+            
+            Utilisateur user = utilisateurService.trouverParLoginAndPass(utilisateur.getLogin(),
+                    utilisateur.getPassword());
             Droit readActivite = droitService.GetLibelle("Read Actvite");
 
             if (user != null) {
                 if (user.getRole().getDroits().contains(readActivite)) {
                     try {
+
                         Historique historique = new Historique();
                         Date datehisto = new Date();
                         historique.setDatehistorique(datehisto);
                         historique.setDescription(
-                                "" + user.getPrenom() + " " + user.getNom() + " a affiché toutes les activites ");
+                                "" + user.getPrenom() + " " + user.getNom() + " a affiche toutes les activites ");
                         historiqueService.Create(historique);
+
+                        return ResponseMessage.generateResponse("ok", HttpStatus.OK, activiteService.TotalActivite());
+
                     } catch (Exception e) {
                         // TODO: handle exception
-                        return ResponseMessage.generateResponse("iciiii", HttpStatus.OK, e.getMessage());
+                        return ResponseMessage.generateResponse("iciiii", HttpStatus.OK,
+                                e.getMessage());
 
                     }
-                    return ResponseMessage.generateResponse("ok", HttpStatus.OK, activiteService.TotalActivite());
 
                 } else {
                     return ResponseMessage.generateResponse("error", HttpStatus.OK, "Non autorisé");
@@ -863,7 +872,8 @@ public class UtilisateurController {
 
         } catch (Exception e) {
             // TODO: handle exception
-            return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
+            return ResponseMessage.generateResponse("errortt", HttpStatus.OK,
+                    e.getMessage());
         }
 
     }
