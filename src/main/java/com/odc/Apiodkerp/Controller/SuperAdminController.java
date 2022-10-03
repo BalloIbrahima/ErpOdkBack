@@ -111,9 +111,11 @@ public class SuperAdminController {
             Utilisateur utilisateur = new JsonMapper().readValue(userVenant, Utilisateur.class);
             Salle salle = new JsonMapper().readValue(sal, Salle.class);
 
-             Utilisateur user = utilisateurService.trouverParLoginAndPass(utilisateur.getLogin(),utilisateur.getPassword());
+            Utilisateur user = utilisateurService.trouverParLoginAndPass(utilisateur.getLogin(),
+                    utilisateur.getPassword());
 
-         //   Utilisateur utilisateur = utilisateurService.trouverParLoginAndPass(login, password);
+            // Utilisateur utilisateur = utilisateurService.trouverParLoginAndPass(login,
+            // password);
             System.out.println(utilisateur);
             if (utilisateur.getRole() == RoleService.GetByLibelle("ADMIN")) {
                 try {
@@ -142,11 +144,12 @@ public class SuperAdminController {
     @ApiOperation(value = "Recuperer salle par id")
     @GetMapping("getSalle")
     public ResponseEntity<Object> getSalle(@PathVariable("id") Long id,
-         @RequestParam(value = "user") String userVenant) {
+            @RequestParam(value = "user") String userVenant) {
         try {
             Utilisateur utilisateur = new JsonMapper().readValue(userVenant, Utilisateur.class);
 
-            Utilisateur user = utilisateurService.trouverParLoginAndPass(utilisateur.getLogin(), utilisateur.getPassword());
+            Utilisateur user = utilisateurService.trouverParLoginAndPass(utilisateur.getLogin(),
+                    utilisateur.getPassword());
             Salle salle = new Salle();
             Droit Rsalle = droitService.GetLibelle("Read Salle");
 
@@ -184,12 +187,13 @@ public class SuperAdminController {
 
     @ApiOperation(value = "Lien pour modifier une salle")
     @PutMapping("/modifiersalle/{id}")
-    public ResponseEntity<Object> modifier( @PathVariable long id, @RequestParam(value = "user") String userVenant,
-                                            @RequestParam(value = "salle") String sal                       ) {
+    public ResponseEntity<Object> modifier(@PathVariable long id, @RequestParam(value = "user") String userVenant,
+            @RequestParam(value = "salle") String sal) {
         try {
             Utilisateur utilisateur = new JsonMapper().readValue(userVenant, Utilisateur.class);
             Salle salle = new JsonMapper().readValue(sal, Salle.class);
-            Utilisateur user = utilisateurService.trouverParLoginAndPass(utilisateur.getLogin(), utilisateur.getPassword());
+            Utilisateur user = utilisateurService.trouverParLoginAndPass(utilisateur.getLogin(),
+                    utilisateur.getPassword());
 
             Droit Usalle = droitService.GetLibelle("Update Salle");
 
@@ -224,11 +228,12 @@ public class SuperAdminController {
 
     @ApiOperation(value = "Lien pour suprimer une salle")
     @DeleteMapping("/supprimersalle/{id}/")
-    public ResponseEntity<Object> supprimer(@PathVariable long id,@RequestParam(value = "user") String userVenant) {
+    public ResponseEntity<Object> supprimer(@PathVariable long id, @RequestParam(value = "user") String userVenant) {
         try {
             Utilisateur utilisateur = new JsonMapper().readValue(userVenant, Utilisateur.class);
 
-            Utilisateur user = utilisateurService.trouverParLoginAndPass(utilisateur.getLogin(), utilisateur.getPassword());
+            Utilisateur user = utilisateurService.trouverParLoginAndPass(utilisateur.getLogin(),
+                    utilisateur.getPassword());
 
             Droit DSalle = droitService.GetLibelle("Delete Salle");
 
@@ -268,7 +273,8 @@ public class SuperAdminController {
             @RequestParam(value = "user") String userVenant) {
         try {
             Utilisateur utilisateur = new JsonMapper().readValue(userVenant, Utilisateur.class);
-            Utilisateur user = utilisateurService.trouverParLoginAndPass(utilisateur.getLogin(), utilisateur.getPassword());
+            Utilisateur user = utilisateurService.trouverParLoginAndPass(utilisateur.getLogin(),
+                    utilisateur.getPassword());
 
             Droit Ra = droitService.GetLibelle("Read Activite");
 
@@ -330,7 +336,7 @@ public class SuperAdminController {
     @ApiOperation(value = "Creer un utilisateur.")
     @PostMapping("/create/user")
     public ResponseEntity<Object> createUser(@RequestParam(value = "data") String data,
-                                             @RequestParam(value = "user") String userVenant,
+            @RequestParam(value = "user") String userVenant,
             @RequestParam(value = "file", required = false) MultipartFile file, @RequestBody Utilisateur utilis) {
         try {
 
@@ -340,7 +346,8 @@ public class SuperAdminController {
 
             // Role role = RoleService.GetByLibelle("USER");
 
-            Utilisateur users = utilisateurService.trouverParLoginAndPass(utilisateu.getLogin(),utilisateu.getPassword());
+            Utilisateur users = utilisateurService.trouverParLoginAndPass(utilisateu.getLogin(),
+                    utilisateu.getPassword());
             Droit CUser = droitService.GetLibelle("Create Utilisateur");
 
             if (users != null) {
@@ -391,7 +398,8 @@ public class SuperAdminController {
 
     @ApiOperation(value = "Modifier un utilisateur.")
     @PutMapping("/update/user/{idadmin}/{id}")
-    public ResponseEntity<Object> updateUser( @RequestParam(value = "user") String userVenant, @PathVariable long idadmin,
+    public ResponseEntity<Object> updateUser(@RequestParam(value = "user") String userVenant,
+            @PathVariable long idadmin,
             @RequestParam(value = "file", required = false) MultipartFile file) {
 
         try {
@@ -401,20 +409,23 @@ public class SuperAdminController {
                 SaveImage.save("user", file, utilisateur.getEmail());
             }
 
-            Utilisateur users = utilisateurService.trouverParLoginAndPass(utilisateur.getLogin(),utilisateur.getPassword());
+            Utilisateur users = utilisateurService.trouverParLoginAndPass(utilisateur.getLogin(),
+                    utilisateur.getPassword());
             Droit UUser = droitService.GetLibelle("Update Utilisateur");
 
             if (users != null) {
                 if (users.getRole().getDroits().contains(UUser)) {
 
                     // Historique
-                   // Utilisateur user = utilisateurService.trouverParLoginAndPass(login, password);
+                    // Utilisateur user = utilisateurService.trouverParLoginAndPass(login,
+                    // password);
                     try {
                         Historique historique = new Historique();
                         Date datehisto = new Date();
                         historique.setDatehistorique(datehisto);
                         historique.setDescription(
-                                "" + users.getPrenom() + " " + users.getNom() + " a modifier un utilisateur du nom de ");
+                                "" + users.getPrenom() + " " + users.getNom()
+                                        + " a modifier un utilisateur du nom de ");
                         historiqueService.Create(historique);
                     } catch (Exception e) {
                         // TODO: handle exception
@@ -445,13 +456,14 @@ public class SuperAdminController {
     @ApiOperation(value = "Supprimer un utilisateur")
     @DeleteMapping("/delete/user/{id}")
     public ResponseEntity<Object> deleteUser(@PathVariable Long id,
-                                             @RequestParam(value = "user") String userVenant) {
+            @RequestParam(value = "user") String userVenant) {
         try {
 
             Utilisateur utilisateur = new JsonMapper().readValue(userVenant, Utilisateur.class);
 
             // Historique
-            Utilisateur user = utilisateurService.trouverParLoginAndPass(utilisateur.getLogin(),utilisateur.getPassword());
+            Utilisateur user = utilisateurService.trouverParLoginAndPass(utilisateur.getLogin(),
+                    utilisateur.getPassword());
 
             Droit Du = droitService.GetLibelle("Delete Utilisateur");
 
@@ -497,7 +509,8 @@ public class SuperAdminController {
         try {
             Utilisateur utilisateur = new JsonMapper().readValue(userVenant, Utilisateur.class);
 
-            Utilisateur user = utilisateurService.trouverParLoginAndPass(utilisateur.getLogin(),utilisateur.getPassword());
+            Utilisateur user = utilisateurService.trouverParLoginAndPass(utilisateur.getLogin(),
+                    utilisateur.getPassword());
 
             Droit Ruser = droitService.GetLibelle("Read Utilisateur");
 
@@ -541,13 +554,13 @@ public class SuperAdminController {
 
     @ApiOperation(value = "Affichager un utilisateur")
     @GetMapping("/get/user/{id}")
-    public ResponseEntity<Object> GetIdUtilisateur(@PathVariable("id") Long id,@RequestParam(value = "user") String userVenant
-            ) {
+    public ResponseEntity<Object> GetIdUtilisateur(@PathVariable("id") Long id,
+            @RequestParam(value = "user") String userVenant) {
         try {
             Utilisateur utilisateur = new JsonMapper().readValue(userVenant, Utilisateur.class);
 
-
-            Utilisateur user = utilisateurService.trouverParLoginAndPass(utilisateur.getLogin(),utilisateur.getPassword());
+            Utilisateur user = utilisateurService.trouverParLoginAndPass(utilisateur.getLogin(),
+                    utilisateur.getPassword());
             Droit Ruser = droitService.GetLibelle("Read Utilisateur");
 
             if (user.getRole().getDroits().contains(Ruser)) {
@@ -580,11 +593,12 @@ public class SuperAdminController {
     @ApiOperation(value = "Creer un responsable.")
     @PostMapping("/create/responsable")
     public ResponseEntity<Object> createResponsable(@RequestParam(value = "data") String data,
-                                                    @RequestParam(value = "user") String userVenant,
+            @RequestParam(value = "user") String userVenant,
             @RequestParam(value = "file", required = false) MultipartFile file) {
         try {
             Utilisateur utilisateur = new JsonMapper().readValue(userVenant, Utilisateur.class);
-            Utilisateur admin = utilisateurService.trouverParLoginAndPass(utilisateur.getLogin(),utilisateur.getPassword());
+            Utilisateur admin = utilisateurService.trouverParLoginAndPass(utilisateur.getLogin(),
+                    utilisateur.getPassword());
             Droit Ruser = droitService.GetLibelle("Create Utilisateur");
 
             if (admin.getRole().getDroits().contains(Ruser)) {
@@ -644,14 +658,14 @@ public class SuperAdminController {
     @ApiOperation(value = "Modifier un responsable.")
     @PutMapping("/update/responsable/{idResponsable}")
     public ResponseEntity<Object> updateResponsable(@RequestParam(value = "data") String data,
-            @PathVariable("idResponsable") Long idResponsable,@RequestParam(value = "user") String userVenant,
+            @PathVariable("idResponsable") Long idResponsable, @RequestParam(value = "user") String userVenant,
             @RequestParam(value = "file", required = false) MultipartFile file) {
         try {
             Utilisateur utilisat = new JsonMapper().readValue(userVenant, Utilisateur.class);
             Utilisateur utilisateur = new JsonMapper().readValue(data, Utilisateur.class);
             Utilisateur responsable = utilisateurService.getById(idResponsable);
 
-            Utilisateur admin = utilisateurService.trouverParLoginAndPass(utilisat.getLogin(),utilisat.getPassword());
+            Utilisateur admin = utilisateurService.trouverParLoginAndPass(utilisat.getLogin(), utilisat.getPassword());
 
             Droit updateResponsable = droitService.GetLibelle("Update Utilisateur");
 
@@ -685,7 +699,8 @@ public class SuperAdminController {
         try {
             Utilisateur utilisateur = new JsonMapper().readValue(userVenant, Utilisateur.class);
 
-            Utilisateur admin = utilisateurService.trouverParLoginAndPass(utilisateur.getLogin(),utilisateur.getPassword());
+            Utilisateur admin = utilisateurService.trouverParLoginAndPass(utilisateur.getLogin(),
+                    utilisateur.getPassword());
             if (admin.getRole() == RoleService.GetByLibelle("ADMIN")) {
 
                 Utilisateur respon = utilisateurService.getById(idResponsable);
@@ -730,7 +745,8 @@ public class SuperAdminController {
 
             Utilisateur utilisateur = new JsonMapper().readValue(userVenant, Utilisateur.class);
 
-            Utilisateur user = utilisateurService.trouverParLoginAndPass(utilisateur.getLogin(),utilisateur.getPassword());
+            Utilisateur user = utilisateurService.trouverParLoginAndPass(utilisateur.getLogin(),
+                    utilisateur.getPassword());
 
             Droit readUser = droitService.GetLibelle("Read Utilisateur");
 
@@ -764,14 +780,14 @@ public class SuperAdminController {
 
     @ApiOperation(value = "Affichager un responsable")
     @GetMapping("/get/responsable/{id}")
-    public ResponseEntity<Object> GetIdResponsable(@PathVariable("id") Long id,@RequestParam(value = "user") String userVenant
-         ) {
+    public ResponseEntity<Object> GetIdResponsable(@PathVariable("id") Long id,
+            @RequestParam(value = "user") String userVenant) {
         try {
             Utilisateur idResponsable = utilisateurService.getById(id);
             Utilisateur utilisateur = new JsonMapper().readValue(userVenant, Utilisateur.class);
 
-
-            Utilisateur admin = utilisateurService.trouverParLoginAndPass(utilisateur.getLogin(),utilisateur.getPassword());
+            Utilisateur admin = utilisateurService.trouverParLoginAndPass(utilisateur.getLogin(),
+                    utilisateur.getPassword());
 
             Droit readUser = droitService.GetLibelle("Read Utilisateur");
 
@@ -850,13 +866,14 @@ public class SuperAdminController {
 
     @ApiOperation(value = "Modifier un entite")
     @PutMapping("/update/entite/{id}")
-    public ResponseEntity<Object> updateEntite(@PathVariable("id") Long id,@RequestParam(value = "entite") String enti,
-                                               @RequestParam(value = "user") String userVenant) {
+    public ResponseEntity<Object> updateEntite(@PathVariable("id") Long id, @RequestParam(value = "entite") String enti,
+            @RequestParam(value = "user") String userVenant) {
         try {
             Entite entite = new JsonMapper().readValue(enti, Entite.class);
             Utilisateur utilisateur = new JsonMapper().readValue(userVenant, Utilisateur.class);
 
-            Utilisateur user = utilisateurService.trouverParLoginAndPass(utilisateur.getLogin(), utilisateur.getPassword());
+            Utilisateur user = utilisateurService.trouverParLoginAndPass(utilisateur.getLogin(),
+                    utilisateur.getPassword());
             Droit updatentite = droitService.GetLibelle("Update Entite");
 
             if (user.getRole().getDroits().contains(updatentite)) {
@@ -875,10 +892,11 @@ public class SuperAdminController {
 
     @ApiOperation(value = "Supprimer un entite")
     @DeleteMapping("/delete/entite/{id}")
-    public ResponseEntity<Object> DeleteEntite(@PathVariable Long id,@RequestParam(value = "user") String userVenant) {
+    public ResponseEntity<Object> DeleteEntite(@PathVariable Long id, @RequestParam(value = "user") String userVenant) {
         try {
             Utilisateur utilisateur = new JsonMapper().readValue(userVenant, Utilisateur.class);
-            Utilisateur user = utilisateurService.trouverParLoginAndPass(utilisateur.getLogin(),utilisateur.getPassword());
+            Utilisateur user = utilisateurService.trouverParLoginAndPass(utilisateur.getLogin(),
+                    utilisateur.getPassword());
             Droit deleterole = droitService.GetLibelle("Delete Entite");
 
             if (user.getRole().getDroits().contains(deleterole)) {
@@ -896,12 +914,13 @@ public class SuperAdminController {
     }
 
     @ApiOperation(value = "Affichager tout les entités")
-    @GetMapping("/getAll/entite")
+    @PostMapping("/getAll/entite")
     public ResponseEntity<Object> GetAllEntite(@RequestParam(value = "user") String userVenant) {
         try {
             Utilisateur utilisateur = new JsonMapper().readValue(userVenant, Utilisateur.class);
 
-            Utilisateur user = utilisateurService.trouverParLoginAndPass(utilisateur.getLogin(),utilisateur.getPassword());
+            Utilisateur user = utilisateurService.trouverParLoginAndPass(utilisateur.getLogin(),
+                    utilisateur.getPassword());
             Droit getentite = droitService.GetLibelle("Read Entite");
 
             if (user.getRole().getDroits().contains(getentite)) {
@@ -920,13 +939,14 @@ public class SuperAdminController {
 
     @ApiOperation(value = "Affichager une entite")
     @GetMapping("/get/entite/{id}")
-    public ResponseEntity<Object> GetIdEntite(@RequestParam("id") Long id, @RequestParam(value = "user") String userVenant
-                                             ) {
+    public ResponseEntity<Object> GetIdEntite(@RequestParam("id") Long id,
+            @RequestParam(value = "user") String userVenant) {
         // @RequestParam(value = "entite") String enti
         try {
             Utilisateur utilisateur = new JsonMapper().readValue(userVenant, Utilisateur.class);
 
-            Utilisateur user = utilisateurService.trouverParLoginAndPass(utilisateur.getLogin(),utilisateur.getPassword());
+            Utilisateur user = utilisateurService.trouverParLoginAndPass(utilisateur.getLogin(),
+                    utilisateur.getPassword());
             Droit getentite = droitService.GetLibelle("Read Entite");
 
             if (user.getRole().getDroits().contains(getentite)) {
@@ -946,11 +966,13 @@ public class SuperAdminController {
     /// active un utilisateur
     @ApiOperation(value = "Active un utilisateur")
     @GetMapping("/active/{idUser}")
-    ResponseEntity<Object> activeUser(@RequestParam(value = "user") String userVenant, @PathVariable("idUser") Long idUser) {
+    ResponseEntity<Object> activeUser(@RequestParam(value = "user") String userVenant,
+            @PathVariable("idUser") Long idUser) {
 
         try {
             Utilisateur utilisateur = new JsonMapper().readValue(userVenant, Utilisateur.class);
-            Utilisateur admin = utilisateurService.trouverParLoginAndPass(utilisateur.getLogin(),utilisateur.getPassword());
+            Utilisateur admin = utilisateurService.trouverParLoginAndPass(utilisateur.getLogin(),
+                    utilisateur.getPassword());
             Droit updateuser = droitService.GetLibelle("Update Utilisateur");
 
             if (admin.getRole().getDroits().contains(updateuser)) {
@@ -989,12 +1011,14 @@ public class SuperAdminController {
     /// desactive un utilisateur
     @ApiOperation(value = "Desactive un utilisateur")
     @GetMapping("/desactive/{idUser}")
-    ResponseEntity<Object> desactiveUser( @RequestParam(value = "user") String userVenant, @PathVariable("idUser") Long idUser) {
+    ResponseEntity<Object> desactiveUser(@RequestParam(value = "user") String userVenant,
+            @PathVariable("idUser") Long idUser) {
 
         try {
             Utilisateur utilisateur = new JsonMapper().readValue(userVenant, Utilisateur.class);
 
-            Utilisateur admin = utilisateurService.trouverParLoginAndPass(utilisateur.getLogin(),utilisateur.getPassword());
+            Utilisateur admin = utilisateurService.trouverParLoginAndPass(utilisateur.getLogin(),
+                    utilisateur.getPassword());
             Droit updateuser = droitService.GetLibelle("Update Utilisateur");
 
             if (admin.getRole().getDroits().contains(updateuser)) {
@@ -1031,11 +1055,12 @@ public class SuperAdminController {
     @ApiOperation(value = "methode pour la création d'une type d' activité.")
     @PostMapping("/Typeactivite/creer")
     public ResponseEntity<Object> CreateTypeActivite(@RequestParam(value = "tyepact") String typeActivite,
-                                                     @RequestParam(value = "user") String userVenant) {
+            @RequestParam(value = "user") String userVenant) {
         try {
             Utilisateur utilisateur = new JsonMapper().readValue(userVenant, Utilisateur.class);
             TypeActivite typeActivit = new JsonMapper().readValue(typeActivite, TypeActivite.class);
-            Utilisateur admin = utilisateurService.trouverParLoginAndPass(utilisateur.getLogin(),utilisateur.getPassword());
+            Utilisateur admin = utilisateurService.trouverParLoginAndPass(utilisateur.getLogin(),
+                    utilisateur.getPassword());
             Droit createtype = droitService.GetLibelle("Create TypeActivite");
 
             if (admin.getRole().getDroits().contains(createtype)) {
@@ -1070,13 +1095,14 @@ public class SuperAdminController {
 
     @ApiOperation(value = "methode pour la Suppression d'une type d' activité.")
     @PostMapping("/Typeactivite/{id}")
-    public ResponseEntity<Object> SupprimerTypeActivite(@PathVariable long id,  @RequestParam(value = "user") String userVenant
-          , @RequestParam(value = "tyepact") String typeActivite) {
+    public ResponseEntity<Object> SupprimerTypeActivite(@PathVariable long id,
+            @RequestParam(value = "user") String userVenant, @RequestParam(value = "tyepact") String typeActivite) {
         try {
             Utilisateur utilisateur = new JsonMapper().readValue(userVenant, Utilisateur.class);
             TypeActivite typeActivit = new JsonMapper().readValue(typeActivite, TypeActivite.class);
             // historique
-            Utilisateur users = utilisateurService.trouverParLoginAndPass(utilisateur.getLogin(),utilisateur.getPassword());
+            Utilisateur users = utilisateurService.trouverParLoginAndPass(utilisateur.getLogin(),
+                    utilisateur.getPassword());
             Droit deletetetype = droitService.GetLibelle("Delete TypeActivite");
 
             if (users.getRole().getDroits().contains(deletetetype)) {
@@ -1109,12 +1135,14 @@ public class SuperAdminController {
 
     @ApiOperation(value = "methode pour la modification d'une type d' activité.")
     @PostMapping("/Typeactivite/modification")
-    public ResponseEntity<Object> ModifTypeActivite(@RequestParam(value = "tyepact") String typeActivite,  @RequestParam(value = "user") String userVenant) {
+    public ResponseEntity<Object> ModifTypeActivite(@RequestParam(value = "tyepact") String typeActivite,
+            @RequestParam(value = "user") String userVenant) {
         try {
             Utilisateur utilisateur = new JsonMapper().readValue(userVenant, Utilisateur.class);
             TypeActivite typeActivit = new JsonMapper().readValue(typeActivite, TypeActivite.class);
 
-            Utilisateur users = utilisateurService.trouverParLoginAndPass(utilisateur.getLogin(),utilisateur.getPassword());
+            Utilisateur users = utilisateurService.trouverParLoginAndPass(utilisateur.getLogin(),
+                    utilisateur.getPassword());
 
             Droit readtetype = droitService.GetLibelle("Read TypeActivite");
 
@@ -1151,7 +1179,8 @@ public class SuperAdminController {
         try {
             Utilisateur utilisateur = new JsonMapper().readValue(userVenant, Utilisateur.class);
 
-            Utilisateur users = utilisateurService.trouverParLoginAndPass(utilisateur.getLogin(),utilisateur.getPassword());
+            Utilisateur users = utilisateurService.trouverParLoginAndPass(utilisateur.getLogin(),
+                    utilisateur.getPassword());
 
             Droit readtetype = droitService.GetLibelle("Read TypeActivite");
 
@@ -1173,7 +1202,7 @@ public class SuperAdminController {
 
     @ApiOperation(value = "Total postulant")
     @GetMapping("/totalpersonnel")
-    public ResponseEntity<Object> TotalPostulant( @RequestParam(value = "user") String userVenant) {
+    public ResponseEntity<Object> TotalPostulant(@RequestParam(value = "user") String userVenant) {
         try {
             Utilisateur utilisateur = new JsonMapper().readValue(userVenant, Utilisateur.class);
 
@@ -1218,7 +1247,8 @@ public class SuperAdminController {
         try {
             Utilisateur utilisateur = new JsonMapper().readValue(userVenant, Utilisateur.class);
 
-            Utilisateur users = utilisateurService.trouverParLoginAndPass(utilisateur.getLogin(),utilisateur.getPassword());
+            Utilisateur users = utilisateurService.trouverParLoginAndPass(utilisateur.getLogin(),
+                    utilisateur.getPassword());
             Droit Rentite = droitService.GetLibelle("Lire une entitee");
 
             if (users != null) {
@@ -1601,15 +1631,16 @@ public class SuperAdminController {
     // ::::::::::::::::::::::::::::::
     @ApiOperation(value = "Comparaison date pour salle disponible")
     @GetMapping("SalleDispo/{date1}/{date2}")
-    public ResponseEntity<Object> SalleDispoDate(@PathVariable Date date1, @PathVariable Date date2, @RequestParam(value = "user") String userVenant) {
+    public ResponseEntity<Object> SalleDispoDate(@PathVariable Date date1, @PathVariable Date date2,
+            @RequestParam(value = "user") String userVenant) {
         try {
             List<Activite> acts = activiteService.FindAllAct();
             List<Salle> salle = new ArrayList<>();
             Utilisateur utilisateurs = new JsonMapper().readValue(userVenant, Utilisateur.class);
 
             Utilisateur users = utilisateurService.trouverParLoginAndPass(utilisateurs.getLogin(),
-                    utilisateurs.getPassword());            
-                    Droit RSalle = droitService.GetLibelle("Read Salle");
+                    utilisateurs.getPassword());
+            Droit RSalle = droitService.GetLibelle("Read Salle");
 
             if (users != null) {
                 if (users.getRole().getDroits().contains(RSalle)) {
@@ -1654,7 +1685,7 @@ public class SuperAdminController {
     }
 
     @ApiOperation(value = "l'ensemble des salles disponibles")
-    @GetMapping("/alleDisponible")
+    @GetMapping("/SalleDisponible")
     public ResponseEntity<Object> salleDispo(@RequestParam(value = "user") String userVenant) {
         try {
             List<Activite> acts = activiteService.FindAllAct();
@@ -1675,7 +1706,7 @@ public class SuperAdminController {
                         if (act.getDateDebut().after(today) && act.getDateFin().after(today)
                                 || act.getDateDebut().before(today) && act.getDateFin().before(today)) {
 
-                                salle.add(act.getSalle());
+                            salle.add(act.getSalle());
                             // Historique
 
                             salle.add(act.getSalle());
@@ -1709,9 +1740,61 @@ public class SuperAdminController {
         }
     }
 
+    @ApiOperation(value = "l'ensemble des salles indisponibles")
+    @GetMapping("/SalleInDisponible")
+    public ResponseEntity<Object> InsalleDispo(@RequestParam(value = "user") String userVenant) {
+        try {
+            List<Activite> acts = activiteService.FindAllAct();
+            List<Salle> salle = new ArrayList<>();
 
+            Utilisateur utilisateurs = new JsonMapper().readValue(userVenant, Utilisateur.class);
 
+            Utilisateur users = utilisateurService.trouverParLoginAndPass(utilisateurs.getLogin(),
+                    utilisateurs.getPassword());
 
+            Date today = new Date();
+
+            Droit RSalle = droitService.GetLibelle("Read Salle");
+
+            if (users != null) {
+                if (users.getRole().getDroits().contains(RSalle)) {
+                    for (Activite act : acts) {
+                        if (act.getDateDebut().after(today) && act.getDateFin().before(today)
+                                || act.getDateDebut().before(today) && act.getDateFin().after(today)) {
+
+                            salle.add(act.getSalle());
+                            // Historique
+
+                            salle.add(act.getSalle());
+                        }
+                    }
+                    try {
+                        Historique historique = new Historique();
+                        Date datehisto = new Date();
+                        historique.setDatehistorique(datehisto);
+                        historique.setDescription("" + users.getPrenom() + " " + users.getNom()
+                                + " a afficher  salle disponible dans l'intervalle ");
+                        historiqueService.Create(historique);
+
+                        return ResponseMessage.generateResponse("ok", HttpStatus.OK, salle);
+
+                    } catch (Exception e) {
+                        // TODO: handle exception
+                        return ResponseMessage.generateResponse("iciiii", HttpStatus.OK, e.getMessage());
+
+                    }
+
+                } else {
+                    return ResponseMessage.generateResponse("error", HttpStatus.OK, "Non autorisé");
+                }
+            }
+
+            return ResponseMessage.generateResponse("error", HttpStatus.OK, activiteService.Termine());
+        } catch (Exception e) {
+            // TODO: handle exception
+            return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
+        }
+    }
 
     // :::::::::::::::::::::::Les users active
     @ApiOperation(value = "Les utilisateurs active")
@@ -1737,6 +1820,48 @@ public class SuperAdminController {
                     historiqueService.Create(historique);
                     return ResponseMessage.generateResponse("ok", HttpStatus.OK,
                             utilisateurService.RecupererUserParEtat(true));
+
+                } else {
+                    return ResponseMessage.generateResponse("error", HttpStatus.OK, "Non autorisé");
+                }
+
+            } catch (Exception e) {
+                // TODO: handle exception
+                return ResponseMessage.generateResponse("iciiii", HttpStatus.OK, e.getMessage());
+
+            }
+
+        } catch (Exception e) {
+            // TODO: handle exception
+            return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
+
+        }
+    }
+
+    // :::::::::::::::::::::::Les users active
+    @ApiOperation(value = "Les utilisateurs")
+    @PostMapping("/getUsers/all")
+    public ResponseEntity<Object> getUsers(@RequestParam(value = "user") String userVenant) {
+        try {
+            // hisorique
+            Utilisateur utilisateurs = new JsonMapper().readValue(userVenant, Utilisateur.class);
+
+            Utilisateur user = utilisateurService.trouverParLoginAndPass(utilisateurs.getLogin(),
+                    utilisateurs.getPassword());
+
+            Droit Ruser = droitService.GetLibelle("Read Utilisateur");
+
+            try {
+
+                if (user.getRole().getDroits().contains(Ruser)) {
+                    Historique historique = new Historique();
+                    Date datehisto = new Date();
+                    historique.setDatehistorique(datehisto);
+                    historique.setDescription(
+                            "" + user.getPrenom() + " " + user.getNom() + " a afficher  un utilisateur active");
+                    historiqueService.Create(historique);
+                    return ResponseMessage.generateResponse("ok", HttpStatus.OK,
+                            utilisateurService.getAll());
 
                 } else {
                     return ResponseMessage.generateResponse("error", HttpStatus.OK, "Non autorisé");
