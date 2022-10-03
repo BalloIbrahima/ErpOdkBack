@@ -1600,29 +1600,31 @@ public class SuperAdminController {
     // ::::::::::::::Comparaison date pour salle disponible
     // ::::::::::::::::::::::::::::::
     @ApiOperation(value = "Comparaison date pour salle disponible")
-    @GetMapping("SalleDispo/{date1}/{date2}/{login}/{password}")
-    public ResponseEntity<Object> SalleDispoDate(@PathVariable String login, @PathVariable String password,
-            @PathVariable Date date1, @PathVariable Date date2) {
+    @GetMapping("SalleDispo/{date1}/{date2}")
+    public ResponseEntity<Object> SalleDispoDate(@PathVariable Date date1, @PathVariable Date date2, @RequestParam(value = "user") String userVenant) {
         try {
-            List<Activite> activites = activiteService.FindAllAct();
+            List<Activite> acts = activiteService.FindAllAct();
             List<Salle> salle = new ArrayList<>();
-            Utilisateur users = utilisateurService.trouverParLoginAndPass(login, password);
-            Droit RSalle = droitService.GetLibelle("Read Salle");
+            Utilisateur utilisateurs = new JsonMapper().readValue(userVenant, Utilisateur.class);
+
+            Utilisateur users = utilisateurService.trouverParLoginAndPass(utilisateurs.getLogin(),
+                    utilisateurs.getPassword());            
+                    Droit RSalle = droitService.GetLibelle("Read Salle");
 
             if (users != null) {
                 if (users.getRole().getDroits().contains(RSalle)) {
-                    for(Activite act: activites){
+                    for (Activite act : acts) {
                         if (act.getDateDebut().before(date1) && act.getDateDebut().before(date2)
                                 && act.getDateFin().after(date1)
                                 && act.getDateFin().after(date2)
                                 || act.getDateDebut().after(date1) && act.getDateDebut().after(date2)
-                                && act.getDateFin().before(date1) && act.getDateFin().before(date2)) {
-                            // Historique
+                                        && act.getDateFin().before(date1) && act.getDateFin().before(date2)) {
 
                             salle.add(act.getSalle());
+
                         }
                     }
-
+                    // Historique
                     try {
                         Historique historique = new Historique();
                         Date datehisto = new Date();
@@ -1630,7 +1632,8 @@ public class SuperAdminController {
                         historique.setDescription("" + users.getPrenom() + " " + users.getNom()
                                 + " a afficher  salle disponible dans l'intervalle " + date1 + " et " + date2);
                         historiqueService.Create(historique);
-                        return ResponseMessage.generateResponse("error", HttpStatus.OK,salle );
+
+                        return ResponseMessage.generateResponse("ok", HttpStatus.OK, salle);
 
                     } catch (Exception e) {
                         // TODO: handle exception
@@ -1643,43 +1646,50 @@ public class SuperAdminController {
                 }
             }
 
-            return ResponseMessage.generateResponse("error", HttpStatus.OK, activiteService.Termine());
         } catch (Exception e) {
             // TODO: handle exception
             return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
         }
+        return null;
     }
 
-
-    //:::::::::::::::Salle disponible :::::::::::::::::::::::::::::::
-    @ApiOperation(value = " salle disponible")
-    @GetMapping("SalleDisponible/{login}/{password}")
-    public ResponseEntity<Object> SalleDispoDate(@PathVariable String login, @PathVariable String password) {
+    @ApiOperation(value = "l'ensemble des salles disponibles")
+    @GetMapping("/alleDisponible")
+    public ResponseEntity<Object> salleDispo(@RequestParam(value = "user") String userVenant) {
         try {
-            Date date = new Date();
-            List<Activite> activites = activiteService.FindAllAct();
+            List<Activite> acts = activiteService.FindAllAct();
             List<Salle> salle = new ArrayList<>();
-            Utilisateur users = utilisateurService.trouverParLoginAndPass(login, password);
+
+            Utilisateur utilisateurs = new JsonMapper().readValue(userVenant, Utilisateur.class);
+
+            Utilisateur users = utilisateurService.trouverParLoginAndPass(utilisateurs.getLogin(),
+                    utilisateurs.getPassword());
+
+            Date today = new Date();
+
             Droit RSalle = droitService.GetLibelle("Read Salle");
 
             if (users != null) {
                 if (users.getRole().getDroits().contains(RSalle)) {
-                    for(Activite act: activites){
-                        if (act.getDateDebut().after(date) && act.getDateFin().after(date)) {
+                    for (Activite act : acts) {
+                        if (act.getDateDebut().after(today) && act.getDateFin().after(today)
+                                || act.getDateDebut().before(today) && act.getDateFin().before(today)) {
+
+                                salle.add(act.getSalle());
                             // Historique
 
                             salle.add(act.getSalle());
                         }
                     }
-
                     try {
                         Historique historique = new Historique();
                         Date datehisto = new Date();
                         historique.setDatehistorique(datehisto);
                         historique.setDescription("" + users.getPrenom() + " " + users.getNom()
-                                + " a afficher  salle disponible  " + date );
+                                + " a afficher  salle disponible dans l'intervalle ");
                         historiqueService.Create(historique);
-                        return ResponseMessage.generateResponse("error", HttpStatus.OK,salle );
+
+                        return ResponseMessage.generateResponse("ok", HttpStatus.OK, salle);
 
                     } catch (Exception e) {
                         // TODO: handle exception
