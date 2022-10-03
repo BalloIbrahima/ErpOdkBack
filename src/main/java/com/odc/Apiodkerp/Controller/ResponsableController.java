@@ -823,7 +823,7 @@ public class ResponsableController {
 
     }
 
-    @ApiOperation(value = "Afficher tous les taches")
+    @ApiOperation(value = "Suprimer une tache")
     @PostMapping("/taches/{idtache}")
     public ResponseEntity<Object> deleteTache(@RequestParam(value = "user") String userVenant,
             @PathVariable("idtache") Long idtache) {
@@ -847,7 +847,7 @@ public class ResponsableController {
                     historiqueService.Create(historique);
 
                     //
-                    return ResponseMessage.generateResponse("ok", HttpStatus.OK, activite.getTache());
+                    return ResponseMessage.generateResponse("ok", HttpStatus.OK, "Supression effectuer avec succes");
 
                 } else {
                     return ResponseMessage.generateResponse("error", HttpStatus.OK, "Non autorise !");
