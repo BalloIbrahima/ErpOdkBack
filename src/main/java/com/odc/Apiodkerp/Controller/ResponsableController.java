@@ -434,14 +434,17 @@ public class ResponsableController {
     // Tire---------------------------------------//
     // Creation de participant
     @ApiOperation(value = "Ajouter participant")
-    @PostMapping("/create/participant/{idactivite}/{login}/{password}")
+    @PostMapping("/create/participant/{idactivite}")
     public ResponseEntity<Object> createPostulantTire(@RequestBody Postulant participant,
-            @PathVariable("idactivite") Long idactivite, @PathVariable("login") String login,
-            @PathVariable("password") String password) {
+            @PathVariable("idactivite") Long idactivite, @RequestParam(value = "user") String userVenant) {
 
         try {
             Activite activite = activiteService.GetById(idactivite);
-            Utilisateur utilisateur = utilisateurService.trouverParLoginAndPass(login, password);
+
+            Utilisateur utilisateurs = new JsonMapper().readValue(userVenant, Utilisateur.class);
+
+            Utilisateur utilisateur = utilisateurService.trouverParLoginAndPass(utilisateurs.getLogin(),
+                    utilisateurs.getPassword());
             Droit addAouP = droitService.GetLibelle("Create AouP");
 
             if (utilisateur != null) {
@@ -484,13 +487,16 @@ public class ResponsableController {
 
     // Afficher de postulant tiré
     @ApiOperation(value = "Afficher participant par son id")
-    @PostMapping("/read/{id}/{login}/{password}")
+    @PostMapping("/read/{id}")
     public ResponseEntity<Object> readPostulantTire(@PathVariable long id,
-            @PathVariable("login") String login, @PathVariable("password") String password) {
+            @RequestParam(value = "user") String userVenant) {
         try {
             Droit readAouP = droitService.GetLibelle("Read AouP");
 
-            Utilisateur utilisateur = utilisateurService.trouverParLoginAndPass(login, password);
+            Utilisateur utilisateurs = new JsonMapper().readValue(userVenant, Utilisateur.class);
+
+            Utilisateur utilisateur = utilisateurService.trouverParLoginAndPass(utilisateurs.getLogin(),
+                    utilisateurs.getPassword());
             PostulantTire post = postulantTrieService.read(id);
 
             if (utilisateur != null) {
@@ -521,12 +527,15 @@ public class ResponsableController {
 
     // Modifier de postulant tiré par son id
     @ApiOperation(value = "modifier participant par son id")
-    @PutMapping("/update/{id}/{login}/{password}")
+    @PutMapping("/update/{id}")
     public ResponseEntity<Object> updatePostulantTire(@RequestBody Postulant postulant, @PathVariable long id,
-            @PathVariable("login") String login, @PathVariable("password") String password) {
+            @RequestParam(value = "user") String userVenant) {
         try {
             Postulant post = postulantService.update(id, postulant);
-            Utilisateur utilisateur = utilisateurService.trouverParLoginAndPass(login, password);
+            Utilisateur utilisateurs = new JsonMapper().readValue(userVenant, Utilisateur.class);
+
+            Utilisateur utilisateur = utilisateurService.trouverParLoginAndPass(utilisateurs.getLogin(),
+                    utilisateurs.getPassword());
             Droit updateAouP = droitService.GetLibelle("Update AouP");
 
             if (utilisateur != null) {
@@ -559,13 +568,15 @@ public class ResponsableController {
 
     // Supprimer Postulant tiré par son id
     @ApiOperation(value = "Supprimer participant par son id")
-    @DeleteMapping("/delete/{id}/{login}/{password}")
+    @DeleteMapping("/delete/{id}")
     public ResponseEntity<Object> deletePostulantTire(@PathVariable long id,
-            @PathVariable("login") String login, @PathVariable("password") String password) {
+            @RequestParam(value = "user") String userVenant) {
         try {
             postulantTrieService.delete(id);
-            Utilisateur utilisateur = utilisateurService.trouverParLoginAndPass(login, password);
+            Utilisateur utilisateurs = new JsonMapper().readValue(userVenant, Utilisateur.class);
 
+            Utilisateur utilisateur = utilisateurService.trouverParLoginAndPass(utilisateurs.getLogin(),
+                    utilisateurs.getPassword());
             Droit deleteAouP = droitService.GetLibelle("Delete AouP");
 
             if (utilisateur != null) {
