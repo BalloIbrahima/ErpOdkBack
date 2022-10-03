@@ -17,7 +17,7 @@ public interface ActiviteService {
 
     Activite GetById(long id);
 
-    Activite FindAllAct();
+    List<Activite>  FindAllAct();
 
     // Activite en fonction de l'etat
     Activite GetByEtat(Etat etat);
@@ -26,6 +26,9 @@ public interface ActiviteService {
 
     Long TotalActivite();
 
+
+    Long ToutActivite();
+    List<Activite> ToutActivit();
     List<Activite> Avenir();
 
     List<Activite> Encour();

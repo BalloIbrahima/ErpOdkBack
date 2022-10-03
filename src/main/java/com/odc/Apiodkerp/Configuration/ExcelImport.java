@@ -1,9 +1,15 @@
 package com.odc.Apiodkerp.Configuration;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
+import com.odc.Apiodkerp.Enum.Genre;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
@@ -93,12 +99,26 @@ public class ExcelImport {
                                 case 1:
                                     postulant.setPrenom(formatter.formatCellValue(colonneCourante));
                                     break;
-                                // troixième colonne contenant le numero
+                                // deuxième colonne contenant le prenom
                                 case 2:
+
+                                    postulant.setGenre(Genre.valueOf(formatter.formatCellValue(colonneCourante)));
+                                    break;
+                                // deuxième colonne contenant le prenom
+                                case 3:
+
+                                  /*  = new SimpleDateFormat("dd/MM/yyyy").parse(formatter.formatCellValue(colonneCourante));
+                                    DateTimeFormatter  a= DateTimeFormatter.ofPattern("dd/MM/yyyy");
+                                    LocalDate fet = LocalDate.parse(formatter.formatCellValue(colonneCourante),a);*/
+
+                                    postulant.setDateNaissance(formatter.formatCellValue(colonneCourante));
+                                    break;
+                                // troixième colonne contenant le numero
+                                case 4:
                                     postulant.setNumero(formatter.formatCellValue(colonneCourante));
                                     break;
                                 // dernière colonne contenant l'adresse mail
-                                case 3:
+                                case 5:
                                     postulant.setEmail(formatter.formatCellValue(colonneCourante));
                                     break;
                                 default:

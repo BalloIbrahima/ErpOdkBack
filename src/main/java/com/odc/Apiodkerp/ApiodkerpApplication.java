@@ -1,5 +1,7 @@
 package com.odc.Apiodkerp;
 
+import java.util.List;
+
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
@@ -73,9 +75,8 @@ public class ApiodkerpApplication {
 
 		Droit Daoup = new Droit();
 		Daoup.setId(8L);
-		Daoup.setLibelle("Read AouP");
+		Daoup.setLibelle("Delete AouP");
 		Daoup.setDescription("Supprimer un apprenant ou un participant.");
-
 
 		// ::::::::::::::::::::
 
@@ -109,7 +110,6 @@ public class ApiodkerpApplication {
 		Rentite.setLibelle("Read Entite");
 		Rentite.setDescription("Lire une entite.");
 
-
 		Droit Uentite = new Droit();
 		Uentite.setId(15L);
 		Uentite.setLibelle("Update Entite");
@@ -140,7 +140,6 @@ public class ApiodkerpApplication {
 		Detat.setLibelle("Delete Etat");
 		Detat.setDescription("Suprimer un etat.");
 
-
 		Droit Cformatemail = new Droit();
 		Cformatemail.setId(21L);
 		Cformatemail.setLibelle("Create FormatEmail");
@@ -160,7 +159,6 @@ public class ApiodkerpApplication {
 		Dformatemail.setId(24L);
 		Dformatemail.setLibelle("Delete FormatEmail");
 		Dformatemail.setDescription("Suprimer un FormatEmail.");
-
 
 		Droit Cintervenant = new Droit();
 		Cintervenant.setId(25L);
@@ -182,7 +180,6 @@ public class ApiodkerpApplication {
 		Dintervenant.setLibelle("Delete Intervenant");
 		Dintervenant.setDescription("Suprimer un intervenant externe.");
 
-
 		Droit Clistepostulant = new Droit();
 		Clistepostulant.setId(29L);
 		Clistepostulant.setLibelle("Create ListePostulant");
@@ -202,7 +199,6 @@ public class ApiodkerpApplication {
 		Dlistepostulant.setId(32L);
 		Dlistepostulant.setLibelle("Delete ListePostulant");
 		Dlistepostulant.setDescription("Suprimer une liste de postulant.");
-
 
 		Droit Cpostulant = new Droit();
 		Cpostulant.setId(33L);
@@ -244,7 +240,6 @@ public class ApiodkerpApplication {
 		Dpresence.setLibelle("Delete Presence");
 		Dpresence.setDescription("Suprimer une presence.");
 
-
 		Droit Crole = new Droit();
 		Crole.setId(41L);
 		Crole.setLibelle("Create Role");
@@ -264,7 +259,6 @@ public class ApiodkerpApplication {
 		Drole.setId(44L);
 		Drole.setLibelle("Delete Role");
 		Drole.setDescription("Suprimer une role.");
-
 
 		Droit Csalle = new Droit();
 		Csalle.setId(45L);
@@ -286,7 +280,6 @@ public class ApiodkerpApplication {
 		Dsalle.setLibelle("Delete Salle");
 		Dsalle.setDescription("Suprimer une salle.");
 
-
 		Droit Ctache = new Droit();
 		Ctache.setId(49L);
 		Ctache.setLibelle("Create Tache");
@@ -306,7 +299,6 @@ public class ApiodkerpApplication {
 		Dtache.setId(52L);
 		Dtache.setLibelle("Delete Tache");
 		Dtache.setDescription("Suprimer une tache.");
-
 
 		Droit Ctirage = new Droit();
 		Ctirage.setId(53L);
@@ -328,30 +320,28 @@ public class ApiodkerpApplication {
 		Dtirage.setLibelle("Delete Tirage");
 		Dtirage.setDescription("Suprimer un tirage.");
 
-
 		Droit Cutilisateur = new Droit();
 		Cutilisateur.setId(57L);
 		Cutilisateur.setLibelle("Create Utilisateur");
-		Cutilisateur.setDescription("Creer un tirage.");
+		Cutilisateur.setDescription("Creer un utilisateur.");
 
 		Droit Rutilisateur = new Droit();
 		Rutilisateur.setId(58L);
 		Rutilisateur.setLibelle("Read Utilisateur");
-		Rutilisateur.setDescription("Lire un tirage.");
+		Rutilisateur.setDescription("Lire un utilisateur.");
 
 		Droit Uutilisateur = new Droit();
 		Uutilisateur.setId(59L);
 		Uutilisateur.setLibelle("Update Utilisateur");
-		Uutilisateur.setDescription("Mettre à jour un tirage.");
+		Uutilisateur.setDescription("Mettre à jour un utilisateur.");
 
 		Droit Dutilisateur = new Droit();
 		Dutilisateur.setId(60L);
 		Dutilisateur.setLibelle("Delete Utilisateur");
-		Dutilisateur.setDescription("Suprimer un tirage.");
-
+		Dutilisateur.setDescription("Suprimer un utilisateur.");
 
 		Droit Ctypeactivite = new Droit();
-		Ctypeactivite.setId(51L);
+		Ctypeactivite.setId(61L);
 		Ctypeactivite.setLibelle("Create TypeActivite");
 		Ctypeactivite.setDescription("Creer un type d'activité.");
 
@@ -369,7 +359,6 @@ public class ApiodkerpApplication {
 		Dtypeactivite.setId(64L);
 		Dtypeactivite.setLibelle("Delete TypeActivite");
 		Dtypeactivite.setDescription("Suprimer un type d'activité.");
-
 
 		droitService.Create(Cactivite);
 		droitService.Create(Ractivite);
@@ -452,13 +441,21 @@ public class ApiodkerpApplication {
 		droitService.Create(Dutilisateur);
 
 		// creation des roles
+		List<Droit> droits = droitService.GetAll();
+
 		Role user = new Role();
 
 		user.setId(1L);
 		user.setLibellerole("USER");
+		for (Droit droit : droits) {
+			user.getDroits().add(droit);
+		}
 
 		Role responsable = new Role();
 
+		for (Droit droit : droits) {
+			responsable.getDroits().add(droit);
+		}
 		responsable.setId(2L);
 		responsable.setLibellerole("RESPONSABLE");
 
@@ -466,6 +463,9 @@ public class ApiodkerpApplication {
 
 		admin.setId(3L);
 		admin.setLibellerole("ADMIN");
+		for (Droit droit : droits) {
+			admin.getDroits().add(droit);
+		}
 
 		roleService.create(user);
 		roleService.create(responsable);

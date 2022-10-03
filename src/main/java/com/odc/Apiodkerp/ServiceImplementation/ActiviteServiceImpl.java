@@ -62,8 +62,8 @@ public class ActiviteServiceImpl implements ActiviteService {
     }
 
     @Override
-    public Activite FindAllAct() {
-        return (Activite) activiteRepository.findAll();
+    public List<Activite> FindAllAct() {
+        return activiteRepository.findAll();
     }
 
     @Override
@@ -84,6 +84,14 @@ public class ActiviteServiceImpl implements ActiviteService {
         return activiteRepository.Total();
     }
 
+    @Override
+    public Long ToutActivite() {
+        return activiteRepository.toutActivite();
+    }
+
+    public List<Activite> ToutActivit(){
+        return  activiteRepository.findAll();
+    }
     @Override
     public Activite GetByEtat(Etat etat) {
         return activiteRepository.findByEtat(etat);
@@ -156,7 +164,7 @@ public class ActiviteServiceImpl implements ActiviteService {
 
     @Override
     public List<Activite> ActiviteEntiteid(long identite) {
-        return (List<Activite>) activiteRepository.actEntite(identite);
+        return  activiteRepository.actEntite(identite);
     }
 
 }
