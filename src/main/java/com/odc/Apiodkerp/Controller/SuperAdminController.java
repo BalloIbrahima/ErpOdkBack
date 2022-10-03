@@ -783,7 +783,7 @@ public class SuperAdminController {
     // ENTITE-------------------------------------------------------------->
     @ApiOperation(value = "Creer un entite.")
     @PostMapping("/create/entite")
-    public ResponseEntity<Object> createEntite(@RequestParam(value = "user") String enti,
+    public ResponseEntity<Object> createEntite(@RequestParam(value = "entite") String enti,
             @RequestParam(value = "file", required = true) MultipartFile file,
             @RequestParam(value = "user") String userVenant) {
         try {
@@ -1607,12 +1607,15 @@ public class SuperAdminController {
 
     // :::::::::::::::::::::::Les users active
     @ApiOperation(value = "Les utilisateurs active")
-    @GetMapping("/getUsers/active/{login}/{password}")
-    public ResponseEntity<Object> getUsersActives(@PathVariable("login") String login,
-            @PathVariable("password") String password) {
+    @PostMapping("/getUsers/active")
+    public ResponseEntity<Object> getUsersActives(@RequestParam(value = "user") String userVenant) {
         try {
             // hisorique
-            Utilisateur user = utilisateurService.trouverParLoginAndPass(login, password);
+            Utilisateur utilisateurs = new JsonMapper().readValue(userVenant, Utilisateur.class);
+
+            Utilisateur user = utilisateurService.trouverParLoginAndPass(utilisateurs.getLogin(),
+                    utilisateurs.getPassword());
+
             Droit Ruser = droitService.GetLibelle("Read Utilisateur");
 
             try {
