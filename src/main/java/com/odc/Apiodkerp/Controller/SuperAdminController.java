@@ -76,31 +76,6 @@ public class SuperAdminController {
     @Autowired
     private TypeActiviteService typeActiviteService;
 
-    // Pour le login d'un super administrateur
-    @ApiOperation(value = "Pour le login d'un super administrateur.")
-    @PostMapping("/login/{login}/{password}")
-    public ResponseEntity<Object> CreateAdmin(@PathVariable("login") String login,
-            @PathVariable("password") String password) {
-
-        try {
-            Utilisateur Superutilisateur = utilisateurService.login(login, password);
-            Role admin = RoleService.GetByLibelle("ADMIN");
-            if (Superutilisateur != null && Superutilisateur.getActive() == true) {
-                if (Superutilisateur.getRole() == admin && Superutilisateur.getActive() == true) {
-                    return ResponseMessage.generateResponse("ok", HttpStatus.OK, Superutilisateur);
-                } else {
-                    return ResponseMessage.generateResponse("non autorise", HttpStatus.OK, null);
-                }
-            } else {
-                return ResponseMessage.generateResponse("utilisateur n'existe pas", HttpStatus.OK, null);
-            }
-
-        } catch (Exception e) {
-            // TODO: handle exception
-            return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
-        }
-    }
-
     ////
     @ApiOperation(value = "Lien pour créer une salle")
     @PostMapping("/creersalle")
@@ -123,7 +98,7 @@ public class SuperAdminController {
                     Date datehisto = new Date();
                     historique.setDatehistorique(datehisto);
                     historique.setDescription("" + utilisateur.getPrenom() + " " + utilisateur.getNom()
-                            + " a crée une salle du nom de " + salle.getLibelle());
+                            + " a cree une salle du nom de " + salle.getLibelle());
                     historiqueService.Create(historique);
                 } catch (Exception e) {
                     // TODO: handle exception
@@ -142,7 +117,7 @@ public class SuperAdminController {
 
     // ::::::::::Recuperer salle par id
     @ApiOperation(value = "Recuperer salle par id")
-    @GetMapping("getSalle")
+    @PostMapping("getSalle")
     public ResponseEntity<Object> getSalle(@PathVariable("id") Long id,
             @RequestParam(value = "user") String userVenant) {
         try {
@@ -245,7 +220,7 @@ public class SuperAdminController {
                         Date datehisto = new Date();
                         historique.setDatehistorique(datehisto);
                         historique.setDescription(
-                                "" + user.getPrenom() + " " + user.getNom() + " a supprimé une salle du nom de ");
+                                "" + user.getPrenom() + " " + user.getNom() + " a supprime une salle du nom de ");
                         historiqueService.Create(historique);
                     } catch (Exception e) {
                         // TODO: handle exception
@@ -268,7 +243,7 @@ public class SuperAdminController {
     }
 
     @ApiOperation(value = "Lien pour lier une salle à une activite")
-    @GetMapping("/attribuersalle/{idsalle}/{idactivite}")
+    @PostMapping("/attribuersalle/{idsalle}/{idactivite}")
     public ResponseEntity<Object> attribuerSalle(@PathVariable long idsalle, @PathVariable long idactivite,
             @RequestParam(value = "user") String userVenant) {
         try {
@@ -286,7 +261,7 @@ public class SuperAdminController {
                         Date datehisto = new Date();
                         historique.setDatehistorique(datehisto);
                         historique.setDescription("" + user.getPrenom() + " " + user.getNom()
-                                + " a attribué  une salle du nom de  " + salleService.getByIdsalle(idsalle)
+                                + " a attribue  une salle du nom de  " + salleService.getByIdsalle(idsalle)
                                 + " à l'activte " + activiteService.GetById(idactivite));
                         historiqueService.Create(historique);
                     } catch (Exception e) {
@@ -311,7 +286,7 @@ public class SuperAdminController {
 
     // pour recuperer toutes les salles
     @ApiOperation(value = "Pour recuperer toutes les salles")
-    @GetMapping("/salle/all/{login}/{password}")
+    @PostMapping("/salle/all/{login}/{password}")
     public ResponseEntity<Object> getAll(@PathVariable("login") String login,
             @PathVariable("password") String password) {
         try {
@@ -504,7 +479,7 @@ public class SuperAdminController {
     }
 
     @ApiOperation(value = "Affichager tout les utilisateurs")
-    @GetMapping("/getAll/user")
+    @PostMapping("/getAll/user")
     public ResponseEntity<Object> GetAllUser(@RequestParam(value = "user") String userVenant) {
         try {
             Utilisateur utilisateur = new JsonMapper().readValue(userVenant, Utilisateur.class);
@@ -553,7 +528,7 @@ public class SuperAdminController {
     }
 
     @ApiOperation(value = "Affichager un utilisateur")
-    @GetMapping("/get/user/{id}")
+    @PostMapping("/get/user/{id}")
     public ResponseEntity<Object> GetIdUtilisateur(@PathVariable("id") Long id,
             @RequestParam(value = "user") String userVenant) {
         try {
@@ -739,7 +714,7 @@ public class SuperAdminController {
     }
 
     @ApiOperation(value = "Affichager toute les responsables")
-    @GetMapping("/getAll/responsable")
+    @PostMapping("/getAll/responsable")
     public ResponseEntity<Object> GetAllResponsable(@RequestParam(value = "user") String userVenant) {
         try {
 
@@ -779,7 +754,7 @@ public class SuperAdminController {
     }
 
     @ApiOperation(value = "Affichager un responsable")
-    @GetMapping("/get/responsable/{id}")
+    @PostMapping("/get/responsable/{id}")
     public ResponseEntity<Object> GetIdResponsable(@PathVariable("id") Long id,
             @RequestParam(value = "user") String userVenant) {
         try {
@@ -938,7 +913,7 @@ public class SuperAdminController {
     }
 
     @ApiOperation(value = "Affichager une entite")
-    @GetMapping("/get/entite/{id}")
+    @PostMapping("/get/entite/{id}")
     public ResponseEntity<Object> GetIdEntite(@RequestParam("id") Long id,
             @RequestParam(value = "user") String userVenant) {
         // @RequestParam(value = "entite") String enti
@@ -965,7 +940,7 @@ public class SuperAdminController {
 
     /// active un utilisateur
     @ApiOperation(value = "Active un utilisateur")
-    @GetMapping("/active/{idUser}")
+    @PostMapping("/active/{idUser}")
     ResponseEntity<Object> activeUser(@RequestParam(value = "user") String userVenant,
             @PathVariable("idUser") Long idUser) {
 
@@ -1010,7 +985,7 @@ public class SuperAdminController {
 
     /// desactive un utilisateur
     @ApiOperation(value = "Desactive un utilisateur")
-    @GetMapping("/desactive/{idUser}")
+    @PostMapping("/desactive/{idUser}")
     ResponseEntity<Object> desactiveUser(@RequestParam(value = "user") String userVenant,
             @PathVariable("idUser") Long idUser) {
 
@@ -1174,7 +1149,7 @@ public class SuperAdminController {
     }
 
     @ApiOperation(value = "Recuperer l'ensemble des types acticite")
-    @GetMapping("Typeactivite/getall")
+    @PostMapping("Typeactivite/getall")
     public ResponseEntity<Object> TypaActiviteAll(@RequestParam(value = "user") String userVenant) {
         try {
             Utilisateur utilisateur = new JsonMapper().readValue(userVenant, Utilisateur.class);
@@ -1201,7 +1176,7 @@ public class SuperAdminController {
     // :::::::::::::::total postulant ::::::::::::::::::::
 
     @ApiOperation(value = "Total postulant")
-    @GetMapping("/totalpersonnel")
+    @PostMapping("/totalpersonnel")
     public ResponseEntity<Object> TotalPostulant(@RequestParam(value = "user") String userVenant) {
         try {
             Utilisateur utilisateur = new JsonMapper().readValue(userVenant, Utilisateur.class);
@@ -1242,7 +1217,7 @@ public class SuperAdminController {
     // :::::::::::::::::::::::::::::::::::total entite
     // ::::::::::::::::::::::::::::::::::::::
     @ApiOperation(value = "totalentite")
-    @GetMapping("/totalentite")
+    @PostMapping("/totalentite")
     public ResponseEntity<Object> TotalEntite(@RequestParam(value = "user") String userVenant) {
         try {
             Utilisateur utilisateur = new JsonMapper().readValue(userVenant, Utilisateur.class);
@@ -1380,7 +1355,7 @@ public class SuperAdminController {
 
     // activités termines
     @ApiOperation(value = "activites/termines")
-    @GetMapping("activites/termines/{login}/{password}")
+    @PostMapping("activites/termines/{login}/{password}")
     public ResponseEntity<Object> ActivitesTermines(@PathVariable String login, @PathVariable String password) {
 
         try {
@@ -1423,7 +1398,7 @@ public class SuperAdminController {
 
     // :::::::::::Liste des activites par entite ::::::::::::::::
     @ApiOperation(value = "activites par entite")
-    @GetMapping("activites/entite/{identite}/{login}/{password}")
+    @PostMapping("activites/entite/{identite}/{login}/{password}")
     public ResponseEntity<Object> ActivitesParEntite(@PathVariable long identite, @PathVariable String login,
             @PathVariable String password) {
         try {
@@ -1472,7 +1447,7 @@ public class SuperAdminController {
     // ::::::::::::La liste des participants par activité et par intervalle de date,
 
     @ApiOperation(value = "liste participant par activite")
-    @GetMapping("activites/entite/{idactivite}/{date1}/{date2}/{login}/{password}")
+    @PostMapping("activites/entite/{idactivite}/{date1}/{date2}/{login}/{password}")
     public ResponseEntity<Object> PostulantParActivite(@PathVariable String login, @PathVariable String password,
             @PathVariable long idactivite, @PathVariable Date date1, @PathVariable Date date2) {
         try {
@@ -1541,7 +1516,7 @@ public class SuperAdminController {
     // terminée).
 
     @ApiOperation(value = "activites par entite et par statut")
-    @GetMapping("activites/entite/{identite}/{idstatut}/{login}/{password}")
+    @PostMapping("activites/entite/{identite}/{idstatut}/{login}/{password}")
     public ResponseEntity<Object> ActivitesParEntiteEtParstatut(@PathVariable String login,
             @PathVariable String password, @PathVariable long identite, @PathVariable long idstatut) {
         try {
@@ -1589,7 +1564,7 @@ public class SuperAdminController {
 
     // ::::::::::::::::::::::
     @ApiOperation(value = "Statut d'une activite en fonction de son id")
-    @GetMapping("statut/activite/{id}/{login}/{password}")
+    @PostMapping("statut/activite/{id}/{login}/{password}")
     public ResponseEntity<Object> ActivitesTermines(@PathVariable long id, @PathVariable String login,
             @PathVariable String password) {
         try {
@@ -1630,7 +1605,7 @@ public class SuperAdminController {
     // ::::::::::::::Comparaison date pour salle disponible
     // ::::::::::::::::::::::::::::::
     @ApiOperation(value = "Comparaison date pour salle disponible")
-    @GetMapping("SalleDispo/{date1}/{date2}")
+    @PostMapping("SalleDispo/{date1}/{date2}")
     public ResponseEntity<Object> SalleDispoDate(@PathVariable Date date1, @PathVariable Date date2,
             @RequestParam(value = "user") String userVenant) {
         try {
@@ -1685,7 +1660,7 @@ public class SuperAdminController {
     }
 
     @ApiOperation(value = "l'ensemble des salles disponibles")
-    @GetMapping("/SalleDisponible")
+    @PostMapping("/SalleDisponible")
     public ResponseEntity<Object> salleDispo(@RequestParam(value = "user") String userVenant) {
         try {
             List<Activite> acts = activiteService.FindAllAct();
@@ -1741,7 +1716,7 @@ public class SuperAdminController {
     }
 
     @ApiOperation(value = "l'ensemble des salles indisponibles")
-    @GetMapping("/SalleInDisponible")
+    @PostMapping("/SalleInDisponible")
     public ResponseEntity<Object> InsalleDispo(@RequestParam(value = "user") String userVenant) {
         try {
             List<Activite> acts = activiteService.FindAllAct();
@@ -1882,7 +1857,7 @@ public class SuperAdminController {
 
     // :::::::::::::::::::::::Les users desactives
     @ApiOperation(value = "Les utilisateurs desactives")
-    @GetMapping("/getUsers/desactive/{login}/{password}")
+    @PostMapping("/getUsers/desactive/{login}/{password}")
     public ResponseEntity<Object> getUsersDesactives(@PathVariable("login") String login,
             @PathVariable("password") String password) {
         try {
@@ -1919,7 +1894,7 @@ public class SuperAdminController {
 
     // :::::::::::::::::::::::Les salles disponible
     @ApiOperation(value = "Les salles disponible")
-    @GetMapping("/getSalles/disponible/{login}/{password}")
+    @PostMapping("/getSalles/disponible/{login}/{password}")
     public ResponseEntity<Object> getSallesDispo(@PathVariable("login") String login,
             @PathVariable("password") String password) {
         try {
@@ -1955,7 +1930,7 @@ public class SuperAdminController {
 
     // :::::::::::::::::::::::Les salles indisponible
     @ApiOperation(value = "Les salles indisponible")
-    @GetMapping("/getSalles/indisponible/{login}/{password}")
+    @PostMapping("/getSalles/indisponible/{login}/{password}")
     public ResponseEntity<Object> getSallesIndispo(@PathVariable("login") String login,
             @PathVariable("password") String password) {
         try {
@@ -2116,7 +2091,7 @@ public class SuperAdminController {
     // ::::::::::::::::::::::::::::::::::::
 
     @ApiOperation(value = "Apprenant ou participant par id")
-    @GetMapping("/aoup/GetId/{id}/{login}/{password}")
+    @PostMapping("/aoup/GetId/{id}/{login}/{password}")
     public ResponseEntity<Object> GetAouPparId(@PathVariable long id, @PathVariable("login") String login,
             @PathVariable("password") String password) {
         try {
@@ -2281,7 +2256,7 @@ public class SuperAdminController {
     // ::::::::::::::::::::::::::::::::::::
 
     @ApiOperation(value = "Designation par id")
-    @GetMapping("/Designation/GetId/{id}/{login}/{password}")
+    @PostMapping("/Designation/GetId/{id}/{login}/{password}")
     public ResponseEntity<Object> GetDesigantionparId(@PathVariable long id, @PathVariable("login") String login,
             @PathVariable("password") String password) {
         try {
@@ -2420,7 +2395,7 @@ public class SuperAdminController {
     // ::::::::::::::::::::::::::::::::::::
 
     @ApiOperation(value = "Droit par id")
-    @GetMapping("/droit/GetId/{iduser}/{id}")
+    @PostMapping("/droit/GetId/{iduser}/{id}")
     public ResponseEntity<Object> GetDroitparId(@PathVariable long id, @PathVariable long iduser) {
         try {
             Droit droit = droitService.GetById(id);
@@ -2452,7 +2427,7 @@ public class SuperAdminController {
     // ::::::::::::::::::::::::::::::::::
 
     @ApiOperation(value = "Droit par libelle")
-    @GetMapping("/droit/GetLibelle/{iduser}/{libelle}")
+    @PostMapping("/droit/GetLibelle/{iduser}/{libelle}")
     public ResponseEntity<Object> GetDroitparLibelle(@PathVariable String libelle, @PathVariable long iduser) {
         try {
 
@@ -2561,7 +2536,7 @@ public class SuperAdminController {
     // ::::::::::::::::::::::::::::::::::::
 
     @ApiOperation(value = "Format email par id")
-    @GetMapping("/formatEmail/GetId/{id}/{login}/{password}")
+    @PostMapping("/formatEmail/GetId/{id}/{login}/{password}")
     public ResponseEntity<Object> GetFormatEMailparId(@PathVariable long id, @PathVariable("login") String login,
             @PathVariable("password") String password) {
         try {
