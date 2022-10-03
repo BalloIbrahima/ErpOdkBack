@@ -1198,7 +1198,7 @@ public class SuperAdminController {
                         Date datehisto = new Date();
                         historique.setDatehistorique(datehisto);
                         historique.setDescription(
-                                "" + users.getPrenom() + " " + users.getNom() + " a affiché toutes les entités ");
+                                "" + users.getPrenom() + " " + users.getNom() + " a affiche toutes les entites ");
                         historiqueService.Create(historique);
                     } catch (Exception e) {
                         // TODO: handle exception
@@ -1227,11 +1227,14 @@ public class SuperAdminController {
 
     // activités en avenir
     @ApiOperation(value = "activites/avenir")
-    @GetMapping("activites/avenir/{login}/{password}")
-    public ResponseEntity<Object> ActivitesAvenir(@PathVariable String login, @PathVariable String password) {
+    @PostMapping("/activites/avenir")
+    public ResponseEntity<Object> ActivitesAvenir(@RequestParam(value = "user") String userVenant) {
         try {
 
-            Utilisateur users = utilisateurService.trouverParLoginAndPass(login, password);
+            Utilisateur utilisateur = new JsonMapper().readValue(userVenant, Utilisateur.class);
+
+            Utilisateur users = utilisateurService.trouverParLoginAndPass(utilisateur.getLogin(),
+                    utilisateur.getPassword());
 
             Droit Ractivite = droitService.GetLibelle("Read Actvite");
 
@@ -1243,7 +1246,7 @@ public class SuperAdminController {
                         Date datehisto = new Date();
                         historique.setDatehistorique(datehisto);
                         historique.setDescription(
-                                "" + users.getPrenom() + " " + users.getNom() + " a affiché les activités à venir ");
+                                "" + users.getPrenom() + " " + users.getNom() + " a affiche les activites a venir");
                         historiqueService.Create(historique);
                     } catch (Exception e) {
                         // TODO: handle exception
@@ -1270,10 +1273,13 @@ public class SuperAdminController {
 
     // activités en cour
     @ApiOperation(value = "activites/encour")
-    @GetMapping("activites/encour/{login}/{password}")
-    public ResponseEntity<Object> ActivitesEncour(@PathVariable String login, @PathVariable String password) {
+    @PostMapping("/activites/encour")
+    public ResponseEntity<Object> ActivitesEncour(@RequestParam(value = "user") String userVenant) {
         try {
-            Utilisateur users = utilisateurService.trouverParLoginAndPass(login, password);
+            Utilisateur utilisateur = new JsonMapper().readValue(userVenant, Utilisateur.class);
+
+            Utilisateur users = utilisateurService.trouverParLoginAndPass(utilisateur.getLogin(),
+                    utilisateur.getPassword());
             Droit Ractivite = droitService.GetLibelle("Read Actvite");
 
             if (users != null) {
@@ -1284,7 +1290,7 @@ public class SuperAdminController {
                         Date datehisto = new Date();
                         historique.setDatehistorique(datehisto);
                         historique.setDescription(
-                                "" + users.getPrenom() + " " + users.getNom() + " a affiché les activités en cour ");
+                                "" + users.getPrenom() + " " + users.getNom() + " a affiche les activites en cour ");
                         historiqueService.Create(historique);
 
                         return ResponseMessage.generateResponse("error", HttpStatus.OK, activiteService.Encour());
@@ -2352,12 +2358,13 @@ public class SuperAdminController {
     }
 
     @ApiOperation(value = "Nombre de participants feminin")
-    @GetMapping("/partcipantfeminins/{login}/{password}")
-    public ResponseEntity<Object> participantsFeminins(@PathVariable("login") String login,
-            @PathVariable("password") String password) {
+    @PostMapping("/partcipantfeminins")
+    public ResponseEntity<Object> participantsFeminins(@RequestParam(value = "user") String userVenant) {
         try {
-            Utilisateur user = utilisateurService.trouverParLoginAndPass(login, password);
+            Utilisateur utilisateur = new JsonMapper().readValue(userVenant, Utilisateur.class);
 
+            Utilisateur user = utilisateurService.trouverParLoginAndPass(utilisateur.getLogin(),
+                    utilisateur.getPassword());
             Droit RAoup = droitService.GetLibelle("Read AouP");
 
             if (user.getRole().getDroits().contains(RAoup)) {
@@ -2376,11 +2383,13 @@ public class SuperAdminController {
     }
 
     @ApiOperation(value = "Nombre de participants enfants")
-    @GetMapping("/partcipantenfants/{login}/{password}")
-    public ResponseEntity<Object> participantsEnfants(@PathVariable("login") String login,
-            @PathVariable("password") String password) {
+    @PostMapping("/partcipantenfants")
+    public ResponseEntity<Object> participantsEnfants(@RequestParam(value = "user") String userVenant) {
         try {
-            Utilisateur user = utilisateurService.trouverParLoginAndPass(login, password);
+            Utilisateur utilisateur = new JsonMapper().readValue(userVenant, Utilisateur.class);
+
+            Utilisateur user = utilisateurService.trouverParLoginAndPass(utilisateur.getLogin(),
+                    utilisateur.getPassword());
 
             Droit RAoup = droitService.GetLibelle("Read AouP");
 
