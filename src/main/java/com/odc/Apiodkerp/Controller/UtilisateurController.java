@@ -349,12 +349,13 @@ public class UtilisateurController {
                         historique.setDescription(
                                 "" + user.getPrenom() + " " + user.getNom() + " a affiché toutes les activités ");
                         historiqueService.Create(historique);
+                        return ResponseMessage.generateResponse("ok", HttpStatus.OK, activiteService.FindAllAct());
                     } catch (Exception e) {
                         // TODO: handle exception
                         return ResponseMessage.generateResponse("iciiii", HttpStatus.OK, e.getMessage());
 
                     }
-                    return ResponseMessage.generateResponse("ok", HttpStatus.OK, activiteService.FindAllAct());
+
                 } else {
                     return ResponseMessage.generateResponse("error", HttpStatus.OK, "Non autorisé");
                 }

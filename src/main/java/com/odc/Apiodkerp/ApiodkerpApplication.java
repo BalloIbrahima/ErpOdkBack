@@ -480,7 +480,7 @@ public class ApiodkerpApplication {
 			ballo.setEmail("ballo@gmail.com");
 			ballo.setRole(admin);
 			ballo.setPrenom("Ibrahima");
-			ballo.setGenre(Genre.Masculin);
+			ballo.setGenre(Genre.M);
 			ballo.setPassword("bababallo#123#");
 			ballo.setId(1L);
 			ballo.setLogin("bababallo");
@@ -491,7 +491,7 @@ public class ApiodkerpApplication {
 			abasse.setEmail("maiga@gmail.com");
 			abasse.setRole(admin);
 			abasse.setPrenom("Abasse");
-			abasse.setGenre(Genre.Masculin);
+			abasse.setGenre(Genre.M);
 			abasse.setPassword("abassemaiga");
 			abasse.setId(2L);
 			abasse.setLogin("abasse");

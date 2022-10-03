@@ -1217,11 +1217,11 @@ public class SuperAdminController {
 
     // activités en avenir
     @ApiOperation(value = "activites/avenir")
-    @GetMapping("activites/avenir/{login}/{password}")
-    public ResponseEntity<Object> ActivitesAvenir(@PathVariable String login, @PathVariable String password) {
+    @GetMapping("activites/avenir/{id}")
+    public ResponseEntity<Object> ActivitesAvenir(@PathVariable long id) {
         try {
 
-            Utilisateur users = utilisateurService.trouverParLoginAndPass(login, password);
+            Utilisateur users = utilisateurService.getById(id);
 
             Droit Ractivite = droitService.GetLibelle("Read Actvite");
 
@@ -1260,10 +1260,10 @@ public class SuperAdminController {
 
     // activités en cour
     @ApiOperation(value = "activites/encour")
-    @GetMapping("activites/encour/{login}/{password}")
-    public ResponseEntity<Object> ActivitesEncour(@PathVariable String login, @PathVariable String password) {
+    @GetMapping("activites/encour/{id}")
+    public ResponseEntity<Object> ActivitesEncour(@PathVariable long id) {
         try {
-            Utilisateur users = utilisateurService.trouverParLoginAndPass(login, password);
+            Utilisateur users = utilisateurService.getById(id);
             Droit Ractivite = droitService.GetLibelle("Read Actvite");
 
             if (users != null) {
@@ -1554,35 +1554,40 @@ public class SuperAdminController {
     public ResponseEntity<Object> SalleDispoDate(@PathVariable String login, @PathVariable String password,
             @PathVariable Date date1, @PathVariable Date date2) {
         try {
-            Activite act = activiteService.FindAllAct();
+            List<Activite> activites = activiteService.FindAllAct();
             List<Salle> salle = new ArrayList<>();
             Utilisateur users = utilisateurService.trouverParLoginAndPass(login, password);
             Droit RSalle = droitService.GetLibelle("Read Salle");
 
             if (users != null) {
                 if (users.getRole().getDroits().contains(RSalle)) {
-                    if (act.getDateDebut().before(date1) && act.getDateDebut().before(date2)
-                            && act.getDateFin().after(date1)
-                            && act.getDateFin().after(date2)
-                            || act.getDateDebut().after(date1) && act.getDateDebut().after(date2)
-                                    && act.getDateFin().before(date1) && act.getDateFin().before(date2)) {
-                        // Historique
-                        try {
-                            Historique historique = new Historique();
-                            Date datehisto = new Date();
-                            historique.setDatehistorique(datehisto);
-                            historique.setDescription("" + users.getPrenom() + " " + users.getNom()
-                                    + " a afficher  salle disponible dans l'intervalle " + date1 + " et " + date2);
-                            historiqueService.Create(historique);
-                        } catch (Exception e) {
-                            // TODO: handle exception
-                            return ResponseMessage.generateResponse("iciiii", HttpStatus.OK, e.getMessage());
+                    for(Activite act: activites){
+                        if (act.getDateDebut().before(date1) && act.getDateDebut().before(date2)
+                                && act.getDateFin().after(date1)
+                                && act.getDateFin().after(date2)
+                                || act.getDateDebut().after(date1) && act.getDateDebut().after(date2)
+                                && act.getDateFin().before(date1) && act.getDateFin().before(date2)) {
+                            // Historique
 
+                            salle.add(act.getSalle());
                         }
+                    }
 
-                        return ResponseMessage.generateResponse("error", HttpStatus.OK, salle.add(act.getSalle()));
+                    try {
+                        Historique historique = new Historique();
+                        Date datehisto = new Date();
+                        historique.setDatehistorique(datehisto);
+                        historique.setDescription("" + users.getPrenom() + " " + users.getNom()
+                                + " a afficher  salle disponible dans l'intervalle " + date1 + " et " + date2);
+                        historiqueService.Create(historique);
+                        return ResponseMessage.generateResponse("error", HttpStatus.OK,salle );
+
+                    } catch (Exception e) {
+                        // TODO: handle exception
+                        return ResponseMessage.generateResponse("iciiii", HttpStatus.OK, e.getMessage());
 
                     }
+
                 } else {
                     return ResponseMessage.generateResponse("error", HttpStatus.OK, "Non autorisé");
                 }
@@ -1594,6 +1599,59 @@ public class SuperAdminController {
             return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
         }
     }
+
+
+    //:::::::::::::::Salle disponible :::::::::::::::::::::::::::::::
+    @ApiOperation(value = " salle disponible")
+    @GetMapping("SalleDisponible/{login}/{password}")
+    public ResponseEntity<Object> SalleDispoDate(@PathVariable String login, @PathVariable String password) {
+        try {
+            Date date = new Date();
+            List<Activite> activites = activiteService.FindAllAct();
+            List<Salle> salle = new ArrayList<>();
+            Utilisateur users = utilisateurService.trouverParLoginAndPass(login, password);
+            Droit RSalle = droitService.GetLibelle("Read Salle");
+
+            if (users != null) {
+                if (users.getRole().getDroits().contains(RSalle)) {
+                    for(Activite act: activites){
+                        if (act.getDateDebut().after(date) && act.getDateFin().after(date)) {
+                            // Historique
+
+                            salle.add(act.getSalle());
+                        }
+                    }
+
+                    try {
+                        Historique historique = new Historique();
+                        Date datehisto = new Date();
+                        historique.setDatehistorique(datehisto);
+                        historique.setDescription("" + users.getPrenom() + " " + users.getNom()
+                                + " a afficher  salle disponible  " + date );
+                        historiqueService.Create(historique);
+                        return ResponseMessage.generateResponse("error", HttpStatus.OK,salle );
+
+                    } catch (Exception e) {
+                        // TODO: handle exception
+                        return ResponseMessage.generateResponse("iciiii", HttpStatus.OK, e.getMessage());
+
+                    }
+
+                } else {
+                    return ResponseMessage.generateResponse("error", HttpStatus.OK, "Non autorisé");
+                }
+            }
+
+            return ResponseMessage.generateResponse("error", HttpStatus.OK, activiteService.Termine());
+        } catch (Exception e) {
+            // TODO: handle exception
+            return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
+        }
+    }
+
+
+
+
 
     // :::::::::::::::::::::::Les users active
     @ApiOperation(value = "Les utilisateurs active")
