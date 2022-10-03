@@ -31,6 +31,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.odc.Apiodkerp.Configuration.ExcelGenerator;
 import com.odc.Apiodkerp.Configuration.ExcelImport;
 
@@ -131,13 +132,16 @@ public class ResponsableController {
     // ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
     // la methode pour importer une liste de postulant
     @ApiOperation(value = "la methode pour importer une liste de postulant.")
-    @PostMapping("/listpostulant/new/{libelleliste}/{login}/{password}")
+    @PostMapping("/listpostulant/new/{libelleliste}")
     public ResponseEntity<Object> ImportListePostulant(@PathVariable("libelleliste") String libelleliste,
-            @PathVariable("login") String login, @PathVariable("password") String password,
+            @RequestParam(value = "data") String user,
             @RequestParam("file") MultipartFile file) {
 
         try {
-            Utilisateur Simpleutilisateur = utilisateurService.trouverParLoginAndPass(login, password);
+            Utilisateur utilisateur = new JsonMapper().readValue(user, Utilisateur.class);
+
+            Utilisateur Simpleutilisateur = utilisateurService.trouverParLoginAndPass(utilisateur.getLogin(),
+                    utilisateur.getPassword());
 
             Droit createListe = droitService.GetLibelle("Create ListePostulant");
 
@@ -356,7 +360,6 @@ public class ResponsableController {
         Tirage exist = tirageService.findByLibelle(libelleTirage);
         if (exist == null) {
             Droit createTirage = droitService.GetLibelle("Create Tirage");
-
 
             Utilisateur utilisateur = utilisateurService.trouverParLoginAndPass(login, password);
             Activite activite = activiteService.GetById(idactivite);

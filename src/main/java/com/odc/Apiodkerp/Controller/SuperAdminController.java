@@ -318,16 +318,16 @@ public class SuperAdminController {
     // ---------------------------CRUD
     // USER-------------------------------------------------------------->
     @ApiOperation(value = "Creer un utilisateur.")
-    @PostMapping("/create/user/{login}/{password}}/{idadmin}")
-    public ResponseEntity<Object> createUser(@RequestParam(value = "data") String data, @PathVariable long idadmin,
+    @PostMapping("/create/user/{login}/{password}")
+    public ResponseEntity<Object> createUser(@RequestParam(value = "data") String data,
             @PathVariable("login") String login, @PathVariable("password") String password,
             @RequestParam(value = "file", required = false) MultipartFile file, @RequestBody Utilisateur utilis) {
         try {
-            Utilisateur user = utilisateurService.getById(idadmin);
+            // Utilisateur user = utilisateurService.getById(idadmin);
 
             Utilisateur utilisateur = new JsonMapper().readValue(data, Utilisateur.class);
 
-            Role role = RoleService.GetByLibelle("USER");
+            // Role role = RoleService.GetByLibelle("USER");
 
             Utilisateur users = utilisateurService.trouverParLoginAndPass(login, password);
             Droit CUser = droitService.GetLibelle("Create Utilisateur");
@@ -336,7 +336,7 @@ public class SuperAdminController {
                 if (users.getRole().getDroits().contains(CUser)) {
 
                     if (utilisateurService.getByEmail(utilisateur.getEmail()) == null) {
-                        utilisateur.setRole(role);
+                        // utilisateur.setRole(role);
                         if (file != null) {
                             utilisateur.setImage(SaveImage.save("user", file, utilisateur.getEmail()));
                         }
@@ -346,18 +346,19 @@ public class SuperAdminController {
                             Historique historique = new Historique();
                             Date datehisto = new Date();
                             historique.setDatehistorique(datehisto);
-                            historique.setDescription("" + user.getPrenom() + " " + user.getNom()
+                            historique.setDescription("" + users.getPrenom() + " " + users.getNom()
                                     + " a crée un utilisateur du nom de " + utilisateur.getNom());
                             historiqueService.Create(historique);
+
+                            Utilisateur NewUser = utilisateurService.creer(utilisateur);
+                            System.out.println(NewUser.getLogin());
+                            return ResponseMessage.generateResponse("ok", HttpStatus.OK, NewUser);
                         } catch (Exception e) {
                             // TODO: handle exception
                             return ResponseMessage.generateResponse("iciiii", HttpStatus.OK, e.getMessage());
 
                         }
 
-                        Utilisateur NewUser = utilisateurService.creer(utilisateur);
-                        System.out.println(NewUser.getLogin());
-                        return ResponseMessage.generateResponse("ok", HttpStatus.OK, NewUser);
                     } else {
                         return ResponseMessage.generateResponse("error", HttpStatus.OK, "Adresse mail existante");
 
@@ -781,12 +782,21 @@ public class SuperAdminController {
     // ---------------------------CRUD
     // ENTITE-------------------------------------------------------------->
     @ApiOperation(value = "Creer un entite.")
-    @PostMapping("/create/entite/{login}/{password}")
-    public ResponseEntity<Object> createEntite(@RequestBody Entite entite, @PathVariable String login,
-            @PathVariable String password) {
+    @PostMapping("/create/entite")
+    public ResponseEntity<Object> createEntite(@RequestParam(value = "user") String enti,
+            @RequestParam(value = "file", required = true) MultipartFile file,
+            @RequestParam(value = "user") String userVenant) {
         try {
 
-            Utilisateur user = utilisateurService.trouverParLoginAndPass(login, password);
+            Entite entite = new JsonMapper().readValue(enti, Entite.class);
+            if (file != null) {
+                entite.setImage(SaveImage.save("activite", file, entite.getLibelleentite()));
+            }
+            Utilisateur utilisateur = new JsonMapper().readValue(userVenant, Utilisateur.class);
+
+            Utilisateur user = utilisateurService.trouverParLoginAndPass(utilisateur.getLogin(),
+                    utilisateur.getPassword());
+
             Droit createrole = droitService.GetLibelle("Create Entite");
 
             if (user.getRole().getDroits().contains(createrole)) {
@@ -2170,7 +2180,7 @@ public class SuperAdminController {
 
         }
     }
-    // ::::::::::::::::::::::::::::::::::: Get pzr id AouP
+    // ::::::::::::::::::::::::::::::::::: Get par id AouP
     // ::::::::::::::::::::::::::::::::::::
 
     @ApiOperation(value = "Droit par id")
@@ -2311,7 +2321,7 @@ public class SuperAdminController {
 
         }
     }
-    // ::::::::::::::::::::::::::::::::::: Get pzr id FormatEmail
+    // ::::::::::::::::::::::::::::::::::: Get par id FormatEmail
     // ::::::::::::::::::::::::::::::::::::
 
     @ApiOperation(value = "Format email par id")
