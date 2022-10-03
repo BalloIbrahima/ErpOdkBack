@@ -165,7 +165,7 @@ public class ActiviteServiceImpl implements ActiviteService {
 
     @Override
     public List<Activite> ActiviteEntiteid(long identite) {
-        return (List<Activite>) activiteRepository.actEntite(identite);
+        return  activiteRepository.actEntite(identite);
     }
 
 }
