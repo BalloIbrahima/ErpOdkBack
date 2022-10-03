@@ -20,4 +20,9 @@ public interface AouPService {
 
     // Activite en fonction de l'etat
 
+    // partcipants feminis
+    List<AouP> listFeminins();
+
+    // partcipants Enfants
+    List<AouP> listEnfants();
 }
