@@ -23,7 +23,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/admin")
 @Api(value = "admin", description = "Les fonctionnalités liées à un super administrateur, le grand chef.")
-@CrossOrigin
+@CrossOrigin()
 public class SuperAdminController {
     @Autowired
     private UtilisateurService utilisateurService;
@@ -1210,26 +1210,32 @@ public class SuperAdminController {
     @GetMapping("/getSalles/disponible/{iduser}")
     public ResponseEntity<Object> getSallesDispo(@PathVariable long iduser) {
         try {
+            Date fc = new Date();
+            Activite ac = new Activite();
+            Utilisateur user = utilisateurService.getById(iduser);
+            if (ac.getDateDebut().after(fc) && ac.getDateFin().after(fc)) {
+                try {
+                    Historique historique = new Historique();
+                    Date datehisto = new Date();
+                    historique.setDatehistorique(datehisto);
+                    historique.setDescription("" + user.getPrenom() + " " + user.getNom() + " a afficher  les salles disponible");
+                    historiqueService.Create(historique);
+                } catch (Exception e) {
+                    // TODO: handle exception
+                    return ResponseMessage.generateResponse("iciiii", HttpStatus.OK, e.getMessage());
 
-            Utilisateur user =   utilisateurService.getById(iduser);
-            try {
-                Historique historique = new Historique();
-                Date datehisto = new Date();
-                historique.setDatehistorique(datehisto);
-                historique.setDescription(""+user.getPrenom()+ " "+user.getNom()+" a afficher  les salles disponible");
-                historiqueService.Create(historique);}
-            catch (Exception e) {
-                // TODO: handle exception
-                return ResponseMessage.generateResponse("iciiii", HttpStatus.OK, e.getMessage());
-
+                }
+                // return ResponseMessage.generateResponse("ok", HttpStatus.OK, salleService.ParEtat(true));
+                return ResponseMessage.generateResponse("ok", HttpStatus.OK, salleService.getAll());
             }
-            return ResponseMessage.generateResponse("ok", HttpStatus.OK, salleService.ParEtat(true));
+            return ResponseMessage.generateResponse("ok", HttpStatus.OK, salleService.getAll());
 
         } catch (Exception e) {
             // TODO: handle exception
             return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
 
         }
+
     }
 
     // :::::::::::::::::::::::Les salles indisponible

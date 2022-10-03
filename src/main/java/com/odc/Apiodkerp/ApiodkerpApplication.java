@@ -1,5 +1,6 @@
 package com.odc.Apiodkerp;
 
+import java.util.Arrays;
 import java.util.List;
 
 import org.springframework.boot.SpringApplication;
@@ -21,11 +22,32 @@ import com.odc.Apiodkerp.Service.RoleService;
 import com.odc.Apiodkerp.Service.StatusService;
 import com.odc.Apiodkerp.Service.TypeActiviteService;
 import com.odc.Apiodkerp.Service.UtilisateurService;
+import org.springframework.context.annotation.Bean;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.filter.CorsFilter;
 
 @SpringBootApplication
 public class ApiodkerpApplication {
 
+	@Bean
+	public CorsFilter corsFilter() {
+		CorsConfiguration corsConfiguration = new CorsConfiguration();
+		corsConfiguration.setAllowCredentials(true);
+		corsConfiguration.setAllowedOrigins(Arrays.asList("http://localhost:8100"));
+		corsConfiguration.setAllowedHeaders(Arrays.asList("Origin", "Access-Control-Allow-Origin", "Content-Type",
+				"Accept", "Authorization", "Origin, Accept", "X-Requested-With",
+				"Access-Control-Request-Method", "Access-Control-Request-Headers"));
+		corsConfiguration.setExposedHeaders(Arrays.asList("Origin", "Content-Type", "Accept", "Authorization",
+				"Access-Control-Allow-Origin", "Access-Control-Allow-Origin", "Access-Control-Allow-Credentials"));
+		corsConfiguration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+		UrlBasedCorsConfigurationSource urlBasedCorsConfigurationSource = new UrlBasedCorsConfigurationSource();
+		urlBasedCorsConfigurationSource.registerCorsConfiguration("/**", corsConfiguration);
+		return new CorsFilter(urlBasedCorsConfigurationSource);
+	}
 	public static void main(String[] args) {
+
+
 		ApplicationContext ctx = SpringApplication.run(ApiodkerpApplication.class, args);
 
 		UtilisateurService utilisateurService = ctx.getBean(UtilisateurService.class);
@@ -496,8 +518,21 @@ public class ApiodkerpApplication {
 			abasse.setId(2L);
 			abasse.setLogin("abasse");
 
+
+			Utilisateur karim = new Utilisateur();
+			abasse.setActive(true);
+			abasse.setNom("Diawara");
+			abasse.setEmail("karimdiawara96@gmail.com");
+			abasse.setRole(admin);
+			abasse.setPrenom("Karim");
+			abasse.setGenre(Genre.Masculin);
+			abasse.setPassword("diawara");
+			abasse.setId(3L);
+			abasse.setLogin("kdiawara");
+
 			utilisateurService.creer(ballo);
 			utilisateurService.creer(abasse);
+			utilisateurService.creer(karim);
 		}
 
 		// création des etats
@@ -556,5 +591,6 @@ public class ApiodkerpApplication {
 		statusService.creer(terminee);
 
 	}
+
 
 }
