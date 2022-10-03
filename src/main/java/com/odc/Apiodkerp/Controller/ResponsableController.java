@@ -358,64 +358,74 @@ public class ResponsableController {
 
     // la methode pour effectuer un tirage
     @ApiOperation(value = "La methode Pour effectuer un tirage.")
-    @PostMapping("/tirage/new/{libelleliste}/{idactivite}/{nombre}/{libelleTirage}/{login}/{password}")
+    @PostMapping("/tirage/new/{libelleliste}/{idactivite}/{nombre}/{libelleTirage}")
     public ResponseEntity<Object> DoTirage(@PathVariable("libelleliste") String libelleliste,
             @PathVariable("nombre") Long nombre, @PathVariable("idactivite") Long idactivite,
-            @PathVariable("login") String login, @PathVariable("password") String password,
+            @RequestParam(value = "user") String userVenant,
             @PathVariable("libelleTirage") String libelleTirage) {
 
-        Tirage exist = tirageService.findByLibelle(libelleTirage);
-        if (exist == null) {
-            Droit createTirage = droitService.GetLibelle("Create Tirage");
+        try {
+            Tirage exist = tirageService.findByLibelle(libelleTirage);
+            if (exist == null) {
+                Droit createTirage = droitService.GetLibelle("Create Tirage");
 
-            Utilisateur utilisateur = utilisateurService.trouverParLoginAndPass(login, password);
-            Activite activite = activiteService.GetById(idactivite);
+                Utilisateur utilisateurs = new JsonMapper().readValue(userVenant, Utilisateur.class);
 
-            ListePostulant listePostulant = listePostulantService.retrouveParLibelle(libelleliste);
-            Tirage tirage = new Tirage();
-            tirage.setLibelle(libelleTirage);
-            tirage.setListepostulant(listePostulant);
-            tirage.setActivite(activite);
-            tirage.setUtilisateur(utilisateur);
+                Utilisateur utilisateur = utilisateurService.trouverParLoginAndPass(utilisateurs.getLogin(),
+                        utilisateurs.getPassword());
 
-            System.out.println(libelleTirage);
-            System.out.println(nombre);
-            System.out.println(libelleliste);
+                Activite activite = activiteService.GetById(idactivite);
 
-            System.out.println(listePostulant.getPostulants());
+                ListePostulant listePostulant = listePostulantService.retrouveParLibelle(libelleliste);
+                Tirage tirage = new Tirage();
+                tirage.setLibelle(libelleTirage);
+                tirage.setListepostulant(listePostulant);
+                tirage.setActivite(activite);
+                tirage.setUtilisateur(utilisateur);
 
-            List<Postulant> postulanttires = tirageService.creer(tirage, listePostulant.getPostulants(), nombre);
+                System.out.println(libelleTirage);
+                System.out.println(nombre);
+                System.out.println(libelleliste);
 
-            if (utilisateur != null) {
-                if (utilisateur.getRole().getDroits().contains(createTirage)) {
-                    try {
+                System.out.println(listePostulant.getPostulants());
 
-                        //
-                        Historique historique = new Historique();
-                        historique.setDatehistorique(new Date());
-                        historique.setDescription(utilisateur.getPrenom() + " " + utilisateur.getNom()
-                                + " a a effectuer un tirage.");
-                        historiqueService.Create(historique);
+                List<Postulant> postulanttires = tirageService.creer(tirage, listePostulant.getPostulants(), nombre);
 
-                        //
-                        return ResponseMessage.generateResponse("ok", HttpStatus.OK, postulanttires);
+                if (utilisateur != null) {
+                    if (utilisateur.getRole().getDroits().contains(createTirage)) {
+                        try {
 
-                    } catch (Exception e) {
-                        // TODO: handle exception
-                        return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
+                            //
+                            Historique historique = new Historique();
+                            historique.setDatehistorique(new Date());
+                            historique.setDescription(utilisateur.getPrenom() + " " + utilisateur.getNom()
+                                    + " a a effectuer un tirage.");
+                            historiqueService.Create(historique);
+
+                            //
+                            return ResponseMessage.generateResponse("ok", HttpStatus.OK, postulanttires);
+
+                        } catch (Exception e) {
+                            // TODO: handle exception
+                            return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
+
+                        }
+                    } else {
+                        return ResponseMessage.generateResponse("error", HttpStatus.OK, "Non autorise !");
 
                     }
                 } else {
-                    return ResponseMessage.generateResponse("error", HttpStatus.OK, "Non autorise !");
+                    return ResponseMessage.generateResponse("error", HttpStatus.OK, "Cet utilisateur n'existe pas !");
 
                 }
+
             } else {
-                return ResponseMessage.generateResponse("error", HttpStatus.OK, "Cet utilisateur n'existe pas !");
-
+                return ResponseMessage.generateResponse("error", HttpStatus.OK, "Ce tirage existe deja !");
             }
+        } catch (Exception e) {
+            // TODO: handle exception
+            return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
 
-        } else {
-            return ResponseMessage.generateResponse("error", HttpStatus.OK, "Ce tirage existe deja !");
         }
 
     }
@@ -587,11 +597,13 @@ public class ResponsableController {
 
     // Afficher tous les postulants
     @ApiOperation(value = "Afficher tous les participants")
-    @PostMapping("/All/{login}/{password}")
-    public ResponseEntity<Object> getAllPostulantTire(@PathVariable("login") String login,
-            @PathVariable("password") String password) {
+    @PostMapping("/participants/All")
+    public ResponseEntity<Object> getAllPostulantTire(@RequestParam(value = "user") String userVenant) {
         try {
-            Utilisateur utilisateur = utilisateurService.trouverParLoginAndPass(login, password);
+            Utilisateur utilisateurs = new JsonMapper().readValue(userVenant, Utilisateur.class);
+
+            Utilisateur utilisateur = utilisateurService.trouverParLoginAndPass(utilisateurs.getLogin(),
+                    utilisateurs.getPassword());
             Droit readAouP = droitService.GetLibelle("Read AouP");
 
             if (utilisateur != null) {
@@ -600,12 +612,12 @@ public class ResponsableController {
                     Historique historique = new Historique();
                     historique.setDatehistorique(new Date());
                     historique.setDescription(utilisateur.getPrenom() + " " + utilisateur.getNom()
-                            + " a affiché l'ensemble des participants.");
+                            + " a affiche l'ensemble des participants.");
 
                     historiqueService.Create(historique);
 
                     //
-                    return ResponseMessage.generateResponse("ok", HttpStatus.OK, postulantTrieService.getAll());
+                    return ResponseMessage.generateResponse("ok", HttpStatus.OK, aouPService.GetAll());
 
                 } else {
                     return ResponseMessage.generateResponse("error", HttpStatus.OK, "Non autorise !");
