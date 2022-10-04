@@ -92,12 +92,12 @@ public class SuperAdminController {
             // Utilisateur utilisateur = utilisateurService.trouverParLoginAndPass(login,
             // password);
             System.out.println(utilisateur);
-            if (utilisateur.getRole() == RoleService.GetByLibelle("ADMIN")) {
+            if (user.getRole() == RoleService.GetByLibelle("ADMIN")) {
                 try {
                     Historique historique = new Historique();
                     Date datehisto = new Date();
                     historique.setDatehistorique(datehisto);
-                    historique.setDescription("" + utilisateur.getPrenom() + " " + utilisateur.getNom()
+                    historique.setDescription("" + user.getPrenom() + " " + user.getNom()
                             + " a cree une salle du nom de " + salle.getLibelle());
                     historiqueService.Create(historique);
                 } catch (Exception e) {
