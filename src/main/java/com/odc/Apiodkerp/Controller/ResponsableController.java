@@ -14,6 +14,7 @@ import io.swagger.annotations.ApiOperation;
 
 import com.odc.Apiodkerp.Models.PostulantTire;
 import com.odc.Apiodkerp.Models.Role;
+import com.odc.Apiodkerp.Models.Tache;
 import com.odc.Apiodkerp.Repository.PostulantTrieRepository;
 import com.odc.Apiodkerp.Service.PostulantTrieService;
 
@@ -434,14 +435,17 @@ public class ResponsableController {
     // Tire---------------------------------------//
     // Creation de participant
     @ApiOperation(value = "Ajouter participant")
-    @PostMapping("/create/participant/{idactivite}/{login}/{password}")
+    @PostMapping("/create/participant/{idactivite}")
     public ResponseEntity<Object> createPostulantTire(@RequestBody Postulant participant,
-            @PathVariable("idactivite") Long idactivite, @PathVariable("login") String login,
-            @PathVariable("password") String password) {
+            @PathVariable("idactivite") Long idactivite, @RequestParam(value = "user") String userVenant) {
 
         try {
             Activite activite = activiteService.GetById(idactivite);
-            Utilisateur utilisateur = utilisateurService.trouverParLoginAndPass(login, password);
+
+            Utilisateur utilisateurs = new JsonMapper().readValue(userVenant, Utilisateur.class);
+
+            Utilisateur utilisateur = utilisateurService.trouverParLoginAndPass(utilisateurs.getLogin(),
+                    utilisateurs.getPassword());
             Droit addAouP = droitService.GetLibelle("Create AouP");
 
             if (utilisateur != null) {
@@ -484,13 +488,16 @@ public class ResponsableController {
 
     // Afficher de postulant tiré
     @ApiOperation(value = "Afficher participant par son id")
-    @PostMapping("/read/{id}/{login}/{password}")
+    @PostMapping("/read/{id}")
     public ResponseEntity<Object> readPostulantTire(@PathVariable long id,
-            @PathVariable("login") String login, @PathVariable("password") String password) {
+            @RequestParam(value = "user") String userVenant) {
         try {
             Droit readAouP = droitService.GetLibelle("Read AouP");
 
-            Utilisateur utilisateur = utilisateurService.trouverParLoginAndPass(login, password);
+            Utilisateur utilisateurs = new JsonMapper().readValue(userVenant, Utilisateur.class);
+
+            Utilisateur utilisateur = utilisateurService.trouverParLoginAndPass(utilisateurs.getLogin(),
+                    utilisateurs.getPassword());
             PostulantTire post = postulantTrieService.read(id);
 
             if (utilisateur != null) {
@@ -521,12 +528,15 @@ public class ResponsableController {
 
     // Modifier de postulant tiré par son id
     @ApiOperation(value = "modifier participant par son id")
-    @PutMapping("/update/{id}/{login}/{password}")
+    @PutMapping("/update/{id}")
     public ResponseEntity<Object> updatePostulantTire(@RequestBody Postulant postulant, @PathVariable long id,
-            @PathVariable("login") String login, @PathVariable("password") String password) {
+            @RequestParam(value = "user") String userVenant) {
         try {
             Postulant post = postulantService.update(id, postulant);
-            Utilisateur utilisateur = utilisateurService.trouverParLoginAndPass(login, password);
+            Utilisateur utilisateurs = new JsonMapper().readValue(userVenant, Utilisateur.class);
+
+            Utilisateur utilisateur = utilisateurService.trouverParLoginAndPass(utilisateurs.getLogin(),
+                    utilisateurs.getPassword());
             Droit updateAouP = droitService.GetLibelle("Update AouP");
 
             if (utilisateur != null) {
@@ -559,13 +569,15 @@ public class ResponsableController {
 
     // Supprimer Postulant tiré par son id
     @ApiOperation(value = "Supprimer participant par son id")
-    @DeleteMapping("/delete/{id}/{login}/{password}")
+    @DeleteMapping("/delete/{id}")
     public ResponseEntity<Object> deletePostulantTire(@PathVariable long id,
-            @PathVariable("login") String login, @PathVariable("password") String password) {
+            @RequestParam(value = "user") String userVenant) {
         try {
             postulantTrieService.delete(id);
-            Utilisateur utilisateur = utilisateurService.trouverParLoginAndPass(login, password);
+            Utilisateur utilisateurs = new JsonMapper().readValue(userVenant, Utilisateur.class);
 
+            Utilisateur utilisateur = utilisateurService.trouverParLoginAndPass(utilisateurs.getLogin(),
+                    utilisateurs.getPassword());
             Droit deleteAouP = droitService.GetLibelle("Delete AouP");
 
             if (utilisateur != null) {
@@ -637,5 +649,221 @@ public class ResponsableController {
     }
 
     // :::::::::::::::total postulant: :::::::::::::::::::::
+
+    // ::::::::::::::::Tache::::::::::::::::::::::::::::::::::::::::::
+    // creer une tache
+    @ApiOperation(value = "creer une tache")
+    @PostMapping("/tache/creer")
+    public ResponseEntity<Object> createTache(@RequestParam(value = "user") String userVenant,
+            @RequestParam(value = "tache") String tach) {
+        try {
+            Utilisateur utilisateurs = new JsonMapper().readValue(userVenant, Utilisateur.class);
+
+            Utilisateur utilisateur = utilisateurService.trouverParLoginAndPass(utilisateurs.getLogin(),
+                    utilisateurs.getPassword());
+            Tache tache = new JsonMapper().readValue(tach, Tache.class);
+            Droit Ctache = droitService.GetLibelle("Create tache");
+
+            if (utilisateur != null) {
+                if (utilisateur.getRole().getDroits().contains(Ctache)) {
+                    //
+                    Historique historique = new Historique();
+                    historique.setDatehistorique(new Date());
+                    historique.setDescription(utilisateur.getPrenom() + " " + utilisateur.getNom()
+                            + " a cree une tache");
+
+                    historiqueService.Create(historique);
+
+                    //
+                    return ResponseMessage.generateResponse("ok", HttpStatus.OK, tacheService.creer(tache));
+
+                } else {
+                    return ResponseMessage.generateResponse("error", HttpStatus.OK, "Non autorise !");
+
+                }
+            } else {
+                return ResponseMessage.generateResponse("error", HttpStatus.OK, "Cet utilisateur n'existe pas !");
+
+            }
+
+        } catch (Exception e) {
+            // TODO: handle exception
+            return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
+
+        }
+
+    }
+
+    // Modifier une tache
+    @ApiOperation(value = "creer une tache")
+    @PostMapping("/tache/update/")
+    public ResponseEntity<Object> updateTache(@RequestParam(value = "user") String userVenant,
+            @RequestParam(value = "tache") String tach) {
+        try {
+
+            Tache tache = new JsonMapper().readValue(tach, Tache.class);
+
+            Utilisateur utilisateurs = new JsonMapper().readValue(userVenant, Utilisateur.class);
+
+            Utilisateur utilisateur = utilisateurService.trouverParLoginAndPass(utilisateurs.getLogin(),
+                    utilisateurs.getPassword());
+            Droit Crtache = droitService.GetLibelle("Ctache");
+
+            if (utilisateur != null) {
+                if (utilisateur.getRole().getDroits().contains(Crtache)) {
+                    //
+                    Historique historique = new Historique();
+                    historique.setDatehistorique(new Date());
+                    historique.setDescription(utilisateur.getPrenom() + " " + utilisateur.getNom()
+                            + " a cree une tache");
+
+                    historiqueService.Create(historique);
+
+                    //
+                    return ResponseMessage.generateResponse("ok", HttpStatus.OK, tacheService.creer(tache));
+
+                } else {
+                    return ResponseMessage.generateResponse("error", HttpStatus.OK, "Non autorise !");
+
+                }
+            } else {
+                return ResponseMessage.generateResponse("error", HttpStatus.OK, "Cet utilisateur n'existe pas !");
+
+            }
+
+        } catch (Exception e) {
+            // TODO: handle exception
+            return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
+
+        }
+
+    }
+
+    // ::::::::::::Afficher tous les taches
+    @ApiOperation(value = "Afficher tous les taches")
+    @PostMapping("/taches/All")
+    public ResponseEntity<Object> getAllTache(@RequestParam(value = "user") String userVenant) {
+        try {
+            Utilisateur utilisateurs = new JsonMapper().readValue(userVenant, Utilisateur.class);
+
+            Utilisateur utilisateur = utilisateurService.trouverParLoginAndPass(utilisateurs.getLogin(),
+                    utilisateurs.getPassword());
+            Droit readTache = droitService.GetLibelle("Read Tache");
+
+            if (utilisateur != null) {
+                if (utilisateur.getRole().getDroits().contains(readTache)) {
+                    //
+                    Historique historique = new Historique();
+                    historique.setDatehistorique(new Date());
+                    historique.setDescription(utilisateur.getPrenom() + " " + utilisateur.getNom()
+                            + " a affiche l'ensemble des taches.");
+
+                    historiqueService.Create(historique);
+
+                    //
+                    return ResponseMessage.generateResponse("ok", HttpStatus.OK, tacheService.getAll());
+
+                } else {
+                    return ResponseMessage.generateResponse("error", HttpStatus.OK, "Non autorise !");
+
+                }
+            } else {
+                return ResponseMessage.generateResponse("error", HttpStatus.OK, "Cet utilisateur n'existe pas !");
+
+            }
+
+        } catch (Exception e) {
+            // TODO: handle exception
+            return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
+
+        }
+
+    }
+
+    // ::::::::::::Afficher tous les taches en fonction d'une d'une activite
+    @ApiOperation(value = "Afficher tous les taches")
+    @PostMapping("/taches/{idactivite}")
+    public ResponseEntity<Object> getAllTacheForActivite(@RequestParam(value = "user") String userVenant,
+            @PathVariable("idactivite") Long idactivite) {
+        try {
+            Activite activite = activiteService.GetById(idactivite);
+            Utilisateur utilisateurs = new JsonMapper().readValue(userVenant, Utilisateur.class);
+
+            Utilisateur utilisateur = utilisateurService.trouverParLoginAndPass(utilisateurs.getLogin(),
+                    utilisateurs.getPassword());
+            Droit readTache = droitService.GetLibelle("Read Tache");
+
+            if (utilisateur != null) {
+                if (utilisateur.getRole().getDroits().contains(readTache)) {
+                    //
+                    Historique historique = new Historique();
+                    historique.setDatehistorique(new Date());
+                    historique.setDescription(utilisateur.getPrenom() + " " + utilisateur.getNom()
+                            + " a affiche l'ensemble des taches.");
+
+                    historiqueService.Create(historique);
+
+                    //
+                    return ResponseMessage.generateResponse("ok", HttpStatus.OK, activite.getTache());
+
+                } else {
+                    return ResponseMessage.generateResponse("error", HttpStatus.OK, "Non autorise !");
+
+                }
+            } else {
+                return ResponseMessage.generateResponse("error", HttpStatus.OK, "Cet utilisateur n'existe pas !");
+
+            }
+
+        } catch (Exception e) {
+            // TODO: handle exception
+            return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
+
+        }
+
+    }
+
+    @ApiOperation(value = "Suprimer une tache")
+    @PostMapping("/taches/{idtache}")
+    public ResponseEntity<Object> deleteTache(@RequestParam(value = "user") String userVenant,
+            @PathVariable("idtache") Long idtache) {
+        try {
+
+            Utilisateur utilisateurs = new JsonMapper().readValue(userVenant, Utilisateur.class);
+
+            Utilisateur utilisateur = utilisateurService.trouverParLoginAndPass(utilisateurs.getLogin(),
+                    utilisateurs.getPassword());
+            Droit deleteTache = droitService.GetLibelle("Delete Tache");
+
+            if (utilisateur != null) {
+                if (utilisateur.getRole().getDroits().contains(deleteTache)) {
+                    //
+                    tacheService.delete(idtache);
+                    Historique historique = new Historique();
+                    historique.setDatehistorique(new Date());
+                    historique.setDescription(utilisateur.getPrenom() + " " + utilisateur.getNom()
+                            + " a affiche l'ensemble des taches.");
+
+                    historiqueService.Create(historique);
+
+                    //
+                    return ResponseMessage.generateResponse("ok", HttpStatus.OK, "Supression effectuer avec succes");
+
+                } else {
+                    return ResponseMessage.generateResponse("error", HttpStatus.OK, "Non autorise !");
+
+                }
+            } else {
+                return ResponseMessage.generateResponse("error", HttpStatus.OK, "Cet utilisateur n'existe pas !");
+
+            }
+
+        } catch (Exception e) {
+            // TODO: handle exception
+            return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
+
+        }
+
+    }
 
 }
