@@ -911,7 +911,8 @@ public class UtilisateurController {
     }
 
     // ::::::::::::::::::::::Total nombre activite ::::::::::::::::::::::::
-    @ApiOperation(value = "Total nombre activite")
+    @ApiOperation(value = "Nombre total d'activite")
+
     @PostMapping("/totalactivite")
     public ResponseEntity<Object> TotalActivite(@RequestParam(value = "user") String userVenant) {
         try {
