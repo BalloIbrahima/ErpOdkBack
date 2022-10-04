@@ -24,6 +24,6 @@ public interface ActiviteRepository extends JpaRepository<Activite, Long> {
 
 
     @Query(value = "SELECT activite.* from activite,entite where entite.utilisateur=activite.createur and entite.id=:identite", nativeQuery = true)
-    public Activite actEntite(@PathVariable long identite);
+    public List<Activite> actEntite(@PathVariable long identite);
 
 }
