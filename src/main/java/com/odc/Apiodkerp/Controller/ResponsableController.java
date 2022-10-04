@@ -528,7 +528,7 @@ public class ResponsableController {
 
     // Modifier de postulant tiré par son id
     @ApiOperation(value = "modifier participant par son id")
-    @PutMapping("/update/{id}")
+    @PostMapping("/update/{id}")
     public ResponseEntity<Object> updatePostulantTire(@RequestBody Postulant postulant, @PathVariable long id,
             @RequestParam(value = "user") String userVenant) {
         try {
@@ -569,7 +569,7 @@ public class ResponsableController {
 
     // Supprimer Postulant tiré par son id
     @ApiOperation(value = "Supprimer participant par son id")
-    @DeleteMapping("/delete/{id}")
+    @PostMapping("/delete/{id}")
     public ResponseEntity<Object> deletePostulantTire(@PathVariable long id,
             @RequestParam(value = "user") String userVenant) {
         try {
@@ -839,6 +839,48 @@ public class ResponsableController {
                 if (utilisateur.getRole().getDroits().contains(deleteTache)) {
                     //
                     tacheService.delete(idtache);
+                    Historique historique = new Historique();
+                    historique.setDatehistorique(new Date());
+                    historique.setDescription(utilisateur.getPrenom() + " " + utilisateur.getNom()
+                            + " a affiche l'ensemble des taches.");
+
+                    historiqueService.Create(historique);
+
+                    //
+                    return ResponseMessage.generateResponse("ok", HttpStatus.OK, "Supression effectuer avec succes");
+
+                } else {
+                    return ResponseMessage.generateResponse("error", HttpStatus.OK, "Non autorise !");
+
+                }
+            } else {
+                return ResponseMessage.generateResponse("error", HttpStatus.OK, "Cet utilisateur n'existe pas !");
+
+            }
+
+        } catch (Exception e) {
+            // TODO: handle exception
+            return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
+
+        }
+
+    }
+
+    // ::::::::::::::::::liste de postulant
+    @ApiOperation(value = "Suprimer une tache")
+    @PostMapping("/liste/all")
+    public ResponseEntity<Object> ToutesListe(@RequestParam(value = "user") String userVenant) {
+        try {
+
+            Utilisateur utilisateurs = new JsonMapper().readValue(userVenant, Utilisateur.class);
+
+            Utilisateur utilisateur = utilisateurService.trouverParLoginAndPass(utilisateurs.getLogin(),
+                    utilisateurs.getPassword());
+            Droit deleteTache = droitService.GetLibelle("Delete Tache");
+
+            if (utilisateur != null) {
+                if (utilisateur.getRole().getDroits().contains(deleteTache)) {
+                    //
                     Historique historique = new Historique();
                     historique.setDatehistorique(new Date());
                     historique.setDescription(utilisateur.getPrenom() + " " + utilisateur.getNom()
