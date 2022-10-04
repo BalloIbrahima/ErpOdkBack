@@ -84,15 +84,17 @@ public class SalleController {
             Utilisateur user = utilisateurService.trouverParLoginAndPass(utilisateur.getLogin(),
                     utilisateur.getPassword());
 
+            Droit cSalle=droitService.GetLibelle("Create Salle");
+
             // Utilisateur utilisateur = utilisateurService.trouverParLoginAndPass(login,
             // password);
             System.out.println(utilisateur);
-            if (utilisateur.getRole() == RoleService.GetByLibelle("ADMIN")) {
+            if (user.getRole().getDroits().contains(cSalle)) {
                 try {
                     Historique historique = new Historique();
                     Date datehisto = new Date();
                     historique.setDatehistorique(datehisto);
-                    historique.setDescription("" + utilisateur.getPrenom() + " " + utilisateur.getNom()
+                    historique.setDescription("" + user.getPrenom() + " " + user.getNom()
                             + " a crée une salle du nom de " + salle.getLibelle());
                     historiqueService.Create(historique);
                 } catch (Exception e) {
@@ -100,7 +102,7 @@ public class SalleController {
                     return ResponseMessage.generateResponse("iciiii", HttpStatus.OK, e.getMessage());
 
                 }
-                salle.setUtilisateur(utilisateur);
+                //salle.setUtilisateur(utilisateur);
                 return ResponseMessage.generateResponse("ok", HttpStatus.OK, salleService.create(salle));
             } else {
                 return ResponseMessage.generateResponse("error", HttpStatus.OK, "non autorise");
