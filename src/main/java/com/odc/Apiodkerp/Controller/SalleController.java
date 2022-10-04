@@ -156,7 +156,7 @@ public class SalleController {
     }
 
     @ApiOperation(value = "Lien pour modifier une salle")
-    @PutMapping("/modifiersalle/{id}")
+    @PostMapping("/modifiersalle/{id}")
     public ResponseEntity<Object> modifier(@PathVariable long id, @RequestParam(value = "user") String userVenant,
             @RequestParam(value = "salle") String sal) {
         try {
