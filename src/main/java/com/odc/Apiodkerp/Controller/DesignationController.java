@@ -15,12 +15,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
+
 @RestController
 @RequestMapping("/designation")
-@Api(value = "admin", description = "Les fonctionnalités liées à une designation")
+@Api(value = "designation", description = "Les fonctionnalités liées à une designation")
 @CrossOrigin
 public class DesignationController {
-
 
     @Autowired
     private UtilisateurService utilisateurService;
@@ -73,19 +73,12 @@ public class DesignationController {
     @Autowired
     private TypeActiviteService typeActiviteService;
 
-
-
-
-
-
-
-
-
     // :::::::::::::::::::::::::::::::::::::::DESIGNATION
     // :::::::::::::::::::::::::::::::
     @ApiOperation(value = "Ajouter Designation")
     @PostMapping("/designation")
-    public ResponseEntity<Object> ajouterDesignation(@RequestParam(value = "designation") String designation, @RequestParam(value = "user") String userVenant) {
+    public ResponseEntity<Object> ajouterDesignation(@RequestParam(value = "designation") String designation,
+            @RequestParam(value = "user") String userVenant) {
         try {
 
             // Histroique
@@ -128,9 +121,9 @@ public class DesignationController {
     // ::::::::::::::::::::::::::::::::::: Modifier Designation
     // ::::::::::::::::::::::::::::::::::::
     @ApiOperation(value = "Modifier Desi")
-    @PutMapping("/designation/modifier/{id}")
-    public ResponseEntity<Object> ModifierDesignation(@PathVariable long id, @RequestParam(value = "designation") String designation, @RequestParam(value = "user") String userVenant
-    ) {
+    @PostMapping("/designation/modifier/{id}")
+    public ResponseEntity<Object> ModifierDesignation(@PathVariable long id,
+            @RequestParam(value = "designation") String designation, @RequestParam(value = "user") String userVenant) {
         try {
 
             // Historique
@@ -173,8 +166,9 @@ public class DesignationController {
     // ::::::::::::::::::::::::::::::::::::
 
     @ApiOperation(value = "Supprimer Designation")
-    @DeleteMapping("/designation/supprimer/{id}")
-    public ResponseEntity<Object> SupprimerDesignation(@PathVariable long id,  @RequestParam(value = "user") String userVenant) {
+    @PostMapping("/designation/supprimer/{id}")
+    public ResponseEntity<Object> SupprimerDesignation(@PathVariable long id,
+            @RequestParam(value = "user") String userVenant) {
         try {
             Designation designation = designationService.GetById(id);
 
@@ -218,8 +212,9 @@ public class DesignationController {
     // ::::::::::::::::::::::::::::::::::::
 
     @ApiOperation(value = "Designation par id")
-    @GetMapping("/Designation/GetId/{id}")
-    public ResponseEntity<Object> GetDesigantionparId(@PathVariable long id, @RequestParam(value = "user") String userVenant) {
+    @PostMapping("/Designation/GetId/{id}")
+    public ResponseEntity<Object> GetDesigantionparId(@PathVariable long id,
+            @RequestParam(value = "user") String userVenant) {
         try {
 
             // Histroique

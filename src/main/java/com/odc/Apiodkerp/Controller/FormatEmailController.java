@@ -16,9 +16,10 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Date;
 import java.util.List;
+
 @RestController
-@RequestMapping("/entite")
-@Api(value = "entite", description = "Les fonctionnalités liées à une entite")
+@RequestMapping("/formatemail")
+@Api(value = "formatemail", description = "Les fonctionnalités liées à une formatemail")
 @CrossOrigin
 
 public class FormatEmailController {
@@ -44,14 +45,12 @@ public class FormatEmailController {
     @Autowired
     private FormatEmailService formatEmailService;
 
-
-
-
     // :::::::::::::::::::::::::::::::::::::::FormationEmail
     // :::::::::::::::::::::::::::::::
     @ApiOperation(value = "Ajouter FormatEmail")
     @PostMapping("/formaemail")
-    public ResponseEntity<Object> ajouterFormatEmail(@RequestParam(value = "formatemail") String formatEmail, @RequestParam(value = "user") String userVenant) {
+    public ResponseEntity<Object> ajouterFormatEmail(@RequestParam(value = "formatemail") String formatEmail,
+            @RequestParam(value = "user") String userVenant) {
         try {
 
             Utilisateur utilisateur = new JsonMapper().readValue(userVenant, Utilisateur.class);
@@ -78,9 +77,9 @@ public class FormatEmailController {
     // ::::::::::::::::::::::::::::::::::: Modifier FormatEmail
     // ::::::::::::::::::::::::::::::::::::
     @ApiOperation(value = "Modifier formatEmail")
-    @PutMapping("/formatemail/modifier/{id}")
+    @PostMapping("/formatemail/modifier/{id}")
     public ResponseEntity<Object> ModifierFormatEmail(@PathVariable long id,
-                                                      @RequestParam(value = "formatemail") String formatEmail, @RequestParam(value = "user") String userVenant) {
+            @RequestParam(value = "formatemail") String formatEmail, @RequestParam(value = "user") String userVenant) {
         try {
 
             Utilisateur utilisateur = new JsonMapper().readValue(userVenant, Utilisateur.class);
@@ -108,8 +107,9 @@ public class FormatEmailController {
     // ::::::::::::::::::::::::::::::::::::
 
     @ApiOperation(value = "Supprimer Format Email")
-    @DeleteMapping("/formatemail/supprimer/{id}")
-    public ResponseEntity<Object> SupprimerFormatEmail(@PathVariable long id, @RequestParam(value = "user") String userVenant) {
+    @PostMapping("/formatemail/supprimer/{id}")
+    public ResponseEntity<Object> SupprimerFormatEmail(@PathVariable long id,
+            @RequestParam(value = "user") String userVenant) {
         try {
 
             Utilisateur utilisateur = new JsonMapper().readValue(userVenant, Utilisateur.class);
@@ -137,8 +137,9 @@ public class FormatEmailController {
     // ::::::::::::::::::::::::::::::::::::
 
     @ApiOperation(value = "Format email par id")
-    @GetMapping("/formatEmail/GetId/{id}")
-    public ResponseEntity<Object> GetFormatEMailparId(@PathVariable long id, @RequestParam(value = "user") String userVenant) {
+    @PostMapping("/formatEmail/GetId/{id}")
+    public ResponseEntity<Object> GetFormatEMailparId(@PathVariable long id,
+            @RequestParam(value = "user") String userVenant) {
         try {
             Utilisateur utilisateur = new JsonMapper().readValue(userVenant, Utilisateur.class);
 

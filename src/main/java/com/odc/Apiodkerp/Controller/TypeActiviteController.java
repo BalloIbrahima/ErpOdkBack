@@ -192,7 +192,7 @@ public class TypeActiviteController {
     }
 
     @ApiOperation(value = "Recuperer l'ensemble des types acticite")
-    @GetMapping("Typeactivite/getall")
+    @PostMapping("Typeactivite/getall")
     public ResponseEntity<Object> TypaActiviteAll(@RequestParam(value = "user") String userVenant) {
         try {
             Utilisateur utilisateur = new JsonMapper().readValue(userVenant, Utilisateur.class);

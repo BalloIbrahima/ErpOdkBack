@@ -72,8 +72,6 @@ public class SalleController {
     @Autowired
     private TypeActiviteService typeActiviteService;
 
-
-
     @ApiOperation(value = "Lien pour créer une salle")
     @PostMapping("/creersalle")
     public ResponseEntity<Object> creerSalle(
@@ -83,9 +81,11 @@ public class SalleController {
             Utilisateur utilisateur = new JsonMapper().readValue(userVenant, Utilisateur.class);
             Salle salle = new JsonMapper().readValue(sal, Salle.class);
 
-            Utilisateur user = utilisateurService.trouverParLoginAndPass(utilisateur.getLogin(),utilisateur.getPassword());
+            Utilisateur user = utilisateurService.trouverParLoginAndPass(utilisateur.getLogin(),
+                    utilisateur.getPassword());
 
-            //   Utilisateur utilisateur = utilisateurService.trouverParLoginAndPass(login, password);
+            // Utilisateur utilisateur = utilisateurService.trouverParLoginAndPass(login,
+            // password);
             System.out.println(utilisateur);
             if (utilisateur.getRole() == RoleService.GetByLibelle("ADMIN")) {
                 try {
@@ -112,13 +112,14 @@ public class SalleController {
 
     // ::::::::::Recuperer salle par id
     @ApiOperation(value = "Recuperer salle par id")
-    @GetMapping("getSalle")
+    @PostMapping("getSalle")
     public ResponseEntity<Object> getSalle(@PathVariable("id") Long id,
-                                           @RequestParam(value = "user") String userVenant) {
+            @RequestParam(value = "user") String userVenant) {
         try {
             Utilisateur utilisateur = new JsonMapper().readValue(userVenant, Utilisateur.class);
 
-            Utilisateur user = utilisateurService.trouverParLoginAndPass(utilisateur.getLogin(), utilisateur.getPassword());
+            Utilisateur user = utilisateurService.trouverParLoginAndPass(utilisateur.getLogin(),
+                    utilisateur.getPassword());
             Salle salle = new Salle();
             Droit Rsalle = droitService.GetLibelle("Read Salle");
 
@@ -155,13 +156,14 @@ public class SalleController {
     }
 
     @ApiOperation(value = "Lien pour modifier une salle")
-    @PutMapping("/modifiersalle/{id}")
-    public ResponseEntity<Object> modifier( @PathVariable long id, @RequestParam(value = "user") String userVenant,
-                                            @RequestParam(value = "salle") String sal                       ) {
+    @PostMapping("/modifiersalle/{id}")
+    public ResponseEntity<Object> modifier(@PathVariable long id, @RequestParam(value = "user") String userVenant,
+            @RequestParam(value = "salle") String sal) {
         try {
             Utilisateur utilisateur = new JsonMapper().readValue(userVenant, Utilisateur.class);
             Salle salle = new JsonMapper().readValue(sal, Salle.class);
-            Utilisateur user = utilisateurService.trouverParLoginAndPass(utilisateur.getLogin(), utilisateur.getPassword());
+            Utilisateur user = utilisateurService.trouverParLoginAndPass(utilisateur.getLogin(),
+                    utilisateur.getPassword());
 
             Droit Usalle = droitService.GetLibelle("Update Salle");
 
@@ -195,12 +197,13 @@ public class SalleController {
     }
 
     @ApiOperation(value = "Lien pour suprimer une salle")
-    @DeleteMapping("/supprimersalle/{id}/")
-    public ResponseEntity<Object> supprimer(@PathVariable long id,@RequestParam(value = "user") String userVenant) {
+    @PostMapping("/supprimersalle/{id}/")
+    public ResponseEntity<Object> supprimer(@PathVariable long id, @RequestParam(value = "user") String userVenant) {
         try {
             Utilisateur utilisateur = new JsonMapper().readValue(userVenant, Utilisateur.class);
 
-            Utilisateur user = utilisateurService.trouverParLoginAndPass(utilisateur.getLogin(), utilisateur.getPassword());
+            Utilisateur user = utilisateurService.trouverParLoginAndPass(utilisateur.getLogin(),
+                    utilisateur.getPassword());
 
             Droit DSalle = droitService.GetLibelle("Delete Salle");
 
@@ -235,12 +238,13 @@ public class SalleController {
     }
 
     @ApiOperation(value = "Lien pour lier une salle à une activite")
-    @GetMapping("/attribuersalle/{idsalle}/{idactivite}")
+    @PostMapping("/attribuersalle/{idsalle}/{idactivite}")
     public ResponseEntity<Object> attribuerSalle(@PathVariable long idsalle, @PathVariable long idactivite,
-                                                 @RequestParam(value = "user") String userVenant) {
+            @RequestParam(value = "user") String userVenant) {
         try {
             Utilisateur utilisateur = new JsonMapper().readValue(userVenant, Utilisateur.class);
-            Utilisateur user = utilisateurService.trouverParLoginAndPass(utilisateur.getLogin(), utilisateur.getPassword());
+            Utilisateur user = utilisateurService.trouverParLoginAndPass(utilisateur.getLogin(),
+                    utilisateur.getPassword());
 
             Droit Ra = droitService.GetLibelle("Read Activite");
 
@@ -277,9 +281,9 @@ public class SalleController {
 
     // pour recuperer toutes les salles
     @ApiOperation(value = "Pour recuperer toutes les salles")
-    @GetMapping("/salle/all/{login}/{password}")
+    @PostMapping("/salle/all/{login}/{password}")
     public ResponseEntity<Object> getAll(@PathVariable("login") String login,
-                                         @PathVariable("password") String password) {
+            @PathVariable("password") String password) {
         try {
             Utilisateur users = utilisateurService.trouverParLoginAndPass(login, password);
             Droit Rs = droitService.GetLibelle("Read Salle");
@@ -300,9 +304,9 @@ public class SalleController {
     // ::::::::::::::Comparaison date pour salle disponible
     // ::::::::::::::::::::::::::::::
     @ApiOperation(value = "Comparaison date pour salle disponible")
-    @GetMapping("SalleDispo/{date1}/{date2}/{login}/{password}")
+    @PostMapping("SalleDispo/{date1}/{date2}/{login}/{password}")
     public ResponseEntity<Object> SalleDispoDate(@PathVariable String login, @PathVariable String password,
-                                                 @PathVariable Date date1, @PathVariable Date date2) {
+            @PathVariable Date date1, @PathVariable Date date2) {
         try {
             List<Activite> activites = activiteService.FindAllAct();
             List<Salle> salle = new ArrayList<>();
@@ -311,12 +315,12 @@ public class SalleController {
 
             if (users != null) {
                 if (users.getRole().getDroits().contains(RSalle)) {
-                    for(Activite act: activites){
+                    for (Activite act : activites) {
                         if (act.getDateDebut().before(date1) && act.getDateDebut().before(date2)
                                 && act.getDateFin().after(date1)
                                 && act.getDateFin().after(date2)
                                 || act.getDateDebut().after(date1) && act.getDateDebut().after(date2)
-                                && act.getDateFin().before(date1) && act.getDateFin().before(date2)) {
+                                        && act.getDateFin().before(date1) && act.getDateFin().before(date2)) {
                             // Historique
 
                             salle.add(act.getSalle());
@@ -330,7 +334,7 @@ public class SalleController {
                         historique.setDescription("" + users.getPrenom() + " " + users.getNom()
                                 + " a afficher  salle disponible dans l'intervalle " + date1 + " et " + date2);
                         historiqueService.Create(historique);
-                        return ResponseMessage.generateResponse("error", HttpStatus.OK,salle );
+                        return ResponseMessage.generateResponse("error", HttpStatus.OK, salle);
 
                     } catch (Exception e) {
                         // TODO: handle exception
@@ -350,14 +354,12 @@ public class SalleController {
         }
     }
 
-
-    //:::::::::::::::Salle disponible :::::::::::::::::::::::::::::::
+    // :::::::::::::::Salle disponible :::::::::::::::::::::::::::::::
     @ApiOperation(value = " salle disponible")
-    @GetMapping("SalleDisponible")
+    @PostMapping("/SalleDisponible")
     public ResponseEntity<Object> SalleDispoDate(@RequestParam(value = "user") String userVenant) {
         try {
             Utilisateur utilisateur = new JsonMapper().readValue(userVenant, Utilisateur.class);
-
 
             Date date = new Date();
             List<Activite> activites = activiteService.FindAllAct();
@@ -368,7 +370,7 @@ public class SalleController {
 
             if (users != null) {
                 if (users.getRole().getDroits().contains(RSalle)) {
-                    for(Activite act: activites){
+                    for (Activite act : activites) {
                         if (act.getDateDebut().after(date) && act.getDateFin().after(date)) {
                             // Historique
 
@@ -381,9 +383,9 @@ public class SalleController {
                         Date datehisto = new Date();
                         historique.setDatehistorique(datehisto);
                         historique.setDescription("" + users.getPrenom() + " " + users.getNom()
-                                + " a afficher  salle disponible  " + date );
+                                + " a afficher  salle disponible  " + date);
                         historiqueService.Create(historique);
-                        return ResponseMessage.generateResponse("error", HttpStatus.OK,salle );
+                        return ResponseMessage.generateResponse("error", HttpStatus.OK, salle);
 
                     } catch (Exception e) {
                         // TODO: handle exception
@@ -403,10 +405,65 @@ public class SalleController {
         }
     }
 
+    @ApiOperation(value = "l'ensemble des salles indisponibles")
+    @PostMapping("/SalleInDisponible")
+    public ResponseEntity<Object> InsalleDispo(@RequestParam(value = "user") String userVenant) {
+        try {
+            List<Activite> acts = activiteService.FindAllAct();
+            List<Salle> salle = new ArrayList<>();
+
+            Utilisateur utilisateurs = new JsonMapper().readValue(userVenant, Utilisateur.class);
+
+            Utilisateur users = utilisateurService.trouverParLoginAndPass(utilisateurs.getLogin(),
+                    utilisateurs.getPassword());
+
+            Date today = new Date();
+
+            Droit RSalle = droitService.GetLibelle("Read Salle");
+
+            if (users != null) {
+                if (users.getRole().getDroits().contains(RSalle)) {
+                    for (Activite act : acts) {
+                        if (act.getDateDebut().after(today) && act.getDateFin().before(today)
+                                || act.getDateDebut().before(today) && act.getDateFin().after(today)) {
+
+                            salle.add(act.getSalle());
+                            // Historique
+
+                            salle.add(act.getSalle());
+                        }
+                    }
+                    try {
+                        Historique historique = new Historique();
+                        Date datehisto = new Date();
+                        historique.setDatehistorique(datehisto);
+                        historique.setDescription("" + users.getPrenom() + " " + users.getNom()
+                                + " a afficher  salle disponible dans l'intervalle ");
+                        historiqueService.Create(historique);
+
+                        return ResponseMessage.generateResponse("ok", HttpStatus.OK, salle);
+
+                    } catch (Exception e) {
+                        // TODO: handle exception
+                        return ResponseMessage.generateResponse("iciiii", HttpStatus.OK, e.getMessage());
+
+                    }
+
+                } else {
+                    return ResponseMessage.generateResponse("error", HttpStatus.OK, "Non autorisé");
+                }
+            }
+
+            return ResponseMessage.generateResponse("error", HttpStatus.OK, activiteService.Termine());
+        } catch (Exception e) {
+            // TODO: handle exception
+            return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
+        }
+    }
 
     // :::::::::::::::::::::::Les salles indisponible
     @ApiOperation(value = "Les salles indisponible")
-    @GetMapping("/getSalles/indisponible/{login}/{password}")
+    @PostMapping("/getSalles/indisponible/{login}/{password}")
     public ResponseEntity<Object> getSallesIndispo(@RequestParam(value = "user") String userVenant) {
         try {
 

@@ -1,4 +1,4 @@
-ackage com.odc.Apiodkerp.Controller;
+package com.odc.Apiodkerp.Controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.odc.Apiodkerp.Models.*;
@@ -150,18 +150,17 @@ public class UtilisateurController {
     // Modification de l'activite
     @ApiOperation(value = "Modification de l'activite en fonction de l'id")
     @PostMapping("/update/activity/{id}")
-    public ResponseEntity<Object> update(@PathVariable Long id, @RequestParam(value = "activte") String activite, @RequestParam(value = "user") String userVenant,
+    public ResponseEntity<Object> update(@PathVariable Long id, @RequestParam(value = "activte") String activi,
+            @RequestParam(value = "user") String userVenant,
 
             @RequestParam(value = "file", required = false) MultipartFile file) {
         try {
             Utilisateur utilisateur = new JsonMapper().readValue(userVenant, Utilisateur.class);
 
-            Activite act = new JsonMapper().readValue(activite, Activite.class);
+            Activite act = new JsonMapper().readValue(activi, Activite.class);
             Utilisateur user = utilisateurService.trouverParLoginAndPass(utilisateur.getLogin(),
                     utilisateur.getPassword());
             Activite activite1 = activiteService.GetById(id);
-
-            Activite activite = new JsonMapper().readValue(act, Activite.class);
 
             if (file != null) {
                 act.setImage(SaveImage.save("activite", file, act.getNom()));
@@ -169,8 +168,6 @@ public class UtilisateurController {
 
             Utilisateur utilisateurs = new JsonMapper().readValue(userVenant, Utilisateur.class);
 
-            Utilisateur user = utilisateurService.trouverParLoginAndPass(utilisateurs.getLogin(),
-                    utilisateurs.getPassword());
             Droit updateActivite = droitService.GetLibelle("Update Actvite");
 
             if (user != null) {
@@ -259,26 +256,22 @@ public class UtilisateurController {
 
             @RequestParam(value = "user") String userVenant) {
 
-          try {
+        try {
             Activite activite = activiteService.GetById(idactivite);
             Utilisateur utilisateur = new JsonMapper().readValue(userVenant, Utilisateur.class);
 
-
-
-
-
             Utilisateur utilisateurs = new JsonMapper().readValue(userVenant, Utilisateur.class);
 
-            Utilisateur utilisateur = utilisateurService.trouverParLoginAndPass(utilisateurs.getLogin(),
+            Utilisateur user = utilisateurService.trouverParLoginAndPass(utilisateurs.getLogin(),
                     utilisateurs.getPassword());
 
             Droit deleteActivite = droitService.GetLibelle("Delete Actvite");
 
-            if (utilisateur != null) {
-                if (utilisateur.getRole().getDroits().contains(deleteActivite)) {
+            if (user != null) {
+                if (user.getRole().getDroits().contains(deleteActivite)) {
                     Role admin = RoleService.GetByLibelle("ADMIN");
 
-                    if (activite.getCreateur() == utilisateur || utilisateur.getRole() == admin) {
+                    if (activite.getCreateur() == user || user.getRole() == admin) {
 
                         try {
                             Historique historique = new Historique();
@@ -286,7 +279,7 @@ public class UtilisateurController {
                             historique.setDatehistorique(datehisto);
                             historique
                                     .setDescription(
-                                            "" + utilisateur.getPrenom() + " " + utilisateur.getNom()
+                                            "" + user.getPrenom() + " " + user.getNom()
                                                     + " a supprime l'activite "
                                                     + activite.getNom());
                             historiqueService.Create(historique);
@@ -473,11 +466,7 @@ public class UtilisateurController {
                     utilisateur.getPassword());
             // presence.setPostulantTire(postulantTire);
 
-
             Utilisateur utilisateurs = new JsonMapper().readValue(userVenant, Utilisateur.class);
-
-            Utilisateur user = utilisateurService.trouverParLoginAndPass(utilisateurs.getLogin(),
-                    utilisateurs.getPassword());
 
             Droit createpresence = droitService.GetLibelle("Create Presence");
 
@@ -518,7 +507,7 @@ public class UtilisateurController {
     public ResponseEntity<Object> Listepresence(@PathVariable long idactivite,
             @RequestParam(value = "user") String userVenant) {
 
-          try {
+        try {
             Activite act = activiteService.GetById(idactivite);
             Utilisateur utilisateur = new JsonMapper().readValue(userVenant, Utilisateur.class);
 
@@ -627,7 +616,6 @@ public class UtilisateurController {
             activite = new JsonMapper().readValue(acti, Activite.class);
             System.out.println(activite);
 
-
             if (file != null) {
                 try {
                     Etat etat = etatService.recupereParStatut("A VENIR");
@@ -674,7 +662,6 @@ public class UtilisateurController {
 
                         } else {
                             return ResponseMessage.generateResponse("error", HttpStatus.OK, "Non autorisé");
-
 
                         }
 
