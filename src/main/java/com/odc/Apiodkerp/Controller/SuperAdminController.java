@@ -76,236 +76,6 @@ public class SuperAdminController {
     @Autowired
     private TypeActiviteService typeActiviteService;
 
-    ////
-    @ApiOperation(value = "Lien pour créer une salle")
-    @PostMapping("/creersalle")
-    public ResponseEntity<Object> creerSalle(
-            @RequestParam(value = "salle") String sal,
-            @RequestParam(value = "user") String userVenant) {
-        try {
-            Utilisateur utilisateur = new JsonMapper().readValue(userVenant, Utilisateur.class);
-            Salle salle = new JsonMapper().readValue(sal, Salle.class);
-
-            Utilisateur user = utilisateurService.trouverParLoginAndPass(utilisateur.getLogin(),
-                    utilisateur.getPassword());
-
-            // Utilisateur utilisateur = utilisateurService.trouverParLoginAndPass(login,
-            // password);
-            System.out.println(utilisateur);
-            if (user.getRole() == RoleService.GetByLibelle("ADMIN")) {
-                try {
-                    Historique historique = new Historique();
-                    Date datehisto = new Date();
-                    historique.setDatehistorique(datehisto);
-                    historique.setDescription("" + user.getPrenom() + " " + user.getNom()
-                            + " a cree une salle du nom de " + salle.getLibelle());
-                    historiqueService.Create(historique);
-                } catch (Exception e) {
-                    // TODO: handle exception
-                    return ResponseMessage.generateResponse("iciiii", HttpStatus.OK, e.getMessage());
-
-                }
-                //salle.setUtilisateur(utilisateur);
-                return ResponseMessage.generateResponse("ok", HttpStatus.OK, salleService.create(salle));
-            } else {
-                return ResponseMessage.generateResponse("error", HttpStatus.OK, "non autorise");
-            }
-        } catch (Exception e) {
-            return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
-        }
-    }
-
-    // ::::::::::Recuperer salle par id
-    @ApiOperation(value = "Recuperer salle par id")
-    @PostMapping("getSalle")
-    public ResponseEntity<Object> getSalle(@PathVariable("id") Long id,
-            @RequestParam(value = "user") String userVenant) {
-        try {
-            Utilisateur utilisateur = new JsonMapper().readValue(userVenant, Utilisateur.class);
-
-            Utilisateur user = utilisateurService.trouverParLoginAndPass(utilisateur.getLogin(),
-                    utilisateur.getPassword());
-            Salle salle = new Salle();
-            Droit Rsalle = droitService.GetLibelle("Read Salle");
-
-            if (user != null) {
-                if (user.getRole().getDroits().contains(Rsalle)) {
-
-                    try {
-                        Historique historique = new Historique();
-                        Date datehisto = new Date();
-                        historique.setDatehistorique(datehisto);
-                        historique.setDescription("" + user.getPrenom() + " " + user.getNom()
-                                + " a recuperer une salle du nom de " + salle.getId());
-                        historiqueService.Create(historique);
-                    } catch (Exception e) {
-                        // TODO: handle exception
-                        return ResponseMessage.generateResponse("iciiii", HttpStatus.OK, e.getMessage());
-
-                    }
-                    return ResponseMessage.generateResponse("ok", HttpStatus.OK, salleService.read(id));
-
-                } else {
-                    return ResponseMessage.generateResponse("error", HttpStatus.OK, "Non autorisé");
-
-                }
-            } else {
-                return ResponseMessage.generateResponse("error", HttpStatus.OK, "Cet utilisateur n'existe pas !");
-
-            }
-        } catch (Exception e) {
-            // TODO: handle exception
-            return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
-
-        }
-    }
-
-    @ApiOperation(value = "Lien pour modifier une salle")
-    @PostMapping("/modifiersalle/{id}")
-    public ResponseEntity<Object> modifier(@PathVariable long id, @RequestParam(value = "user") String userVenant,
-            @RequestParam(value = "salle") String sal) {
-        try {
-            Utilisateur utilisateur = new JsonMapper().readValue(userVenant, Utilisateur.class);
-            Salle salle = new JsonMapper().readValue(sal, Salle.class);
-            Utilisateur user = utilisateurService.trouverParLoginAndPass(utilisateur.getLogin(),
-                    utilisateur.getPassword());
-
-            Droit Usalle = droitService.GetLibelle("Update Salle");
-
-            if (user != null) {
-                if (user.getRole().getDroits().contains(Usalle)) {
-
-                    try {
-                        Historique historique = new Historique();
-                        Date datehisto = new Date();
-                        historique.setDatehistorique(datehisto);
-                        historique.setDescription("" + user.getPrenom() + " " + user.getNom()
-                                + " a modifier une salle du nom de " + salleService.getByIdsalle(id).getLibelle());
-                        historiqueService.Create(historique);
-                    } catch (Exception e) {
-                        // TODO: handle exception
-                        return ResponseMessage.generateResponse("iciiii", HttpStatus.OK, e.getMessage());
-
-                    }
-                    return ResponseMessage.generateResponse("ok", HttpStatus.OK, salleService.update(salle, id));
-                } else {
-                    return ResponseMessage.generateResponse("error", HttpStatus.OK, "Non autorisé");
-
-                }
-            } else {
-                return ResponseMessage.generateResponse("error", HttpStatus.OK, "Cet utilisateur n'existe pas !");
-
-            }
-        } catch (Exception e) {
-            return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
-        }
-    }
-
-    @ApiOperation(value = "Lien pour suprimer une salle")
-    @PostMapping("/supprimersalle/{id}/")
-    public ResponseEntity<Object> supprimer(@PathVariable long id, @RequestParam(value = "user") String userVenant) {
-        try {
-            Utilisateur utilisateur = new JsonMapper().readValue(userVenant, Utilisateur.class);
-
-            Utilisateur user = utilisateurService.trouverParLoginAndPass(utilisateur.getLogin(),
-                    utilisateur.getPassword());
-
-            Droit DSalle = droitService.GetLibelle("Delete Salle");
-
-            if (user != null) {
-                if (user.getRole().getDroits().contains(DSalle)) {
-
-                    try {
-                        Historique historique = new Historique();
-                        Date datehisto = new Date();
-                        historique.setDatehistorique(datehisto);
-                        historique.setDescription(
-                                "" + user.getPrenom() + " " + user.getNom() + " a supprime une salle du nom de ");
-                        historiqueService.Create(historique);
-                    } catch (Exception e) {
-                        // TODO: handle exception
-                        return ResponseMessage.generateResponse("iciiii", HttpStatus.OK, e.getMessage());
-
-                    }
-                    salleService.delete(id);
-                    return ResponseMessage.generateResponse("ok", HttpStatus.OK, "Salle supprimer avec succès !");
-                } else {
-                    return ResponseMessage.generateResponse("error", HttpStatus.OK, "Non autorisé");
-
-                }
-            } else {
-                return ResponseMessage.generateResponse("error", HttpStatus.OK, "Cet utilisateur n'existe pas !");
-
-            }
-        } catch (Exception e) {
-            return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
-        }
-    }
-
-    @ApiOperation(value = "Lien pour lier une salle à une activite")
-    @PostMapping("/attribuersalle/{idsalle}/{idactivite}")
-    public ResponseEntity<Object> attribuerSalle(@PathVariable long idsalle, @PathVariable long idactivite,
-            @RequestParam(value = "user") String userVenant) {
-        try {
-            Utilisateur utilisateur = new JsonMapper().readValue(userVenant, Utilisateur.class);
-            Utilisateur user = utilisateurService.trouverParLoginAndPass(utilisateur.getLogin(),
-                    utilisateur.getPassword());
-
-            Droit Ra = droitService.GetLibelle("Read Activite");
-
-            if (user != null) {
-                if (user.getRole().getDroits().contains(Ra)) {
-
-                    try {
-                        Historique historique = new Historique();
-                        Date datehisto = new Date();
-                        historique.setDatehistorique(datehisto);
-                        historique.setDescription("" + user.getPrenom() + " " + user.getNom()
-                                + " a attribue  une salle du nom de  " + salleService.getByIdsalle(idsalle)
-                                + " à l'activte " + activiteService.GetById(idactivite));
-                        historiqueService.Create(historique);
-                    } catch (Exception e) {
-                        // TODO: handle exception
-                        return ResponseMessage.generateResponse("iciiii", HttpStatus.OK, e.getMessage());
-
-                    }
-                    return ResponseMessage.generateResponse("ok", HttpStatus.OK,
-                            activiteService.attribuerSalle(idsalle, idactivite));
-                } else {
-                    return ResponseMessage.generateResponse("error", HttpStatus.OK, "Non autorisé");
-
-                }
-            } else {
-                return ResponseMessage.generateResponse("error", HttpStatus.OK, "Cet utilisateur n'existe pas !");
-
-            }
-        } catch (Exception e) {
-            return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
-        }
-    }
-
-    // pour recuperer toutes les salles
-    @ApiOperation(value = "Pour recuperer toutes les salles")
-    @PostMapping("/salle/all/{login}/{password}")
-    public ResponseEntity<Object> getAll(@PathVariable("login") String login,
-            @PathVariable("password") String password) {
-        try {
-            Utilisateur users = utilisateurService.trouverParLoginAndPass(login, password);
-            Droit Rs = droitService.GetLibelle("Read Salle");
-
-            if (users.getRole().getDroits().contains(Rs)) {
-                return ResponseMessage.generateResponse("ok", HttpStatus.OK,
-                        salleService.getAll());
-            } else {
-                return ResponseMessage.generateResponse("error", HttpStatus.OK, "Non autorisé");
-            }
-
-        } catch (Exception e) {
-            // TODO: handle exception
-            return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
-        }
-    }
-
     // ---------------------------CRUD
     // USER-------------------------------------------------------------->
     @ApiOperation(value = "Creer un utilisateur.")
@@ -792,151 +562,6 @@ public class SuperAdminController {
     }
 
     // ---------------------------CRUD
-    // ENTITE-------------------------------------------------------------->
-    @ApiOperation(value = "Creer un entite.")
-    @PostMapping("/create/entite")
-    public ResponseEntity<Object> createEntite(@RequestParam(value = "entite") String enti,
-            @RequestParam(value = "file", required = true) MultipartFile file,
-            @RequestParam(value = "user") String userVenant) {
-        try {
-
-            Entite entite = new JsonMapper().readValue(enti, Entite.class);
-            if (file != null) {
-                entite.setImage(SaveImage.save("activite", file, entite.getLibelleentite()));
-            }
-            Utilisateur utilisateur = new JsonMapper().readValue(userVenant, Utilisateur.class);
-
-            Utilisateur user = utilisateurService.trouverParLoginAndPass(utilisateur.getLogin(),
-                    utilisateur.getPassword());
-
-            Droit createrole = droitService.GetLibelle("Create Entite");
-
-            if (user.getRole().getDroits().contains(createrole)) {
-                try {
-                    Historique historique = new Historique();
-                    Date datehisto = new Date();
-                    historique.setDatehistorique(datehisto);
-                    historique
-                            .setDescription(
-                                    "" + user.getPrenom() + " " + user.getNom() + " a cree  une nouvelle entite ");
-                    historiqueService.Create(historique);
-                    Entite NewEntite = entiteService.Create(entite);
-                    return ResponseMessage.generateResponse("ok", HttpStatus.OK, NewEntite);
-                } catch (Exception e) {
-                    // TODO: handle exception
-                    return ResponseMessage.generateResponse("iciiii", HttpStatus.OK, e.getMessage());
-
-                }
-
-            } else {
-                return ResponseMessage.generateResponse("error", HttpStatus.OK, "non autorise");
-            }
-
-        } catch (Exception e) {
-            // TODO: handle exception
-            return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
-        }
-
-    }
-
-    @ApiOperation(value = "Modifier un entite")
-    @PostMapping("/update/entite/{id}")
-    public ResponseEntity<Object> updateEntite(@PathVariable("id") Long id, @RequestParam(value = "entite") String enti,
-            @RequestParam(value = "user") String userVenant) {
-        try {
-            Entite entite = new JsonMapper().readValue(enti, Entite.class);
-            Utilisateur utilisateur = new JsonMapper().readValue(userVenant, Utilisateur.class);
-
-            Utilisateur user = utilisateurService.trouverParLoginAndPass(utilisateur.getLogin(),
-                    utilisateur.getPassword());
-            Droit updatentite = droitService.GetLibelle("Update Entite");
-
-            if (user.getRole().getDroits().contains(updatentite)) {
-                Entite UpdateEntite = entiteService.Update(id, entite);
-                return ResponseMessage.generateResponse("ok", HttpStatus.OK, UpdateEntite);
-            } else {
-                return ResponseMessage.generateResponse("error", HttpStatus.OK, "non autorise");
-            }
-
-        } catch (Exception e) {
-            // TODO: handle exception
-            return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
-        }
-
-    }
-
-    @ApiOperation(value = "Supprimer un entite")
-    @PostMapping("/delete/entite/{id}")
-    public ResponseEntity<Object> DeleteEntite(@PathVariable Long id, @RequestParam(value = "user") String userVenant) {
-        try {
-            Utilisateur utilisateur = new JsonMapper().readValue(userVenant, Utilisateur.class);
-            Utilisateur user = utilisateurService.trouverParLoginAndPass(utilisateur.getLogin(),
-                    utilisateur.getPassword());
-            Droit deleterole = droitService.GetLibelle("Delete Entite");
-
-            if (user.getRole().getDroits().contains(deleterole)) {
-                entiteService.Delete(id);
-                return ResponseMessage.generateResponse("ok", HttpStatus.OK, null);
-            } else {
-                return ResponseMessage.generateResponse("error", HttpStatus.OK, "non autorise");
-            }
-
-        } catch (Exception e) {
-            // TODO: handle exception
-            return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
-        }
-
-    }
-
-    @ApiOperation(value = "Affichager tout les entités")
-    @PostMapping("/getAll/entite")
-    public ResponseEntity<Object> GetAllEntite(@RequestParam(value = "user") String userVenant) {
-        try {
-            Utilisateur utilisateur = new JsonMapper().readValue(userVenant, Utilisateur.class);
-
-            Utilisateur user = utilisateurService.trouverParLoginAndPass(utilisateur.getLogin(),
-                    utilisateur.getPassword());
-            Droit getentite = droitService.GetLibelle("Read Entite");
-
-            if (user.getRole().getDroits().contains(getentite)) {
-                List<Entite> getAllEntite = entiteService.GetAll();
-                return ResponseMessage.generateResponse("ok", HttpStatus.OK, getAllEntite);
-            } else {
-                return ResponseMessage.generateResponse("error", HttpStatus.OK, "non autorise");
-            }
-
-        } catch (Exception e) {
-            // TODO: handle exception
-            return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
-        }
-
-    }
-
-    @ApiOperation(value = "Affichager une entite")
-    @PostMapping("/get/entite/{id}")
-    public ResponseEntity<Object> GetIdEntite(@RequestParam("id") Long id,
-            @RequestParam(value = "user") String userVenant) {
-        // @RequestParam(value = "entite") String enti
-        try {
-            Utilisateur utilisateur = new JsonMapper().readValue(userVenant, Utilisateur.class);
-
-            Utilisateur user = utilisateurService.trouverParLoginAndPass(utilisateur.getLogin(),
-                    utilisateur.getPassword());
-            Droit getentite = droitService.GetLibelle("Read Entite");
-
-            if (user.getRole().getDroits().contains(getentite)) {
-                Entite idEntite = entiteService.GetById(id);
-                return ResponseMessage.generateResponse("ok", HttpStatus.OK, idEntite);
-
-            } else {
-                return ResponseMessage.generateResponse("error", HttpStatus.OK, "non autorise");
-            }
-
-        } catch (Exception e) {
-            // TODO: handle exception
-            return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
-        }
-    }
 
     /// active un utilisateur
     @ApiOperation(value = "Active un utilisateur")
@@ -1026,153 +651,6 @@ public class SuperAdminController {
         }
     }
 
-    ///////// type activite
-    @ApiOperation(value = "methode pour la création d'une type d' activité.")
-    @PostMapping("/Typeactivite/creer")
-    public ResponseEntity<Object> CreateTypeActivite(@RequestParam(value = "tyepact") String typeActivite,
-            @RequestParam(value = "user") String userVenant) {
-        try {
-            Utilisateur utilisateur = new JsonMapper().readValue(userVenant, Utilisateur.class);
-            TypeActivite typeActivit = new JsonMapper().readValue(typeActivite, TypeActivite.class);
-            Utilisateur admin = utilisateurService.trouverParLoginAndPass(utilisateur.getLogin(),
-                    utilisateur.getPassword());
-            Droit createtype = droitService.GetLibelle("Create TypeActivite");
-
-            if (admin.getRole().getDroits().contains(createtype)) {
-                if (typeActiviteService.getByLibelle(typeActivit.getLibelle()) == null) {
-
-                    try {
-                        Historique historique = new Historique();
-                        Date datehisto = new Date();
-                        historique.setDatehistorique(datehisto);
-                        historique.setDescription("" + admin.getPrenom() + " " + admin.getNom()
-                                + " a crée un type d'activite  de libelle " + typeActivit.getLibelle());
-                        historiqueService.Create(historique);
-                    } catch (Exception e) {
-                        // TODO: handle exception
-                        return ResponseMessage.generateResponse("iciiii", HttpStatus.OK, e.getMessage());
-
-                    }
-                    return ResponseMessage.generateResponse("ok", HttpStatus.OK,
-                            typeActiviteService.creer(typeActivit));
-                } else {
-                    return ResponseMessage.generateResponse("error", HttpStatus.OK, "libelle existant");
-                }
-            } else {
-                return ResponseMessage.generateResponse("error", HttpStatus.OK, "non autorise");
-            }
-
-        } catch (Exception e) {
-            // TODO: handle exception
-            return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
-        }
-    }
-
-    @ApiOperation(value = "methode pour la Suppression d'une type d' activité.")
-    @PostMapping("/Typeactivite/{id}")
-    public ResponseEntity<Object> SupprimerTypeActivite(@PathVariable long id,
-            @RequestParam(value = "user") String userVenant, @RequestParam(value = "tyepact") String typeActivite) {
-        try {
-            Utilisateur utilisateur = new JsonMapper().readValue(userVenant, Utilisateur.class);
-            TypeActivite typeActivit = new JsonMapper().readValue(typeActivite, TypeActivite.class);
-            // historique
-            Utilisateur users = utilisateurService.trouverParLoginAndPass(utilisateur.getLogin(),
-                    utilisateur.getPassword());
-            Droit deletetetype = droitService.GetLibelle("Delete TypeActivite");
-
-            if (users.getRole().getDroits().contains(deletetetype)) {
-                try {
-                    Historique historique = new Historique();
-                    Date datehisto = new Date();
-                    historique.setDatehistorique(datehisto);
-                    historique.setDescription("" + users.getPrenom() + " " + users.getNom()
-                            + " a supprimé un type d'activte du nom de " + typeActivit.getLibelle());
-                    historiqueService.Create(historique);
-
-                    return ResponseMessage.generateResponse("ok", HttpStatus.OK, typeActiviteService.delete(id));
-
-                } catch (Exception e) {
-                    // TODO: handle exception
-                    return ResponseMessage.generateResponse("iciiii", HttpStatus.OK, e.getMessage());
-
-                }
-
-            } else {
-                return ResponseMessage.generateResponse("error", HttpStatus.OK, "non autorise");
-            }
-
-        } catch (Exception e) {
-            // TODO: handle exception
-            return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
-        }
-
-    }
-
-    @ApiOperation(value = "methode pour la modification d'une type d' activité.")
-    @PostMapping("/Typeactivite/modification")
-    public ResponseEntity<Object> ModifTypeActivite(@RequestParam(value = "tyepact") String typeActivite,
-            @RequestParam(value = "user") String userVenant) {
-        try {
-            Utilisateur utilisateur = new JsonMapper().readValue(userVenant, Utilisateur.class);
-            TypeActivite typeActivit = new JsonMapper().readValue(typeActivite, TypeActivite.class);
-
-            Utilisateur users = utilisateurService.trouverParLoginAndPass(utilisateur.getLogin(),
-                    utilisateur.getPassword());
-
-            Droit readtetype = droitService.GetLibelle("Read TypeActivite");
-
-            if (users.getRole().getDroits().contains(readtetype)) {
-                try {
-                    Historique historique = new Historique();
-                    Date datehisto = new Date();
-                    historique.setDatehistorique(datehisto);
-                    historique
-                            .setDescription(
-                                    "" + users.getPrenom() + " " + users.getNom() + " a modifié un type d'activte");
-                    historiqueService.Create(historique);
-                } catch (Exception e) {
-                    // TODO: handle exception
-                    return ResponseMessage.generateResponse("iciiii", HttpStatus.OK, e.getMessage());
-
-                }
-                return ResponseMessage.generateResponse("ok", HttpStatus.OK, typeActiviteService.update(typeActivit));
-
-            } else {
-                return ResponseMessage.generateResponse("error", HttpStatus.OK, "non autorise");
-            }
-
-        } catch (Exception e) {
-            // TODO: handle exception
-            return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
-        }
-
-    }
-
-    @ApiOperation(value = "Recuperer l'ensemble des types acticite")
-    @PostMapping("Typeactivite/getall")
-    public ResponseEntity<Object> TypaActiviteAll(@RequestParam(value = "user") String userVenant) {
-        try {
-            Utilisateur utilisateur = new JsonMapper().readValue(userVenant, Utilisateur.class);
-
-            Utilisateur users = utilisateurService.trouverParLoginAndPass(utilisateur.getLogin(),
-                    utilisateur.getPassword());
-
-            Droit readtetype = droitService.GetLibelle("Read TypeActivite");
-
-            if (users.getRole().getDroits().contains(readtetype)) {
-                return ResponseMessage.generateResponse("ok", HttpStatus.OK, typeActiviteService.getAll());
-
-            } else {
-                return ResponseMessage.generateResponse("error", HttpStatus.OK, "non autorise");
-            }
-
-        } catch (Exception e) {
-            // TODO: handle exception
-            return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
-
-        }
-    }
-
     // :::::::::::::::total postulant ::::::::::::::::::::
 
     @ApiOperation(value = "Total postulant")
@@ -1213,51 +691,6 @@ public class SuperAdminController {
     }
 
     // tOTAL PERSONNEL ACTIVE
-
-    // :::::::::::::::::::::::::::::::::::total entite
-    // ::::::::::::::::::::::::::::::::::::::
-    @ApiOperation(value = "totalentite")
-    @PostMapping("/totalentite")
-    public ResponseEntity<Object> TotalEntite(@RequestParam(value = "user") String userVenant) {
-        try {
-            Utilisateur utilisateur = new JsonMapper().readValue(userVenant, Utilisateur.class);
-
-            Utilisateur users = utilisateurService.trouverParLoginAndPass(utilisateur.getLogin(),
-                    utilisateur.getPassword());
-            Droit Rentite = droitService.GetLibelle("Lire une entitee");
-
-            if (users != null) {
-                if (users.getRole().getDroits().contains(Rentite)) {
-
-                    try {
-
-                        Historique historique = new Historique();
-                        Date datehisto = new Date();
-                        historique.setDatehistorique(datehisto);
-                        historique.setDescription(
-                                "" + users.getPrenom() + " " + users.getNom() + " a affiche toutes les entites ");
-                        historiqueService.Create(historique);
-                    } catch (Exception e) {
-                        // TODO: handle exception
-                        return ResponseMessage.generateResponse("iciiii", HttpStatus.OK, e.getMessage());
-
-                    }
-                    return ResponseMessage.generateResponse("ok", HttpStatus.OK, utilisateurService.TotalEntite());
-
-                } else {
-                    return ResponseMessage.generateResponse("error", HttpStatus.OK, "Non autorisé");
-
-                }
-            } else {
-                return ResponseMessage.generateResponse("error", HttpStatus.OK, "Cet utilisateur n'existe pas !");
-
-            }
-        } catch (Exception e) {
-            // TODO: handle exception
-            return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
-        }
-
-    }
 
     //// :::::::::::::::::::::::::::::::l'ensemble des activites en cour, à venir ,
     //// termine
@@ -1355,11 +788,15 @@ public class SuperAdminController {
 
     // activités termines
     @ApiOperation(value = "activites/termines")
-    @PostMapping("activites/termines/{login}/{password}")
-    public ResponseEntity<Object> ActivitesTermines(@PathVariable String login, @PathVariable String password) {
+    @PostMapping("activites/termines")
+    public ResponseEntity<Object> ActivitesTermines(@RequestParam(value = "user") String userVenant) {
 
         try {
-            Utilisateur users = utilisateurService.trouverParLoginAndPass(login, password);
+
+            Utilisateur utilisateur = new JsonMapper().readValue(userVenant, Utilisateur.class);
+
+            Utilisateur users = utilisateurService.trouverParLoginAndPass(utilisateur.getLogin(),
+                    utilisateur.getPassword());
             Droit Ractivite = droitService.GetLibelle("Read Actvite");
 
             if (users != null) {
@@ -1602,119 +1039,6 @@ public class SuperAdminController {
         }
     }
 
-    // ::::::::::::::Comparaison date pour salle disponible
-    // ::::::::::::::::::::::::::::::
-    @ApiOperation(value = "Comparaison date pour salle disponible")
-    @PostMapping("SalleDispo/{date1}/{date2}")
-    public ResponseEntity<Object> SalleDispoDate(@PathVariable Date date1, @PathVariable Date date2,
-            @RequestParam(value = "user") String userVenant) {
-        try {
-            List<Activite> acts = activiteService.FindAllAct();
-            List<Salle> salle = new ArrayList<>();
-            Utilisateur utilisateurs = new JsonMapper().readValue(userVenant, Utilisateur.class);
-
-            Utilisateur users = utilisateurService.trouverParLoginAndPass(utilisateurs.getLogin(),
-                    utilisateurs.getPassword());
-            Droit RSalle = droitService.GetLibelle("Read Salle");
-
-            if (users != null) {
-                if (users.getRole().getDroits().contains(RSalle)) {
-                    for (Activite act : acts) {
-                        if (act.getDateDebut().before(date1) && act.getDateDebut().before(date2)
-                                && act.getDateFin().after(date1)
-                                && act.getDateFin().after(date2)
-                                || act.getDateDebut().after(date1) && act.getDateDebut().after(date2)
-                                        && act.getDateFin().before(date1) && act.getDateFin().before(date2)) {
-
-                            salle.add(act.getSalle());
-
-                        }
-                    }
-                    // Historique
-                    try {
-                        Historique historique = new Historique();
-                        Date datehisto = new Date();
-                        historique.setDatehistorique(datehisto);
-                        historique.setDescription("" + users.getPrenom() + " " + users.getNom()
-                                + " a afficher  salle disponible dans l'intervalle " + date1 + " et " + date2);
-                        historiqueService.Create(historique);
-
-                        return ResponseMessage.generateResponse("ok", HttpStatus.OK, salle);
-
-                    } catch (Exception e) {
-                        // TODO: handle exception
-                        return ResponseMessage.generateResponse("iciiii", HttpStatus.OK, e.getMessage());
-
-                    }
-
-                } else {
-                    return ResponseMessage.generateResponse("error", HttpStatus.OK, "Non autorisé");
-                }
-            }
-
-        } catch (Exception e) {
-            // TODO: handle exception
-            return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
-        }
-        return null;
-    }
-
-    @ApiOperation(value = "l'ensemble des salles disponibles")
-    @PostMapping("/SalleDisponible")
-    public ResponseEntity<Object> salleDispo(@RequestParam(value = "user") String userVenant) {
-        try {
-            List<Activite> acts = activiteService.FindAllAct();
-            List<Salle> salle = new ArrayList<>();
-
-            Utilisateur utilisateurs = new JsonMapper().readValue(userVenant, Utilisateur.class);
-
-            Utilisateur users = utilisateurService.trouverParLoginAndPass(utilisateurs.getLogin(),
-                    utilisateurs.getPassword());
-
-            Date today = new Date();
-
-            Droit RSalle = droitService.GetLibelle("Read Salle");
-
-            if (users != null) {
-                if (users.getRole().getDroits().contains(RSalle)) {
-                    for (Activite act : acts) {
-                        if (act.getDateDebut().after(today) && act.getDateFin().after(today)
-                                || act.getDateDebut().before(today) && act.getDateFin().before(today)) {
-
-                            salle.add(act.getSalle());
-                            // Historique
-
-                            salle.add(act.getSalle());
-                        }
-                    }
-                    try {
-                        Historique historique = new Historique();
-                        Date datehisto = new Date();
-                        historique.setDatehistorique(datehisto);
-                        historique.setDescription("" + users.getPrenom() + " " + users.getNom()
-                                + " a afficher  salle disponible dans l'intervalle ");
-                        historiqueService.Create(historique);
-
-                        return ResponseMessage.generateResponse("ok", HttpStatus.OK, salle);
-
-                    } catch (Exception e) {
-                        // TODO: handle exception
-                        return ResponseMessage.generateResponse("iciiii", HttpStatus.OK, e.getMessage());
-
-                    }
-
-                } else {
-                    return ResponseMessage.generateResponse("error", HttpStatus.OK, "Non autorisé");
-                }
-            }
-
-            return ResponseMessage.generateResponse("error", HttpStatus.OK, activiteService.Termine());
-        } catch (Exception e) {
-            // TODO: handle exception
-            return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
-        }
-    }
-
     @ApiOperation(value = "l'ensemble des salles indisponibles")
     @PostMapping("/SalleInDisponible")
     public ResponseEntity<Object> InsalleDispo(@RequestParam(value = "user") String userVenant) {
@@ -1928,53 +1252,19 @@ public class SuperAdminController {
         }
     }
 
-    // :::::::::::::::::::::::Les salles indisponible
-    @ApiOperation(value = "Les salles indisponible")
-    @PostMapping("/getSalles/indisponible/{login}/{password}")
-    public ResponseEntity<Object> getSallesIndispo(@PathVariable("login") String login,
-            @PathVariable("password") String password) {
-        try {
-
-            Utilisateur user = utilisateurService.trouverParLoginAndPass(login, password);
-            Droit Rsalle = droitService.GetLibelle("Read Salle");
-
-            if (user.getRole().getDroits().contains(Rsalle)) {
-                try {
-                    Historique historique = new Historique();
-                    Date datehisto = new Date();
-                    historique.setDatehistorique(datehisto);
-                    historique.setDescription(
-                            "" + user.getPrenom() + " " + user.getNom() + " a afficher  les salles indisponible");
-                    historiqueService.Create(historique);
-
-                    return ResponseMessage.generateResponse("ok", HttpStatus.OK,
-                            salleService.ParEtat(false));
-                } catch (Exception e) {
-                    // TODO: handle exception
-                    return ResponseMessage.generateResponse("iciiii", HttpStatus.OK, e.getMessage());
-
-                }
-
-            } else {
-                return ResponseMessage.generateResponse("error", HttpStatus.OK, "Non autorisé");
-            }
-
-        } catch (Exception e) {
-            // TODO: handle exception
-            return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
-
-        }
-    }
-
     // :::::::::::::::::::::::::::::::::::::::Apprenants ou Participant
     // :::::::::::::::::::::::::::::::
     @ApiOperation(value = "Ajouter AppouParticipant")
-    @PostMapping("/aoup/{login}/{password}")
-    public ResponseEntity<Object> ajouterAouP(@RequestBody AouP aoup, @PathVariable("login") String login,
-            @PathVariable("password") String password) {
+    @PostMapping("/aoup")
+    public ResponseEntity<Object> ajouterAouP(@RequestParam(value = "aoup") String aoup,
+            @RequestParam(value = "user") String userVenant) {
         try {
 
-            Utilisateur user = utilisateurService.trouverParLoginAndPass(login, password);
+            Utilisateur utilisateur = new JsonMapper().readValue(userVenant, Utilisateur.class);
+
+            AouP aou = new JsonMapper().readValue(aoup, AouP.class);
+            Utilisateur user = utilisateurService.trouverParLoginAndPass(utilisateur.getLogin(),
+                    utilisateur.getPassword());
 
             Droit Caoup = droitService.GetLibelle("Create AouP");
 
@@ -1989,7 +1279,7 @@ public class SuperAdminController {
                     historiqueService.Create(historique);
 
                     return ResponseMessage.generateResponse("ok", HttpStatus.OK,
-                            aouPService.Create(aoup));
+                            aouPService.Create(aou));
                 } catch (Exception e) {
                     // TODO: handle exception
                     return ResponseMessage.generateResponse("iciiii", HttpStatus.OK, e.getMessage());
@@ -2010,14 +1300,18 @@ public class SuperAdminController {
     // ::::::::::::::::::::::::::::::::::: Modifier AouP
     // ::::::::::::::::::::::::::::::::::::
     @ApiOperation(value = "Modifier AppouParticipant")
-    @PostMapping("/aoup/modifier/{id}/{login}/{password}")
-    public ResponseEntity<Object> ModifierAouP(@PathVariable long id, @PathVariable("login") String login,
-            @PathVariable("password") String password,
-            @RequestBody AouP aoup) {
+    @PostMapping("/aoup/modifier/{id}")
+    public ResponseEntity<Object> ModifierAouP(@PathVariable long id, @RequestParam(value = "aoup") String aoup,
+            @RequestParam(value = "user") String userVenant) {
+
         try {
             AouP aouP = aouPService.GetById(id);
-            Utilisateur user = utilisateurService.trouverParLoginAndPass(login, password);
 
+            Utilisateur utilisateur = new JsonMapper().readValue(userVenant, Utilisateur.class);
+
+            AouP aou = new JsonMapper().readValue(aoup, AouP.class);
+            Utilisateur user = utilisateurService.trouverParLoginAndPass(utilisateur.getLogin(),
+                    utilisateur.getPassword());
             Droit Uaoup = droitService.GetLibelle("Update AouP");
 
             if (user.getRole().getDroits().contains(Uaoup)) {
@@ -2030,7 +1324,7 @@ public class SuperAdminController {
                     historiqueService.Create(historique);
 
                     return ResponseMessage.generateResponse("ok", HttpStatus.OK,
-                            aouPService.Update(id, aoup));
+                            aouPService.Update(id, aou));
                 } catch (Exception e) {
                     // TODO: handle exception
                     return ResponseMessage.generateResponse("iciiii", HttpStatus.OK, e.getMessage());
@@ -2051,12 +1345,16 @@ public class SuperAdminController {
     // ::::::::::::::::::::::::::::::::::::
 
     @ApiOperation(value = "Supprimer AouP")
-    @PostMapping("/aoup/supprimer/{id}/{login}/{password}")
-    public ResponseEntity<Object> SupprimerAouP(@PathVariable long id, @PathVariable("login") String login,
-            @PathVariable("password") String password) {
+    @PostMapping("/aoup/supprimer/{id}")
+    public ResponseEntity<Object> SupprimerAouP(@PathVariable long id,
+            @RequestParam(value = "user") String userVenant) {
+
         try {
             AouP aouP = aouPService.GetById(id);
-            Utilisateur user = utilisateurService.trouverParLoginAndPass(login, password);
+            Utilisateur utilisateur = new JsonMapper().readValue(userVenant, Utilisateur.class);
+
+            Utilisateur user = utilisateurService.trouverParLoginAndPass(utilisateur.getLogin(),
+                    utilisateur.getPassword());
             Droit Daoup = droitService.GetLibelle("Delete AouP");
 
             if (user.getRole().getDroits().contains(Daoup)) {
@@ -2091,12 +1389,15 @@ public class SuperAdminController {
     // ::::::::::::::::::::::::::::::::::::
 
     @ApiOperation(value = "Apprenant ou participant par id")
-    @PostMapping("/aoup/GetId/{id}/{login}/{password}")
-    public ResponseEntity<Object> GetAouPparId(@PathVariable long id, @PathVariable("login") String login,
-            @PathVariable("password") String password) {
+    @PostMapping("/aoup/GetId/{id}")
+    public ResponseEntity<Object> GetAouPparId(@PathVariable long id, @RequestParam(value = "user") String userVenant) {
+
         try {
             // Histroique
-            Utilisateur user = utilisateurService.trouverParLoginAndPass(login, password);
+            Utilisateur utilisateur = new JsonMapper().readValue(userVenant, Utilisateur.class);
+
+            Utilisateur user = utilisateurService.trouverParLoginAndPass(utilisateur.getLogin(),
+                    utilisateur.getPassword());
 
             Droit Raoup = droitService.GetLibelle("Read AouP");
 
@@ -2126,182 +1427,18 @@ public class SuperAdminController {
         }
     }
 
-    // :::::::::::::::::::::::::::::::::::::::DESIGNATION
-    // :::::::::::::::::::::::::::::::
-    @ApiOperation(value = "Ajouter Designation")
-    @PostMapping("/designation/{login}/{password}")
-    public ResponseEntity<Object> ajouterDesignation(@RequestBody Designation designation,
-            @PathVariable("login") String login,
-            @PathVariable("password") String password) {
-        try {
-
-            // Histroique
-            Utilisateur user = utilisateurService.trouverParLoginAndPass(login, password);
-
-            Droit Cdesignation = droitService.GetLibelle("Create Designation");
-
-            if (user.getRole().getDroits().contains(Cdesignation)) {
-                try {
-                    Historique historique = new Historique();
-                    Date datehisto = new Date();
-                    historique.setDatehistorique(datehisto);
-                    historique.setDescription("" + user.getPrenom() + " " + user.getNom() + " a ajouté la desigantion "
-                            + designation.getLibelle());
-                    historiqueService.Create(historique);
-
-                    return ResponseMessage.generateResponse("ok", HttpStatus.OK,
-                            designationService.Create(designation));
-                } catch (Exception e) {
-                    // TODO: handle exception
-                    return ResponseMessage.generateResponse("iciiii", HttpStatus.OK, e.getMessage());
-
-                }
-
-            } else {
-                return ResponseMessage.generateResponse("error", HttpStatus.OK, "Non autorisé");
-            }
-
-        } catch (Exception e) {
-            // TODO: handle exception
-            return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
-
-        }
-    }
-
-    // ::::::::::::::::::::::::::::::::::: Modifier Designation
-    // ::::::::::::::::::::::::::::::::::::
-    @ApiOperation(value = "Modifier Desi")
-    @PostMapping("/designation/modifier/{id}/{login}/{password}")
-    public ResponseEntity<Object> ModifierDesignation(@PathVariable long id, @PathVariable("login") String login,
-            @PathVariable("password") String password,
-            @RequestBody Designation designation) {
-        try {
-
-            // Historique
-            Utilisateur user = utilisateurService.trouverParLoginAndPass(login, password);
-
-            Droit Cdesignation = droitService.GetLibelle("Create Designation");
-
-            if (user.getRole().getDroits().contains(Cdesignation)) {
-                try {
-                    Historique historique = new Historique();
-                    Date datehisto = new Date();
-                    historique.setDatehistorique(datehisto);
-                    historique.setDescription("" + user.getPrenom() + " " + user.getNom() + " a modifié la desigantion "
-                            + designation.getLibelle());
-                    historiqueService.Create(historique);
-
-                    return ResponseMessage.generateResponse("ok", HttpStatus.OK,
-                            designationService.Update(id, designation));
-                } catch (Exception e) {
-                    // TODO: handle exception
-                    return ResponseMessage.generateResponse("iciiii", HttpStatus.OK, e.getMessage());
-
-                }
-
-            } else {
-                return ResponseMessage.generateResponse("error", HttpStatus.OK, "Non autorisé");
-            }
-
-        } catch (Exception e) {
-            // TODO: handle exception
-            return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
-
-        }
-    }
-    // ::::::::::::::::::::::::::::::::::: Supprimer AouP
-    // ::::::::::::::::::::::::::::::::::::
-
-    @ApiOperation(value = "Supprimer Designation")
-    @PostMapping("/designation/supprimer/{id}/{login}/{password}")
-    public ResponseEntity<Object> SupprimerDesignation(@PathVariable long id, @PathVariable("login") String login,
-            @PathVariable("password") String password) {
-        try {
-            Designation designation = designationService.GetById(id);
-
-            // Histroique
-            Utilisateur user = utilisateurService.trouverParLoginAndPass(login, password);
-
-            Droit Ddesignation = droitService.GetLibelle("Delete Designation");
-
-            if (user.getRole().getDroits().contains(Ddesignation)) {
-                try {
-                    Historique historique = new Historique();
-                    Date datehisto = new Date();
-                    historique.setDatehistorique(datehisto);
-                    historique
-                            .setDescription("" + user.getPrenom() + " " + user.getNom() + " a supprimé la desigantion "
-                                    + designation.getLibelle());
-                    historiqueService.Create(historique);
-
-                    return ResponseMessage.generateResponse("ok", HttpStatus.OK,
-                            designationService.Delete(id));
-                } catch (Exception e) {
-                    // TODO: handle exception
-                    return ResponseMessage.generateResponse("iciiii", HttpStatus.OK, e.getMessage());
-
-                }
-
-            } else {
-                return ResponseMessage.generateResponse("error", HttpStatus.OK, "Non autorisé");
-            }
-
-        } catch (Exception e) {
-            // TODO: handle exception
-            return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
-
-        }
-    }
-    // ::::::::::::::::::::::::::::::::::: Get pzr id AouP
-    // ::::::::::::::::::::::::::::::::::::
-
-    @ApiOperation(value = "Designation par id")
-    @PostMapping("/Designation/GetId/{id}/{login}/{password}")
-    public ResponseEntity<Object> GetDesigantionparId(@PathVariable long id, @PathVariable("login") String login,
-            @PathVariable("password") String password) {
-        try {
-
-            // Histroique
-            Utilisateur user = utilisateurService.trouverParLoginAndPass(login, password);
-
-            Droit Gdesignation = droitService.GetLibelle("Read Designation");
-
-            if (user.getRole().getDroits().contains(Gdesignation)) {
-                try {
-                    Historique historique = new Historique();
-                    Date datehisto = new Date();
-                    historique.setDatehistorique(datehisto);
-                    historique.setDescription(
-                            "" + user.getPrenom() + " " + user.getNom() + " a affiché une designation ");
-                    historiqueService.Create(historique);
-
-                    return ResponseMessage.generateResponse("ok", HttpStatus.OK,
-                            designationService.GetById(id));
-                } catch (Exception e) {
-                    // TODO: handle exception
-                    return ResponseMessage.generateResponse("iciiii", HttpStatus.OK, e.getMessage());
-
-                }
-
-            } else {
-                return ResponseMessage.generateResponse("error", HttpStatus.OK, "Non autorisé");
-            }
-
-        } catch (Exception e) {
-            // TODO: handle exception
-            return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
-
-        }
-    }
-
     // :::::::::::::::::::::::::::::::::::::::Droit :::::::::::::::::::::::::::::::
     @ApiOperation(value = "Ajouter Droit")
     @PostMapping("/droit/new/{login}/{password}")
-    public ResponseEntity<Object> ajouterDroit(@RequestBody Droit droit, @PathVariable("login") String login,
-            @PathVariable("password") String password) {
+    public ResponseEntity<Object> ajouterDroit(@RequestParam(value = "droit") String droit,
+            @RequestParam(value = "user") String userVenant) {
         try {
             // Histroique
-            Utilisateur user = utilisateurService.trouverParLoginAndPass(login, password);
+            Utilisateur utilisateur = new JsonMapper().readValue(userVenant, Utilisateur.class);
+
+            Droit drt = new JsonMapper().readValue(droit, Droit.class);
+            Utilisateur user = utilisateurService.trouverParLoginAndPass(utilisateur.getLogin(),
+                    utilisateur.getPassword());
 
             Droit Cdroit = droitService.GetLibelle("Create Role");
 
@@ -2311,10 +1448,10 @@ public class SuperAdminController {
                     Date datehisto = new Date();
                     historique.setDatehistorique(datehisto);
                     historique.setDescription(
-                            "" + user.getPrenom() + " " + user.getNom() + " a ajouté le droit " + droit.getLibelle());
+                            "" + user.getPrenom() + " " + user.getNom() + " a ajouté le droit " + drt.getLibelle());
                     historiqueService.Create(historique);
                     return ResponseMessage.generateResponse("ok", HttpStatus.OK,
-                            droitService.Create(droit));
+                            droitService.Create(drt));
                 } catch (Exception e) {
                     // TODO: handle exception
                     return ResponseMessage.generateResponse("iciiii", HttpStatus.OK, e.getMessage());
@@ -2446,112 +1583,6 @@ public class SuperAdminController {
             }
             return ResponseMessage.generateResponse("ok", HttpStatus.OK,
                     droitService.GetLibelle(libelle));
-        } catch (Exception e) {
-            // TODO: handle exception
-            return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
-
-        }
-    }
-
-    // :::::::::::::::::::::::::::::::::::::::FormationEmail
-    // :::::::::::::::::::::::::::::::
-    @ApiOperation(value = "Ajouter FormatEmail")
-    @PostMapping("/formaemail/{login}/{password}")
-    public ResponseEntity<Object> ajouterFormatEmail(@RequestBody FormatEmail formatEmail,
-            @PathVariable("login") String login,
-            @PathVariable("password") String password) {
-        try {
-            Utilisateur user = utilisateurService.trouverParLoginAndPass(login, password);
-
-            Droit Cformat = droitService.GetLibelle("Create FormatEmail");
-
-            if (user.getRole().getDroits().contains(Cformat)) {
-                return ResponseMessage.generateResponse("ok", HttpStatus.OK,
-                        formatEmailService.Create(formatEmail));
-            } else {
-                return ResponseMessage.generateResponse("error", HttpStatus.OK, "Non autorisé");
-            }
-
-        } catch (Exception e) {
-            // TODO: handle exception
-            return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
-
-        }
-    }
-
-    // ::::::::::::::::::::::::::::::::::: Modifier FormatEmail
-    // ::::::::::::::::::::::::::::::::::::
-    @ApiOperation(value = "Modifier formatEmail")
-    @PostMapping("/formatemail/modifier/{id}/{login}/{password}")
-    public ResponseEntity<Object> ModifierFormatEmail(@PathVariable long id, @RequestBody FormatEmail formatEmail,
-            @PathVariable("login") String login,
-            @PathVariable("password") String password) {
-        try {
-
-            Utilisateur user = utilisateurService.trouverParLoginAndPass(login, password);
-
-            Droit Uformat = droitService.GetLibelle("Update FormatEmail");
-
-            if (user.getRole().getDroits().contains(Uformat)) {
-                return ResponseMessage.generateResponse("ok", HttpStatus.OK,
-                        formatEmailService.Update(id, formatEmail));
-            } else {
-                return ResponseMessage.generateResponse("error", HttpStatus.OK, "Non autorisé");
-            }
-
-        } catch (Exception e) {
-            // TODO: handle exception
-            return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
-
-        }
-    }
-    // ::::::::::::::::::::::::::::::::::: Supprimer FormatEmail
-    // ::::::::::::::::::::::::::::::::::::
-
-    @ApiOperation(value = "Supprimer Format Email")
-    @PostMapping("/formatemail/supprimer/{id}")
-    public ResponseEntity<Object> SupprimerFormatEmail(@PathVariable long id, @PathVariable("login") String login,
-            @PathVariable("password") String password) {
-        try {
-
-            Utilisateur user = utilisateurService.trouverParLoginAndPass(login, password);
-
-            Droit Dformat = droitService.GetLibelle("Delete FormatEmail");
-
-            if (user.getRole().getDroits().contains(Dformat)) {
-                return ResponseMessage.generateResponse("ok", HttpStatus.OK,
-                        formatEmailService.Delete(id));
-            } else {
-                return ResponseMessage.generateResponse("error", HttpStatus.OK, "Non autorisé");
-
-            }
-
-        } catch (Exception e) {
-            // TODO: handle exception
-            return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
-
-        }
-    }
-    // ::::::::::::::::::::::::::::::::::: Get par id FormatEmail
-    // ::::::::::::::::::::::::::::::::::::
-
-    @ApiOperation(value = "Format email par id")
-    @PostMapping("/formatEmail/GetId/{id}/{login}/{password}")
-    public ResponseEntity<Object> GetFormatEMailparId(@PathVariable long id, @PathVariable("login") String login,
-            @PathVariable("password") String password) {
-        try {
-            Utilisateur user = utilisateurService.trouverParLoginAndPass(login, password);
-
-            Droit Gformat = droitService.GetLibelle("Read FormatEmail");
-
-            if (user.getRole().getDroits().contains(Gformat)) {
-                return ResponseMessage.generateResponse("ok", HttpStatus.OK,
-                        formatEmailService.GetById(id));
-            } else {
-                return ResponseMessage.generateResponse("error", HttpStatus.OK, "Non autorisé");
-
-            }
-
         } catch (Exception e) {
             // TODO: handle exception
             return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());

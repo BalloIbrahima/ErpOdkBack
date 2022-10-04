@@ -569,7 +569,7 @@ public class ResponsableController {
 
     // Supprimer Postulant tiré par son id
     @ApiOperation(value = "Supprimer participant par son id")
-    @DeleteMapping("/delete/{id}")
+    @PostMapping("/delete/{id}")
     public ResponseEntity<Object> deletePostulantTire(@PathVariable long id,
             @RequestParam(value = "user") String userVenant) {
         try {
