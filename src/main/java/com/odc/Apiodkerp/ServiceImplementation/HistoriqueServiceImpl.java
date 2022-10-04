@@ -13,6 +13,7 @@ import java.util.List;
 public class HistoriqueServiceImpl implements HistoriqueService {
     @Autowired
     HistoriqueRepo historiqueRepo;
+
     @Override
     public Historique Create(Historique historique) {
         return historiqueRepo.save(historique);
@@ -39,6 +40,5 @@ public class HistoriqueServiceImpl implements HistoriqueService {
     public Historique GetById(long id) {
         return historiqueRepo.findById(id).get();
     }
-
 
 }

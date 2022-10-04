@@ -21,14 +21,13 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 public class Postulant extends Personne {
     private String numero;
-    private Date DateNaissance;
+    private String DateNaissance;
 
     @ManyToMany
     @JoinTable(name = "ListepostulantPostulant", joinColumns = {
             @JoinColumn(name = "id_postulant") }, inverseJoinColumns = {
                     @JoinColumn(name = "id_liste_postulant") })
     List<ListePostulant> listePostulants = new ArrayList<>();
-
 
 
     @JsonIgnore

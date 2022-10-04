@@ -14,6 +14,7 @@ import io.swagger.annotations.ApiOperation;
 
 import com.odc.Apiodkerp.Models.PostulantTire;
 import com.odc.Apiodkerp.Models.Role;
+import com.odc.Apiodkerp.Models.Tache;
 import com.odc.Apiodkerp.Repository.PostulantTrieRepository;
 import com.odc.Apiodkerp.Service.PostulantTrieService;
 
@@ -31,6 +32,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.odc.Apiodkerp.Configuration.ExcelGenerator;
 import com.odc.Apiodkerp.Configuration.ExcelImport;
 
@@ -131,13 +133,17 @@ public class ResponsableController {
     // ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
     // la methode pour importer une liste de postulant
     @ApiOperation(value = "la methode pour importer une liste de postulant.")
-    @PostMapping("/listpostulant/new/{libelleliste}/{login}/{password}")
+    @PostMapping("/listpostulant/new/{libelleliste}")
     public ResponseEntity<Object> ImportListePostulant(@PathVariable("libelleliste") String libelleliste,
-            @PathVariable("login") String login, @PathVariable("password") String password,
+            @RequestParam(value = "user") String userVenant,
             @RequestParam("file") MultipartFile file) {
 
         try {
-            Utilisateur Simpleutilisateur = utilisateurService.trouverParLoginAndPass(login, password);
+
+            Utilisateur utilisateur = new JsonMapper().readValue(userVenant, Utilisateur.class);
+
+            Utilisateur Simpleutilisateur = utilisateurService.trouverParLoginAndPass(utilisateur.getLogin(),
+                    utilisateur.getPassword());
 
             Droit createListe = droitService.GetLibelle("Create ListePostulant");
 
@@ -212,15 +218,17 @@ public class ResponsableController {
     // :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
     // la methode pour importer une liste de participant
     @ApiOperation(value = "la methode pour importer une liste de participant.")
-    @PostMapping("/listparticipant/new/{idactivite}/{login}/{password}")
+    @PostMapping("/listparticipant/new/{idactivite}")
     public ResponseEntity<Object> ImportListeParticipant(@RequestParam("file") MultipartFile file,
-            @PathVariable("idactivite") Long idactivite, @PathVariable("login") String login,
-            @PathVariable("password") String password) {
+            @PathVariable("idactivite") Long idactivite, @RequestParam(value = "user") String userVenant) {
 
         try {
             Activite activite = activiteService.GetById(idactivite);
 
-            Utilisateur Simpleutilisateur = utilisateurService.trouverParLoginAndPass(login, password);
+            Utilisateur utilisateur = new JsonMapper().readValue(userVenant, Utilisateur.class);
+
+            Utilisateur Simpleutilisateur = utilisateurService.trouverParLoginAndPass(utilisateur.getLogin(),
+                    utilisateur.getPassword());
 
             Droit createAoup = droitService.GetLibelle("Create AouP");
 
@@ -297,14 +305,18 @@ public class ResponsableController {
 
     // methode pour exporter des postulants tirés
     @ApiOperation(value = "methode pour exporter des postulants tirés.")
-    @PostMapping("/export/{idtirage}/{login}/{password}")
+    @PostMapping("/export/{idtirage}")
     public ResponseEntity<Object> exporterTirage(@PathVariable("idtirage") Long idtirage,
-            @PathVariable("login") String login, @PathVariable("password") String password,
+            @RequestParam(value = "user") String userVenant,
             HttpServletResponse response) {
         response.setContentType("application/octet-stream");
 
         try {
-            Utilisateur Simpleutilisateur = utilisateurService.trouverParLoginAndPass(login, password);
+            Utilisateur utilisateur = new JsonMapper().readValue(userVenant, Utilisateur.class);
+
+            Utilisateur Simpleutilisateur = utilisateurService.trouverParLoginAndPass(utilisateur.getLogin(),
+                    utilisateur.getPassword());
+
             Tirage tirage = tirageService.getById(idtirage);
             List<Postulant> postulantsListe = new ArrayList<>();
 
@@ -347,65 +359,74 @@ public class ResponsableController {
 
     // la methode pour effectuer un tirage
     @ApiOperation(value = "La methode Pour effectuer un tirage.")
-    @PostMapping("/tirage/new/{libelleliste}/{idactivite}/{nombre}/{libelleTirage}/{login}/{password}")
+    @PostMapping("/tirage/new/{libelleliste}/{idactivite}/{nombre}/{libelleTirage}")
     public ResponseEntity<Object> DoTirage(@PathVariable("libelleliste") String libelleliste,
             @PathVariable("nombre") Long nombre, @PathVariable("idactivite") Long idactivite,
-            @PathVariable("login") String login, @PathVariable("password") String password,
+            @RequestParam(value = "user") String userVenant,
             @PathVariable("libelleTirage") String libelleTirage) {
 
-        Tirage exist = tirageService.findByLibelle(libelleTirage);
-        if (exist == null) {
-            Droit createTirage = droitService.GetLibelle("Create Tirage");
+        try {
+            Tirage exist = tirageService.findByLibelle(libelleTirage);
+            if (exist == null) {
+                Droit createTirage = droitService.GetLibelle("Create Tirage");
 
+                Utilisateur utilisateurs = new JsonMapper().readValue(userVenant, Utilisateur.class);
 
-            Utilisateur utilisateur = utilisateurService.trouverParLoginAndPass(login, password);
-            Activite activite = activiteService.GetById(idactivite);
+                Utilisateur utilisateur = utilisateurService.trouverParLoginAndPass(utilisateurs.getLogin(),
+                        utilisateurs.getPassword());
 
-            ListePostulant listePostulant = listePostulantService.retrouveParLibelle(libelleliste);
-            Tirage tirage = new Tirage();
-            tirage.setLibelle(libelleTirage);
-            tirage.setListepostulant(listePostulant);
-            tirage.setActivite(activite);
-            tirage.setUtilisateur(utilisateur);
+                Activite activite = activiteService.GetById(idactivite);
 
-            System.out.println(libelleTirage);
-            System.out.println(nombre);
-            System.out.println(libelleliste);
+                ListePostulant listePostulant = listePostulantService.retrouveParLibelle(libelleliste);
+                Tirage tirage = new Tirage();
+                tirage.setLibelle(libelleTirage);
+                tirage.setListepostulant(listePostulant);
+                tirage.setActivite(activite);
+                tirage.setUtilisateur(utilisateur);
 
-            System.out.println(listePostulant.getPostulants());
+                System.out.println(libelleTirage);
+                System.out.println(nombre);
+                System.out.println(libelleliste);
 
-            List<Postulant> postulanttires = tirageService.creer(tirage, listePostulant.getPostulants(), nombre);
+                System.out.println(listePostulant.getPostulants());
 
-            if (utilisateur != null) {
-                if (utilisateur.getRole().getDroits().contains(createTirage)) {
-                    try {
+                List<Postulant> postulanttires = tirageService.creer(tirage, listePostulant.getPostulants(), nombre);
 
-                        //
-                        Historique historique = new Historique();
-                        historique.setDatehistorique(new Date());
-                        historique.setDescription(utilisateur.getPrenom() + " " + utilisateur.getNom()
-                                + " a a effectuer un tirage.");
-                        historiqueService.Create(historique);
+                if (utilisateur != null) {
+                    if (utilisateur.getRole().getDroits().contains(createTirage)) {
+                        try {
 
-                        //
-                        return ResponseMessage.generateResponse("ok", HttpStatus.OK, postulanttires);
+                            //
+                            Historique historique = new Historique();
+                            historique.setDatehistorique(new Date());
+                            historique.setDescription(utilisateur.getPrenom() + " " + utilisateur.getNom()
+                                    + " a a effectuer un tirage.");
+                            historiqueService.Create(historique);
 
-                    } catch (Exception e) {
-                        // TODO: handle exception
-                        return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
+                            //
+                            return ResponseMessage.generateResponse("ok", HttpStatus.OK, postulanttires);
+
+                        } catch (Exception e) {
+                            // TODO: handle exception
+                            return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
+
+                        }
+                    } else {
+                        return ResponseMessage.generateResponse("error", HttpStatus.OK, "Non autorise !");
 
                     }
                 } else {
-                    return ResponseMessage.generateResponse("error", HttpStatus.OK, "Non autorise !");
+                    return ResponseMessage.generateResponse("error", HttpStatus.OK, "Cet utilisateur n'existe pas !");
 
                 }
+
             } else {
-                return ResponseMessage.generateResponse("error", HttpStatus.OK, "Cet utilisateur n'existe pas !");
-
+                return ResponseMessage.generateResponse("error", HttpStatus.OK, "Ce tirage existe deja !");
             }
+        } catch (Exception e) {
+            // TODO: handle exception
+            return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
 
-        } else {
-            return ResponseMessage.generateResponse("error", HttpStatus.OK, "Ce tirage existe deja !");
         }
 
     }
@@ -414,14 +435,17 @@ public class ResponsableController {
     // Tire---------------------------------------//
     // Creation de participant
     @ApiOperation(value = "Ajouter participant")
-    @PostMapping("/create/participant/{idactivite}/{login}/{password}")
+    @PostMapping("/create/participant/{idactivite}")
     public ResponseEntity<Object> createPostulantTire(@RequestBody Postulant participant,
-            @PathVariable("idactivite") Long idactivite, @PathVariable("login") String login,
-            @PathVariable("password") String password) {
+            @PathVariable("idactivite") Long idactivite, @RequestParam(value = "user") String userVenant) {
 
         try {
             Activite activite = activiteService.GetById(idactivite);
-            Utilisateur utilisateur = utilisateurService.trouverParLoginAndPass(login, password);
+
+            Utilisateur utilisateurs = new JsonMapper().readValue(userVenant, Utilisateur.class);
+
+            Utilisateur utilisateur = utilisateurService.trouverParLoginAndPass(utilisateurs.getLogin(),
+                    utilisateurs.getPassword());
             Droit addAouP = droitService.GetLibelle("Create AouP");
 
             if (utilisateur != null) {
@@ -464,13 +488,16 @@ public class ResponsableController {
 
     // Afficher de postulant tiré
     @ApiOperation(value = "Afficher participant par son id")
-    @GetMapping("/read/{id}/{login}/{password}")
+    @PostMapping("/read/{id}")
     public ResponseEntity<Object> readPostulantTire(@PathVariable long id,
-            @PathVariable("login") String login, @PathVariable("password") String password) {
+            @RequestParam(value = "user") String userVenant) {
         try {
             Droit readAouP = droitService.GetLibelle("Read AouP");
 
-            Utilisateur utilisateur = utilisateurService.trouverParLoginAndPass(login, password);
+            Utilisateur utilisateurs = new JsonMapper().readValue(userVenant, Utilisateur.class);
+
+            Utilisateur utilisateur = utilisateurService.trouverParLoginAndPass(utilisateurs.getLogin(),
+                    utilisateurs.getPassword());
             PostulantTire post = postulantTrieService.read(id);
 
             if (utilisateur != null) {
@@ -501,12 +528,15 @@ public class ResponsableController {
 
     // Modifier de postulant tiré par son id
     @ApiOperation(value = "modifier participant par son id")
-    @PutMapping("/update/{id}/{login}/{password}")
+    @PostMapping("/update/{id}")
     public ResponseEntity<Object> updatePostulantTire(@RequestBody Postulant postulant, @PathVariable long id,
-            @PathVariable("login") String login, @PathVariable("password") String password) {
+            @RequestParam(value = "user") String userVenant) {
         try {
             Postulant post = postulantService.update(id, postulant);
-            Utilisateur utilisateur = utilisateurService.trouverParLoginAndPass(login, password);
+            Utilisateur utilisateurs = new JsonMapper().readValue(userVenant, Utilisateur.class);
+
+            Utilisateur utilisateur = utilisateurService.trouverParLoginAndPass(utilisateurs.getLogin(),
+                    utilisateurs.getPassword());
             Droit updateAouP = droitService.GetLibelle("Update AouP");
 
             if (utilisateur != null) {
@@ -539,13 +569,15 @@ public class ResponsableController {
 
     // Supprimer Postulant tiré par son id
     @ApiOperation(value = "Supprimer participant par son id")
-    @DeleteMapping("/delete/{id}/{login}/{password}")
+    @PostMapping("/delete/{id}")
     public ResponseEntity<Object> deletePostulantTire(@PathVariable long id,
-            @PathVariable("login") String login, @PathVariable("password") String password) {
+            @RequestParam(value = "user") String userVenant) {
         try {
             postulantTrieService.delete(id);
-            Utilisateur utilisateur = utilisateurService.trouverParLoginAndPass(login, password);
+            Utilisateur utilisateurs = new JsonMapper().readValue(userVenant, Utilisateur.class);
 
+            Utilisateur utilisateur = utilisateurService.trouverParLoginAndPass(utilisateurs.getLogin(),
+                    utilisateurs.getPassword());
             Droit deleteAouP = droitService.GetLibelle("Delete AouP");
 
             if (utilisateur != null) {
@@ -577,11 +609,13 @@ public class ResponsableController {
 
     // Afficher tous les postulants
     @ApiOperation(value = "Afficher tous les participants")
-    @GetMapping("/All/{login}/{password}")
-    public ResponseEntity<Object> getAllPostulantTire(@PathVariable("login") String login,
-            @PathVariable("password") String password) {
+    @PostMapping("/participants/All")
+    public ResponseEntity<Object> getAllPostulantTire(@RequestParam(value = "user") String userVenant) {
         try {
-            Utilisateur utilisateur = utilisateurService.trouverParLoginAndPass(login, password);
+            Utilisateur utilisateurs = new JsonMapper().readValue(userVenant, Utilisateur.class);
+
+            Utilisateur utilisateur = utilisateurService.trouverParLoginAndPass(utilisateurs.getLogin(),
+                    utilisateurs.getPassword());
             Droit readAouP = droitService.GetLibelle("Read AouP");
 
             if (utilisateur != null) {
@@ -590,12 +624,12 @@ public class ResponsableController {
                     Historique historique = new Historique();
                     historique.setDatehistorique(new Date());
                     historique.setDescription(utilisateur.getPrenom() + " " + utilisateur.getNom()
-                            + " a affiché l'ensemble des participants.");
+                            + " a affiche l'ensemble des participants.");
 
                     historiqueService.Create(historique);
 
                     //
-                    return ResponseMessage.generateResponse("ok", HttpStatus.OK, postulantTrieService.getAll());
+                    return ResponseMessage.generateResponse("ok", HttpStatus.OK, aouPService.GetAll());
 
                 } else {
                     return ResponseMessage.generateResponse("error", HttpStatus.OK, "Non autorise !");
@@ -615,5 +649,263 @@ public class ResponsableController {
     }
 
     // :::::::::::::::total postulant: :::::::::::::::::::::
+
+    // ::::::::::::::::Tache::::::::::::::::::::::::::::::::::::::::::
+    // creer une tache
+    @ApiOperation(value = "creer une tache")
+    @PostMapping("/tache/creer")
+    public ResponseEntity<Object> createTache(@RequestParam(value = "user") String userVenant,
+            @RequestParam(value = "tache") String tach) {
+        try {
+            Utilisateur utilisateurs = new JsonMapper().readValue(userVenant, Utilisateur.class);
+
+            Utilisateur utilisateur = utilisateurService.trouverParLoginAndPass(utilisateurs.getLogin(),
+                    utilisateurs.getPassword());
+            Tache tache = new JsonMapper().readValue(tach, Tache.class);
+            Droit Ctache = droitService.GetLibelle("Create tache");
+
+            if (utilisateur != null) {
+                if (utilisateur.getRole().getDroits().contains(Ctache)) {
+                    //
+                    Historique historique = new Historique();
+                    historique.setDatehistorique(new Date());
+                    historique.setDescription(utilisateur.getPrenom() + " " + utilisateur.getNom()
+                            + " a cree une tache");
+
+                    historiqueService.Create(historique);
+
+                    //
+                    return ResponseMessage.generateResponse("ok", HttpStatus.OK, tacheService.creer(tache));
+
+                } else {
+                    return ResponseMessage.generateResponse("error", HttpStatus.OK, "Non autorise !");
+
+                }
+            } else {
+                return ResponseMessage.generateResponse("error", HttpStatus.OK, "Cet utilisateur n'existe pas !");
+
+            }
+
+        } catch (Exception e) {
+            // TODO: handle exception
+            return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
+
+        }
+
+    }
+
+    // Modifier une tache
+    @ApiOperation(value = "creer une tache")
+    @PostMapping("/tache/update/")
+    public ResponseEntity<Object> updateTache(@RequestParam(value = "user") String userVenant,
+            @RequestParam(value = "tache") String tach) {
+        try {
+
+            Tache tache = new JsonMapper().readValue(tach, Tache.class);
+
+            Utilisateur utilisateurs = new JsonMapper().readValue(userVenant, Utilisateur.class);
+
+            Utilisateur utilisateur = utilisateurService.trouverParLoginAndPass(utilisateurs.getLogin(),
+                    utilisateurs.getPassword());
+            Droit Crtache = droitService.GetLibelle("Ctache");
+
+            if (utilisateur != null) {
+                if (utilisateur.getRole().getDroits().contains(Crtache)) {
+                    //
+                    Historique historique = new Historique();
+                    historique.setDatehistorique(new Date());
+                    historique.setDescription(utilisateur.getPrenom() + " " + utilisateur.getNom()
+                            + " a cree une tache");
+
+                    historiqueService.Create(historique);
+
+                    //
+                    return ResponseMessage.generateResponse("ok", HttpStatus.OK, tacheService.creer(tache));
+
+                } else {
+                    return ResponseMessage.generateResponse("error", HttpStatus.OK, "Non autorise !");
+
+                }
+            } else {
+                return ResponseMessage.generateResponse("error", HttpStatus.OK, "Cet utilisateur n'existe pas !");
+
+            }
+
+        } catch (Exception e) {
+            // TODO: handle exception
+            return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
+
+        }
+
+    }
+
+    // ::::::::::::Afficher tous les taches
+    @ApiOperation(value = "Afficher tous les taches")
+    @PostMapping("/taches/All")
+    public ResponseEntity<Object> getAllTache(@RequestParam(value = "user") String userVenant) {
+        try {
+            Utilisateur utilisateurs = new JsonMapper().readValue(userVenant, Utilisateur.class);
+
+            Utilisateur utilisateur = utilisateurService.trouverParLoginAndPass(utilisateurs.getLogin(),
+                    utilisateurs.getPassword());
+            Droit readTache = droitService.GetLibelle("Read Tache");
+
+            if (utilisateur != null) {
+                if (utilisateur.getRole().getDroits().contains(readTache)) {
+                    //
+                    Historique historique = new Historique();
+                    historique.setDatehistorique(new Date());
+                    historique.setDescription(utilisateur.getPrenom() + " " + utilisateur.getNom()
+                            + " a affiche l'ensemble des taches.");
+
+                    historiqueService.Create(historique);
+
+                    //
+                    return ResponseMessage.generateResponse("ok", HttpStatus.OK, tacheService.getAll());
+
+                } else {
+                    return ResponseMessage.generateResponse("error", HttpStatus.OK, "Non autorise !");
+
+                }
+            } else {
+                return ResponseMessage.generateResponse("error", HttpStatus.OK, "Cet utilisateur n'existe pas !");
+
+            }
+
+        } catch (Exception e) {
+            // TODO: handle exception
+            return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
+
+        }
+
+    }
+
+    // ::::::::::::Afficher tous les taches en fonction d'une d'une activite
+    @ApiOperation(value = "Afficher tous les taches")
+    @PostMapping("/taches/{idactivite}")
+    public ResponseEntity<Object> getAllTacheForActivite(@RequestParam(value = "user") String userVenant,
+            @PathVariable("idactivite") Long idactivite) {
+        try {
+            Activite activite = activiteService.GetById(idactivite);
+            Utilisateur utilisateurs = new JsonMapper().readValue(userVenant, Utilisateur.class);
+
+            Utilisateur utilisateur = utilisateurService.trouverParLoginAndPass(utilisateurs.getLogin(),
+                    utilisateurs.getPassword());
+            Droit readTache = droitService.GetLibelle("Read Tache");
+
+            if (utilisateur != null) {
+                if (utilisateur.getRole().getDroits().contains(readTache)) {
+                    //
+                    Historique historique = new Historique();
+                    historique.setDatehistorique(new Date());
+                    historique.setDescription(utilisateur.getPrenom() + " " + utilisateur.getNom()
+                            + " a affiche l'ensemble des taches.");
+
+                    historiqueService.Create(historique);
+
+                    //
+                    return ResponseMessage.generateResponse("ok", HttpStatus.OK, activite.getTache());
+
+                } else {
+                    return ResponseMessage.generateResponse("error", HttpStatus.OK, "Non autorise !");
+
+                }
+            } else {
+                return ResponseMessage.generateResponse("error", HttpStatus.OK, "Cet utilisateur n'existe pas !");
+
+            }
+
+        } catch (Exception e) {
+            // TODO: handle exception
+            return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
+
+        }
+
+    }
+
+    @ApiOperation(value = "Suprimer une tache")
+    @PostMapping("/taches/{idtache}")
+    public ResponseEntity<Object> deleteTache(@RequestParam(value = "user") String userVenant,
+            @PathVariable("idtache") Long idtache) {
+        try {
+
+            Utilisateur utilisateurs = new JsonMapper().readValue(userVenant, Utilisateur.class);
+
+            Utilisateur utilisateur = utilisateurService.trouverParLoginAndPass(utilisateurs.getLogin(),
+                    utilisateurs.getPassword());
+            Droit deleteTache = droitService.GetLibelle("Delete Tache");
+
+            if (utilisateur != null) {
+                if (utilisateur.getRole().getDroits().contains(deleteTache)) {
+                    //
+                    tacheService.delete(idtache);
+                    Historique historique = new Historique();
+                    historique.setDatehistorique(new Date());
+                    historique.setDescription(utilisateur.getPrenom() + " " + utilisateur.getNom()
+                            + " a affiche l'ensemble des taches.");
+
+                    historiqueService.Create(historique);
+
+                    //
+                    return ResponseMessage.generateResponse("ok", HttpStatus.OK, "Supression effectuer avec succes");
+
+                } else {
+                    return ResponseMessage.generateResponse("error", HttpStatus.OK, "Non autorise !");
+
+                }
+            } else {
+                return ResponseMessage.generateResponse("error", HttpStatus.OK, "Cet utilisateur n'existe pas !");
+
+            }
+
+        } catch (Exception e) {
+            // TODO: handle exception
+            return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
+
+        }
+
+    }
+
+    // ::::::::::::::::::liste de postulant
+    @ApiOperation(value = "Suprimer une tache")
+    @PostMapping("/liste/all")
+    public ResponseEntity<Object> ToutesListe(@RequestParam(value = "user") String userVenant) {
+        try {
+
+            Utilisateur utilisateurs = new JsonMapper().readValue(userVenant, Utilisateur.class);
+
+            Utilisateur utilisateur = utilisateurService.trouverParLoginAndPass(utilisateurs.getLogin(),
+                    utilisateurs.getPassword());
+            Droit deleteTache = droitService.GetLibelle("Delete Tache");
+
+            if (utilisateur != null) {
+                if (utilisateur.getRole().getDroits().contains(deleteTache)) {
+                    //
+                    Historique historique = new Historique();
+                    historique.setDatehistorique(new Date());
+                    historique.setDescription(utilisateur.getPrenom() + " " + utilisateur.getNom()
+                            + " a affiche l'ensemble des taches.");
+
+                    historiqueService.Create(historique);
+
+                    //
+                    return ResponseMessage.generateResponse("ok", HttpStatus.OK, "Supression effectuer avec succes");
+
+                } else {
+                    return ResponseMessage.generateResponse("error", HttpStatus.OK, "Non autorise !");
+
+                }
+            } else {
+                return ResponseMessage.generateResponse("error", HttpStatus.OK, "Cet utilisateur n'existe pas !");
+
+            }
+
+        } catch (Exception e) {
+            // TODO: handle exception
+            return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
+
+        }
+
+    }
 
 }
