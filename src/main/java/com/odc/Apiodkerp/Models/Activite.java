@@ -81,6 +81,4 @@ public class Activite {
     @JoinColumn(name = "idactivite", referencedColumnName = "id")
     private  Notification notification;
 
-
-
 }
