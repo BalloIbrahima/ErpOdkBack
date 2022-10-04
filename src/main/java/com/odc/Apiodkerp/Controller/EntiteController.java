@@ -149,7 +149,7 @@ public class EntiteController {
     }
 
     @ApiOperation(value = "Supprimer un entite")
-    @DeleteMapping("/delete/entite/{id}")
+    @PostMapping("/delete/entite/{id}")
     public ResponseEntity<Object> DeleteEntite(@PathVariable Long id, @RequestParam(value = "user") String userVenant) {
         try {
             Utilisateur utilisateur = new JsonMapper().readValue(userVenant, Utilisateur.class);
