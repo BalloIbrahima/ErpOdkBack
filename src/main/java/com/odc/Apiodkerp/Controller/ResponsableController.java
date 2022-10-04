@@ -528,7 +528,7 @@ public class ResponsableController {
 
     // Modifier de postulant tiré par son id
     @ApiOperation(value = "modifier participant par son id")
-    @PutMapping("/update/{id}")
+    @PostMapping("/update/{id}")
     public ResponseEntity<Object> updatePostulantTire(@RequestBody Postulant postulant, @PathVariable long id,
             @RequestParam(value = "user") String userVenant) {
         try {

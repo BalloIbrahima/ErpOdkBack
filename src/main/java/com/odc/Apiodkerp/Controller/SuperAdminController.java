@@ -161,7 +161,7 @@ public class SuperAdminController {
     }
 
     @ApiOperation(value = "Lien pour modifier une salle")
-    @PutMapping("/modifiersalle/{id}")
+    @PostMapping("/modifiersalle/{id}")
     public ResponseEntity<Object> modifier(@PathVariable long id, @RequestParam(value = "user") String userVenant,
             @RequestParam(value = "salle") String sal) {
         try {
@@ -202,7 +202,7 @@ public class SuperAdminController {
     }
 
     @ApiOperation(value = "Lien pour suprimer une salle")
-    @DeleteMapping("/supprimersalle/{id}/")
+    @PostMapping("/supprimersalle/{id}/")
     public ResponseEntity<Object> supprimer(@PathVariable long id, @RequestParam(value = "user") String userVenant) {
         try {
             Utilisateur utilisateur = new JsonMapper().readValue(userVenant, Utilisateur.class);
@@ -372,7 +372,7 @@ public class SuperAdminController {
     }
 
     @ApiOperation(value = "Modifier un utilisateur.")
-    @PutMapping("/update/user/{idadmin}/{id}")
+    @PostMapping("/update/user/{idadmin}/{id}")
     public ResponseEntity<Object> updateUser(@RequestParam(value = "user") String userVenant,
             @PathVariable long idadmin,
             @RequestParam(value = "file", required = false) MultipartFile file) {
@@ -429,7 +429,7 @@ public class SuperAdminController {
     }
 
     @ApiOperation(value = "Supprimer un utilisateur")
-    @DeleteMapping("/delete/user/{id}")
+    @PostMapping("/delete/user/{id}")
     public ResponseEntity<Object> deleteUser(@PathVariable Long id,
             @RequestParam(value = "user") String userVenant) {
         try {
@@ -631,7 +631,7 @@ public class SuperAdminController {
     }
 
     @ApiOperation(value = "Modifier un responsable.")
-    @PutMapping("/update/responsable/{idResponsable}")
+    @PostMapping("/update/responsable/{idResponsable}")
     public ResponseEntity<Object> updateResponsable(@RequestParam(value = "data") String data,
             @PathVariable("idResponsable") Long idResponsable, @RequestParam(value = "user") String userVenant,
             @RequestParam(value = "file", required = false) MultipartFile file) {
@@ -668,7 +668,7 @@ public class SuperAdminController {
     }
 
     @ApiOperation(value = "Supprimer un responsable")
-    @DeleteMapping("/delete/responsable/{idResponsable}")
+    @PostMapping("/delete/responsable/{idResponsable}")
     public ResponseEntity<Object> deleteResponsable(@RequestParam(value = "user") String userVenant,
             @PathVariable("idResponsable") Long idResponsable) {
         try {
@@ -818,7 +818,7 @@ public class SuperAdminController {
                     historique.setDatehistorique(datehisto);
                     historique
                             .setDescription(
-                                    "" + user.getPrenom() + " " + user.getNom() + " a crée  une nouvelle entite ");
+                                    "" + user.getPrenom() + " " + user.getNom() + " a cree  une nouvelle entite ");
                     historiqueService.Create(historique);
                     Entite NewEntite = entiteService.Create(entite);
                     return ResponseMessage.generateResponse("ok", HttpStatus.OK, NewEntite);
@@ -840,7 +840,7 @@ public class SuperAdminController {
     }
 
     @ApiOperation(value = "Modifier un entite")
-    @PutMapping("/update/entite/{id}")
+    @PostMapping("/update/entite/{id}")
     public ResponseEntity<Object> updateEntite(@PathVariable("id") Long id, @RequestParam(value = "entite") String enti,
             @RequestParam(value = "user") String userVenant) {
         try {
@@ -866,7 +866,7 @@ public class SuperAdminController {
     }
 
     @ApiOperation(value = "Supprimer un entite")
-    @DeleteMapping("/delete/entite/{id}")
+    @PostMapping("/delete/entite/{id}")
     public ResponseEntity<Object> DeleteEntite(@PathVariable Long id, @RequestParam(value = "user") String userVenant) {
         try {
             Utilisateur utilisateur = new JsonMapper().readValue(userVenant, Utilisateur.class);
@@ -2010,7 +2010,7 @@ public class SuperAdminController {
     // ::::::::::::::::::::::::::::::::::: Modifier AouP
     // ::::::::::::::::::::::::::::::::::::
     @ApiOperation(value = "Modifier AppouParticipant")
-    @PutMapping("/aoup/modifier/{id}/{login}/{password}")
+    @PostMapping("/aoup/modifier/{id}/{login}/{password}")
     public ResponseEntity<Object> ModifierAouP(@PathVariable long id, @PathVariable("login") String login,
             @PathVariable("password") String password,
             @RequestBody AouP aoup) {
@@ -2051,7 +2051,7 @@ public class SuperAdminController {
     // ::::::::::::::::::::::::::::::::::::
 
     @ApiOperation(value = "Supprimer AouP")
-    @DeleteMapping("/aoup/supprimer/{id}/{login}/{password}")
+    @PostMapping("/aoup/supprimer/{id}/{login}/{password}")
     public ResponseEntity<Object> SupprimerAouP(@PathVariable long id, @PathVariable("login") String login,
             @PathVariable("password") String password) {
         try {
@@ -2171,7 +2171,7 @@ public class SuperAdminController {
     // ::::::::::::::::::::::::::::::::::: Modifier Designation
     // ::::::::::::::::::::::::::::::::::::
     @ApiOperation(value = "Modifier Desi")
-    @PutMapping("/designation/modifier/{id}/{login}/{password}")
+    @PostMapping("/designation/modifier/{id}/{login}/{password}")
     public ResponseEntity<Object> ModifierDesignation(@PathVariable long id, @PathVariable("login") String login,
             @PathVariable("password") String password,
             @RequestBody Designation designation) {
@@ -2213,7 +2213,7 @@ public class SuperAdminController {
     // ::::::::::::::::::::::::::::::::::::
 
     @ApiOperation(value = "Supprimer Designation")
-    @DeleteMapping("/designation/supprimer/{id}/{login}/{password}")
+    @PostMapping("/designation/supprimer/{id}/{login}/{password}")
     public ResponseEntity<Object> SupprimerDesignation(@PathVariable long id, @PathVariable("login") String login,
             @PathVariable("password") String password) {
         try {
@@ -2335,7 +2335,7 @@ public class SuperAdminController {
     // ::::::::::::::::::::::::::::::::::: Modifier Droit
     // ::::::::::::::::::::::::::::::::::::
     @ApiOperation(value = "Modifier Droit")
-    @PutMapping("/droit/modifier/{id}")
+    @PostMapping("/droit/modifier/{id}")
     public ResponseEntity<Object> ModifierDroit(@PathVariable long id, @PathVariable long iduser,
             @RequestBody Droit droit) {
         try {
@@ -2366,7 +2366,7 @@ public class SuperAdminController {
     // ::::::::::::::::::::::::::::::::::::
 
     @ApiOperation(value = "Supprimer Droit")
-    @DeleteMapping("/droit/supprimer/{iduser}/{id}")
+    @PostMapping("/droit/supprimer/{iduser}/{id}")
     public ResponseEntity<Object> SupprimerDroit(@PathVariable long id, @PathVariable long iduser) {
         try {
 
@@ -2482,7 +2482,7 @@ public class SuperAdminController {
     // ::::::::::::::::::::::::::::::::::: Modifier FormatEmail
     // ::::::::::::::::::::::::::::::::::::
     @ApiOperation(value = "Modifier formatEmail")
-    @PutMapping("/formatemail/modifier/{id}/{login}/{password}")
+    @PostMapping("/formatemail/modifier/{id}/{login}/{password}")
     public ResponseEntity<Object> ModifierFormatEmail(@PathVariable long id, @RequestBody FormatEmail formatEmail,
             @PathVariable("login") String login,
             @PathVariable("password") String password) {
@@ -2509,7 +2509,7 @@ public class SuperAdminController {
     // ::::::::::::::::::::::::::::::::::::
 
     @ApiOperation(value = "Supprimer Format Email")
-    @DeleteMapping("/formatemail/supprimer/{id}")
+    @PostMapping("/formatemail/supprimer/{id}")
     public ResponseEntity<Object> SupprimerFormatEmail(@PathVariable long id, @PathVariable("login") String login,
             @PathVariable("password") String password) {
         try {
