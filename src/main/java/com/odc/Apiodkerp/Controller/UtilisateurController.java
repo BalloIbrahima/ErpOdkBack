@@ -148,17 +148,20 @@ public class UtilisateurController {
 
     // Modification de l'activite
     @ApiOperation(value = "Modification de l'activite en fonction de l'id")
-    @PutMapping("/update/activity/{id}/{login}/{password}")
-    public ResponseEntity<Object> update(@PathVariable Long id, @PathVariable("login") String login,
-            @PathVariable("password") String password,
-            @RequestBody Activite activite,
+    @PutMapping("/update/activity/{id}")
+    public ResponseEntity<Object> update(@PathVariable Long id, @RequestParam(value = "activte") String activite, @RequestParam(value = "user") String userVenant,
             @RequestParam(value = "file", required = false) MultipartFile file) {
         try {
+            Utilisateur utilisateur = new JsonMapper().readValue(userVenant, Utilisateur.class);
+
+            Activite act = new JsonMapper().readValue(activite, Activite.class);
+            Utilisateur user = utilisateurService.trouverParLoginAndPass(utilisateur.getLogin(),
+                    utilisateur.getPassword());
             Activite activite1 = activiteService.GetById(id);
             if (file != null) {
-                activite.setImage(SaveImage.save("activite", file, activite.getNom()));
+                act.setImage(SaveImage.save("activite", file, act.getNom()));
             }
-            Utilisateur user = utilisateurService.trouverParLoginAndPass(login, password);
+
             Droit updateActivite = droitService.GetLibelle("Update Actvite");
 
             if (user != null) {
@@ -177,7 +180,7 @@ public class UtilisateurController {
 
                     }
                     return ResponseMessage.generateResponse("error", HttpStatus.OK,
-                            activiteService.Update(id, activite));
+                            activiteService.Update(id, act));
                 } else {
                     return ResponseMessage.generateResponse("error", HttpStatus.OK, "Non autorisé");
 
@@ -196,12 +199,14 @@ public class UtilisateurController {
 
     // affichage d'activite en fonction de l'id
     @ApiOperation(value = "Affichage de l'activite en fonction de l'id")
-    @GetMapping("/afficherActivit/{id}/{login}/{password}")
-    public ResponseEntity<Object> AfficherActivit(@PathVariable long id, @PathVariable("login") String login,
-            @PathVariable("password") String password) {
+    @GetMapping("/afficherActivit/{id}")
+    public ResponseEntity<Object> AfficherActivit(@PathVariable long id, @RequestParam(value = "user") String userVenant) {
         try {
             Activite activite1 = activiteService.GetById(id);
-            Utilisateur user = utilisateurService.trouverParLoginAndPass(login, password);
+            Utilisateur utilisateur = new JsonMapper().readValue(userVenant, Utilisateur.class);
+
+            Utilisateur user = utilisateurService.trouverParLoginAndPass(utilisateur.getLogin(),
+                    utilisateur.getPassword());
             Droit readActivite = droitService.GetLibelle("Read Actvite");
 
             if (user != null) {
@@ -237,14 +242,16 @@ public class UtilisateurController {
 
     // Supprimer d'activite en fonction de l'id
     @ApiOperation(value = "Supprimer une activite en fonction de l'id")
-    @DeleteMapping("/supprimeractivite/{idactivite}/{login}/{password}")
+    @DeleteMapping("/supprimeractivite/{idactivite}")
     public ResponseEntity<Object> supprimer(@PathVariable("idactivite") long idactivite,
-            @PathVariable("login") String login,
-            @PathVariable("password") String password) {
+                                       @RequestParam(value = "user") String userVenant) {
         try {
             Activite activite = activiteService.GetById(idactivite);
+            Utilisateur utilisateur = new JsonMapper().readValue(userVenant, Utilisateur.class);
 
-            Utilisateur utilisateur = utilisateurService.trouverParLoginAndPass(login, password);
+
+
+
             Droit deleteActivite = droitService.GetLibelle("Delete Actvite");
 
             if (utilisateur != null) {
@@ -252,7 +259,7 @@ public class UtilisateurController {
                     Role admin = RoleService.GetByLibelle("ADMIN");
 
                     if (activite.getCreateur() == utilisateur || utilisateur.getRole() == admin) {
-                        Utilisateur user = utilisateurService.trouverParLoginAndPass(login, password);
+                        Utilisateur user = utilisateurService.trouverParLoginAndPass(utilisateur.getLogin(),utilisateur.getPassword());
                         try {
                             Historique historique = new Historique();
                             Date datehisto = new Date();
@@ -292,13 +299,15 @@ public class UtilisateurController {
 
     // Afficher activite en fonction de l'etat
     @ApiOperation(value = "Affichage de l'activite en fonction de son etat")
-    @GetMapping("/afficherActiviteEtat/{idetat}/{login}/{password}")
-    public ResponseEntity<Object> AfficherActivite(@PathVariable Long idetat, @PathVariable("login") String login,
-            @PathVariable("password") String password) {
+    @GetMapping("/afficherActiviteEtat/{idetat}")
+    public ResponseEntity<Object> AfficherActivite(@PathVariable Long idetat,@RequestParam(value = "user") String userVenant) {
 
         Etat etat = etatService.GetById(idetat);
         try {
-            Utilisateur user = utilisateurService.trouverParLoginAndPass(login, password);
+            Utilisateur utilisateur = new JsonMapper().readValue(userVenant, Utilisateur.class);
+
+            Utilisateur user = utilisateurService.trouverParLoginAndPass(utilisateur.getLogin(),
+                    utilisateur.getPassword());
             Droit readActivite = droitService.GetLibelle("Read Actvite");
 
             if (user != null) {
