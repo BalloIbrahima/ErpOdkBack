@@ -18,12 +18,12 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Date;
 import java.util.List;
+
 @RestController
 @RequestMapping("/entite")
 @Api(value = "entite", description = "Les fonctionnalités liées à une entite")
 @CrossOrigin
 public class EntiteController {
-
     @Autowired
     private UtilisateurService utilisateurService;
 
@@ -79,8 +79,8 @@ public class EntiteController {
     @ApiOperation(value = "Creer un entite.")
     @PostMapping("/create/entite")
     public ResponseEntity<Object> createEntite(@RequestParam(value = "entite") String enti,
-                                               @RequestParam(value = "file", required = true) MultipartFile file,
-                                               @RequestParam(value = "user") String userVenant) {
+            @RequestParam(value = "file", required = true) MultipartFile file,
+            @RequestParam(value = "user") String userVenant) {
         try {
 
             Entite entite = new JsonMapper().readValue(enti, Entite.class);
@@ -123,14 +123,15 @@ public class EntiteController {
     }
 
     @ApiOperation(value = "Modifier un entite")
-    @PutMapping("/update/entite/{id}")
+    @PostMapping("/update/entite/{id}")
     public ResponseEntity<Object> updateEntite(@PathVariable("id") Long id, @RequestParam(value = "entite") String enti,
-                                               @RequestParam(value = "user") String userVenant) {
+            @RequestParam(value = "user") String userVenant) {
         try {
             Entite entite = new JsonMapper().readValue(enti, Entite.class);
             Utilisateur utilisateur = new JsonMapper().readValue(userVenant, Utilisateur.class);
 
-            Utilisateur user = utilisateurService.trouverParLoginAndPass(utilisateur.getLogin(), utilisateur.getPassword());
+            Utilisateur user = utilisateurService.trouverParLoginAndPass(utilisateur.getLogin(),
+                    utilisateur.getPassword());
             Droit updatentite = droitService.GetLibelle("Update Entite");
 
             if (user.getRole().getDroits().contains(updatentite)) {
@@ -152,7 +153,8 @@ public class EntiteController {
     public ResponseEntity<Object> DeleteEntite(@PathVariable Long id, @RequestParam(value = "user") String userVenant) {
         try {
             Utilisateur utilisateur = new JsonMapper().readValue(userVenant, Utilisateur.class);
-            Utilisateur user = utilisateurService.trouverParLoginAndPass(utilisateur.getLogin(), utilisateur.getPassword());
+            Utilisateur user = utilisateurService.trouverParLoginAndPass(utilisateur.getLogin(),
+                    utilisateur.getPassword());
             Droit deleterole = droitService.GetLibelle("Delete Entite");
 
             if (user.getRole().getDroits().contains(deleterole)) {
@@ -170,12 +172,13 @@ public class EntiteController {
     }
 
     @ApiOperation(value = "Affichager tout les entités")
-    @GetMapping("/getAll/entite")
+    @PostMapping("/getAll/entite")
     public ResponseEntity<Object> GetAllEntite(@RequestParam(value = "user") String userVenant) {
         try {
             Utilisateur utilisateur = new JsonMapper().readValue(userVenant, Utilisateur.class);
 
-            Utilisateur user = utilisateurService.trouverParLoginAndPass(utilisateur.getLogin(), utilisateur.getPassword());
+            Utilisateur user = utilisateurService.trouverParLoginAndPass(utilisateur.getLogin(),
+                    utilisateur.getPassword());
             Droit getentite = droitService.GetLibelle("Read Entite");
 
             if (user.getRole().getDroits().contains(getentite)) {
@@ -193,14 +196,15 @@ public class EntiteController {
     }
 
     @ApiOperation(value = "Affichager une entite")
-    @GetMapping("/get/entite/{id}")
-    public ResponseEntity<Object> GetIdEntite(@RequestParam("id") Long id, @RequestParam(value = "user") String userVenant
-    ) {
+    @PostMapping("/get/entite/{id}")
+    public ResponseEntity<Object> GetIdEntite(@RequestParam("id") Long id,
+            @RequestParam(value = "user") String userVenant) {
         // @RequestParam(value = "entite") String enti
         try {
             Utilisateur utilisateur = new JsonMapper().readValue(userVenant, Utilisateur.class);
 
-            Utilisateur user = utilisateurService.trouverParLoginAndPass(utilisateur.getLogin(), utilisateur.getPassword());
+            Utilisateur user = utilisateurService.trouverParLoginAndPass(utilisateur.getLogin(),
+                    utilisateur.getPassword());
             Droit getentite = droitService.GetLibelle("Read Entite");
 
             if (user.getRole().getDroits().contains(getentite)) {
@@ -220,12 +224,13 @@ public class EntiteController {
     // :::::::::::::::::::::::::::::::::::total entite
     // ::::::::::::::::::::::::::::::::::::::
     @ApiOperation(value = "totalentite")
-    @GetMapping("/totalentite")
+    @PostMapping("/totalentite")
     public ResponseEntity<Object> TotalEntite(@RequestParam(value = "user") String userVenant) {
         try {
             Utilisateur utilisateur = new JsonMapper().readValue(userVenant, Utilisateur.class);
 
-            Utilisateur users = utilisateurService.trouverParLoginAndPass(utilisateur.getLogin(), utilisateur.getPassword());
+            Utilisateur users = utilisateurService.trouverParLoginAndPass(utilisateur.getLogin(),
+                    utilisateur.getPassword());
             Droit Rentite = droitService.GetLibelle("Lire une entitee");
 
             if (users != null) {
@@ -261,4 +266,3 @@ public class EntiteController {
 
     }
 }
-
