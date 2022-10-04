@@ -911,7 +911,7 @@ public class UtilisateurController {
     }
 
     // ::::::::::::::::::::::Total nombre activite ::::::::::::::::::::::::
-    @ApiOperation(value = "Modification utilisateur en fournisssant id")
+    @ApiOperation(value = "Total nombre activite")
     @PostMapping("/totalactivite")
     public ResponseEntity<Object> TotalActivite(@RequestParam(value = "user") String userVenant) {
         try {
@@ -959,6 +959,54 @@ public class UtilisateurController {
 
     }
 
+    // ::::::::::::::::::::::Afficher toutes les liste Postulant ::::::::::::::::::::::::
+    @ApiOperation(value = "Afficher toutes les listes Postulant ")
+    @PostMapping("/AllListePost")
+    public ResponseEntity<Object> AllListePost(@RequestParam(value = "user") String userVenant) {
+        try {
+            Utilisateur utilisateur = new JsonMapper().readValue(userVenant, Utilisateur.class);
+
+            Utilisateur user = utilisateurService.trouverParLoginAndPass(utilisateur.getLogin(),
+                    utilisateur.getPassword());
+            Droit readListe = droitService.GetLibelle("Read ListePostulant");
+
+            if (user != null) {
+                if (user.getRole().getDroits().contains(readListe)) {
+                    try {
+
+                        Historique historique = new Historique();
+                        Date datehisto = new Date();
+                        historique.setDatehistorique(datehisto);
+                        historique.setDescription(
+                                "" + user.getPrenom() + " " + user.getNom() + " a affiche toutes les listes ");
+                        historiqueService.Create(historique);
+
+                        return ResponseMessage.generateResponse("ok", HttpStatus.OK, listePostulantService.getAll());
+
+                    } catch (Exception e) {
+                        // TODO: handle exception
+                        return ResponseMessage.generateResponse("iciiii", HttpStatus.OK,
+                                e.getMessage());
+
+                    }
+
+                } else {
+                    return ResponseMessage.generateResponse("error", HttpStatus.OK, "Non autorisé");
+
+                }
+
+            } else {
+                return ResponseMessage.generateResponse("error", HttpStatus.OK,
+                        "Vous n'êtes pas autorisé à afficher tous les liste");
+            }
+
+        } catch (Exception e) {
+            // TODO: handle exception
+            return ResponseMessage.generateResponse("errortt", HttpStatus.OK,
+                    e.getMessage());
+        }
+
+    }
 }
 
 //
