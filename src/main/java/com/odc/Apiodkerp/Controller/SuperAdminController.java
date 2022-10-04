@@ -1516,10 +1516,10 @@ public class SuperAdminController {
 
     // :::::::::::::::::::::::::::::::::::::::::::::Tous les droit :::::::::::::::::::::::
     @ApiOperation(value = "Tous les droits")
-    @PostMapping("/droit/Getall/{id}")
+    @PostMapping("/droit/Getall")
     public ResponseEntity<Object> GetToutDroit(@PathVariable long id,@RequestParam(value = "user") String userVenant) {
         try {
-            Droit droit = droitService.GetById(id);
+
             Utilisateur utilisateur = new JsonMapper().readValue(userVenant, Utilisateur.class);
 
             Utilisateur user = utilisateurService.trouverParLoginAndPass(utilisateur.getLogin(),
@@ -1530,7 +1530,7 @@ public class SuperAdminController {
                 Date datehisto = new Date();
                 historique.setDatehistorique(datehisto);
                 historique.setDescription(
-                        "" + user.getPrenom() + " " + user.getNom() + " a affiché le droit " + droit.getLibelle());
+                        "" + user.getPrenom() + " " + user.getNom() + " a affiché tous les  droits " );
                 historiqueService.Create(historique);
             } catch (Exception e) {
                 // TODO: handle exception
@@ -1633,4 +1633,31 @@ public class SuperAdminController {
         }
     }
 
+
+
+// l'ensemble des listes tirer lors de tirage pour kadi
+    @ApiOperation(value = "Liste tirer lors d'un tirage")
+    @PostMapping("/")
+    public ResponseEntity<Object>  AfficherListPost(@PathVariable Long idlistepostulant,@RequestParam(value = "user") String userVenant) {
+        try {
+            Utilisateur utilisateur = new JsonMapper().readValue(userVenant, Utilisateur.class);
+
+            Utilisateur user = utilisateurService.trouverParLoginAndPass(utilisateur.getLogin(),
+                    utilisateur.getPassword());
+            Droit RAoup = droitService.GetLibelle("Read ListePostulant");
+
+            if (user.getRole().getDroits().contains(RAoup)) {
+                return ResponseMessage.generateResponse("ok", HttpStatus.OK,
+                        tirageService.AfficherListPost(idlistepostulant));
+            } else {
+                return ResponseMessage.generateResponse("error", HttpStatus.OK, "Non autorisé");
+
+            }
+
+        } catch (Exception e) {
+            // TODO: handle exception
+            return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
+
+        }
+    }
 }
