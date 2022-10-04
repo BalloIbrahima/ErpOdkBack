@@ -21,7 +21,7 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 public class Postulant extends Personne {
     private String numero;
-    private String DateNaissance;
+    private Date DateNaissance;
 
     @ManyToMany
     @JoinTable(name = "ListepostulantPostulant", joinColumns = {
