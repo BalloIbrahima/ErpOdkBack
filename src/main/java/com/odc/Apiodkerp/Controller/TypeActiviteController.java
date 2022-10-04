@@ -73,15 +73,6 @@ public class TypeActiviteController {
     @Autowired
     private TypeActiviteService typeActiviteService;
 
-
-
-
-
-
-
-
-
-
     ///////// type activite
     @ApiOperation(value = "methode pour la création d'une type d' activité.")
     @PostMapping("/Typeactivite/creer")
