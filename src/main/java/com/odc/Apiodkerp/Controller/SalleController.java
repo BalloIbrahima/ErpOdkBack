@@ -100,7 +100,7 @@ public class SalleController {
                     return ResponseMessage.generateResponse("iciiii", HttpStatus.OK, e.getMessage());
 
                 }
-                salle.setUtilisateur(utilisateur);
+                //salle.setUtilisateur(utilisateur);
                 return ResponseMessage.generateResponse("ok", HttpStatus.OK, salleService.create(salle));
             } else {
                 return ResponseMessage.generateResponse("error", HttpStatus.OK, "non autorise");

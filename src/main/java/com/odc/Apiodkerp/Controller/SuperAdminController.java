@@ -707,7 +707,7 @@ public class SuperAdminController {
             Utilisateur users = utilisateurService.trouverParLoginAndPass(utilisateur.getLogin(),
                     utilisateur.getPassword());
 
-            Droit Ractivite = droitService.GetLibelle("Read Actvite");
+            Droit Ractivite = droitService.GetLibelle("Read Activite");
 
             if (users != null) {
                 if (users.getRole().getDroits().contains(Ractivite)) {
@@ -752,7 +752,7 @@ public class SuperAdminController {
 
             Utilisateur users = utilisateurService.trouverParLoginAndPass(utilisateur.getLogin(),
                     utilisateur.getPassword());
-            Droit Ractivite = droitService.GetLibelle("Read Actvite");
+            Droit Ractivite = droitService.GetLibelle("Read Activite");
 
             if (users != null) {
                 if (users.getRole().getDroits().contains(Ractivite)) {
@@ -797,7 +797,7 @@ public class SuperAdminController {
 
             Utilisateur users = utilisateurService.trouverParLoginAndPass(utilisateur.getLogin(),
                     utilisateur.getPassword());
-            Droit Ractivite = droitService.GetLibelle("Read Actvite");
+            Droit Ractivite = droitService.GetLibelle("Read Activite");
 
             if (users != null) {
                 if (users.getRole().getDroits().contains(Ractivite)) {
@@ -840,7 +840,7 @@ public class SuperAdminController {
             @PathVariable String password) {
         try {
             Utilisateur users = utilisateurService.trouverParLoginAndPass(login, password);
-            Droit Ractivite = droitService.GetLibelle("Read Actvite");
+            Droit Ractivite = droitService.GetLibelle("Read Activite");
 
             if (users != null) {
                 if (users.getRole().getDroits().contains(Ractivite)) {
@@ -1001,12 +1001,14 @@ public class SuperAdminController {
 
     // ::::::::::::::::::::::
     @ApiOperation(value = "Statut d'une activite en fonction de son id")
-    @PostMapping("statut/activite/{id}/{login}/{password}")
-    public ResponseEntity<Object> ActivitesTermines(@PathVariable long id, @PathVariable String login,
-            @PathVariable String password) {
+    @PostMapping("statut/activite/{id}")
+    public ResponseEntity<Object> ActivitesTermines(@RequestParam(value = "user") String userVenant,@PathVariable long id) {
         try {
 
-            Utilisateur users = utilisateurService.trouverParLoginAndPass(login, password);
+            Utilisateur utilisateurs = new JsonMapper().readValue(userVenant, Utilisateur.class);
+
+            Utilisateur users = utilisateurService.trouverParLoginAndPass(utilisateurs.getLogin(),
+                    utilisateurs.getPassword());
             Droit Ractivite = droitService.GetLibelle("Read Activite");
 
             if (users != null) {
