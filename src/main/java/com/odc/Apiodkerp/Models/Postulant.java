@@ -23,6 +23,7 @@ public class Postulant extends Personne {
     private String numero;
     private Date DateNaissance;
 
+    @JsonIgnore
     @ManyToMany
     @JoinTable(name = "ListepostulantPostulant", joinColumns = {
             @JoinColumn(name = "id_postulant") }, inverseJoinColumns = {

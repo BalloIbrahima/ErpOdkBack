@@ -336,7 +336,7 @@ public class ResponsableController {
                     Historique historique = new Historique();
                     historique.setDatehistorique(new Date());
                     historique.setDescription(Simpleutilisateur.getPrenom() + " " + Simpleutilisateur.getNom()
-                            + " a exporter une liste de postulants tirés.");
+                            + " a exporter une liste de postulants tires.");
 
                     historiqueService.Create(historique);
 
@@ -400,7 +400,7 @@ public class ResponsableController {
                             Historique historique = new Historique();
                             historique.setDatehistorique(new Date());
                             historique.setDescription(utilisateur.getPrenom() + " " + utilisateur.getNom()
-                                    + " a a effectuer un tirage.");
+                                    + " a effectuer un tirage.");
                             historiqueService.Create(historique);
 
                             //
@@ -907,12 +907,5 @@ public class ResponsableController {
         }
 
     }
-
-
-
-
-
-
-
 
 }
