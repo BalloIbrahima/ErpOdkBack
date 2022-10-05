@@ -83,7 +83,7 @@ public class SuperAdminController {
     @PostMapping("/create/user")
     public ResponseEntity<Object> createUser(@RequestParam(value = "data") String data,
             @RequestParam(value = "user") String userVenant,
-            @RequestParam(value = "file", required = false) MultipartFile file, @RequestBody Utilisateur utilis) {
+            @RequestParam(value = "file", required = false) MultipartFile file) {
         try {
 
             Utilisateur utilisateu = new JsonMapper().readValue(userVenant, Utilisateur.class);
@@ -101,6 +101,18 @@ public class SuperAdminController {
 
                     if (utilisateurService.getByEmail(utilisateur.getEmail()) == null) {
                         // utilisateur.setRole(role);
+
+                        String pass = utilisateur.getNom().substring(0, 1) + utilisateur.getPrenom().substring(0, 1)
+                                + "@ODC2022";
+
+                        String login = utilisateur.getNom().substring(0, 1) + utilisateur.getPrenom().substring(0, 1)
+                                + utilisateur.getNom();
+
+                        System.out.println(pass);
+
+                        utilisateur.setPassword(pass);
+                        utilisateur.setLogin(login);
+
                         if (file != null) {
                             utilisateur.setImage(SaveImage.save("user", file, utilisateur.getEmail()));
                         }

@@ -264,8 +264,7 @@ public class ResponsableController {
                                     aprenants.setPostulant(pc);
                                     aprenants.setTirage(false);
                                     aouPService.Create(aprenants);
-                                    // tirageService.ajouterParticipant(pc, idTirage);
-
+                                    //tirageService.ajouterParticipant(pc, idTirage);
                                 }
 
                             }

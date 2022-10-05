@@ -28,8 +28,7 @@ public class Notification {
 
 
 
-    @JsonIgnore
-    @OneToOne(mappedBy = "notification", cascade = CascadeType.ALL)
+    @JoinColumn(name = "idactivite", referencedColumnName = "id")
     private  Activite activite;
 
 
