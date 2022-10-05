@@ -12,6 +12,7 @@ public interface TirageService {
     List<Tirage> getAll();
     Tirage getById(long id);
     Tirage findByLibelle(String libelle);
+    Iterable<Object[]> AfficherListPost(Long idlistepostulant);
 
     void ajouterParticipant(Postulant participant, long idtirage);
 
