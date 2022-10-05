@@ -76,9 +76,8 @@ public class Activite {
     @OneToMany(mappedBy = "activite")
     List<Tache> tache = new ArrayList<>();
 
-
-    @OneToOne()
-    @JoinColumn(name = "idactivite", referencedColumnName = "id")
+    @JsonIgnore
+    @OneToOne(mappedBy = "activite", cascade = CascadeType.ALL)
     private  Notification notification;
 
 }
