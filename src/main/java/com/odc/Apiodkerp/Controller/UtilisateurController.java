@@ -133,7 +133,8 @@ public class UtilisateurController {
                 historiqueService.Create(historique);
                 return ResponseMessage.generateResponse("ok", HttpStatus.OK, Simpleutilisateur);
             } else {
-                return ResponseMessage.generateResponse("error", HttpStatus.OK, "vous n'avez pas les droits d'acces  !");
+                return ResponseMessage.generateResponse("error", HttpStatus.OK,
+                        "vous n'avez pas les droits d'acces  !");
             }
 
         } else {
@@ -610,23 +611,26 @@ public class UtilisateurController {
             @PathVariable("idtype") Long idtype,
             @RequestParam(value = "file", required = false) MultipartFile file) throws JsonProcessingException {
         Activite activite = null;
-        Utilisateur utilisateur = new JsonMapper().readValue(userVenant, Utilisateur.class);
 
         try {
             activite = new JsonMapper().readValue(acti, Activite.class);
             System.out.println(activite);
+            Utilisateur utilisateurs = new JsonMapper().readValue(userVenant, Utilisateur.class);
+
+            Salle salle = salleService.read(idsalle);
+
 
             if (file != null) {
                 try {
                     Etat etat = etatService.recupereParStatut("A VENIR");
-                    Utilisateur utilisateurs = new JsonMapper().readValue(userVenant, Utilisateur.class);
 
                     Utilisateur user = utilisateurService.trouverParLoginAndPass(utilisateurs.getLogin(),
                             utilisateurs.getPassword());
-                    Droit createType = droitService.GetLibelle("Create TypeActivite");
-
-                    Salle salle = salleService.read(idsalle);
+                    Droit createActivite = droitService.GetLibelle("Create Activite");
+                    
                     TypeActivite type = typeActiviteService.getById(idtype);
+
+
 
                     activite.setTypeActivite(type);
                     activite.setSalle(salle);
@@ -636,13 +640,18 @@ public class UtilisateurController {
                     activite.setDateCreation(new Date());
                     System.out.println(user);
                     // activite.setLeader(user);
+                    try {
+                        activite.setImage(SaveImage.save("activite", file, activite.getNom()));
+                    } catch (Exception e) {
+                        // TODO: handle exception
+                        return ResponseMessage.generateResponse("iciiii", HttpStatus.OK, e.getMessage());
 
-                    activite.setImage(SaveImage.save("activite", file, activite.getNom()));
+                    }
 
                     // ::::::::::::::::::::::::::::Historique ::::::::::::::::
                     // Utilisateur user = utilisateurService.getById(iduser);
                     if (user != null) {
-                        if (user.getRole().getDroits().contains(createType)) {
+                        if (user.getRole().getDroits().contains(createActivite)) {
                             try {
                                 Historique historique = new Historique();
                                 Date datehisto = new Date();
@@ -960,7 +969,8 @@ public class UtilisateurController {
 
     }
 
-    // ::::::::::::::::::::::Afficher toutes les liste Postulant ::::::::::::::::::::::::
+    // ::::::::::::::::::::::Afficher toutes les liste Postulant
+    // ::::::::::::::::::::::::
     @ApiOperation(value = "Afficher toutes les listes Postulant ")
     @PostMapping("/AllListePost")
     public ResponseEntity<Object> AllListePost(@RequestParam(value = "user") String userVenant) {
@@ -1008,9 +1018,11 @@ public class UtilisateurController {
         }
 
     }
+
     @ApiOperation(value = "Afficher tirage par id")
     @PostMapping("/tirageById/{id}")
-    public ResponseEntity<Object> getTirageById(@RequestParam(value = "user") String userVenant,@PathVariable long id) {
+    public ResponseEntity<Object> getTirageById(@RequestParam(value = "user") String userVenant,
+            @PathVariable long id) {
         try {
             Utilisateur utilisateur = new JsonMapper().readValue(userVenant, Utilisateur.class);
 
