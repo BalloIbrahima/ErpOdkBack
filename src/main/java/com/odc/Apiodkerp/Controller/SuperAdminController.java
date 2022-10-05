@@ -1782,6 +1782,37 @@ public class SuperAdminController {
         }
     }
 
+    /// ::::::::::::::::::::::::::Tirages valides
+    @ApiOperation(value = "Tirages valides")
+    @PostMapping("/tirage/valides")
+    public ResponseEntity<Object> TiragesValides(@PathVariable("identite") Long identite,
+            @RequestParam(value = "user") String userVenant) {
+        try {
+
+            Utilisateur utilisateur = new JsonMapper().readValue(userVenant, Utilisateur.class);
+
+            Utilisateur user = utilisateurService.trouverParLoginAndPass(utilisateur.getLogin(),
+                    utilisateur.getPassword());
+
+            Droit RTirage = droitService.GetLibelle("Read Tirage");
+
+
+            if (user.getRole().getDroits().contains(RTirage)) {
+
+                return ResponseMessage.generateResponse("ok", HttpStatus.OK,
+                        tirageService.tiragesValides(true));
+            } else {
+                return ResponseMessage.generateResponse("error", HttpStatus.OK, "Non autorisé");
+
+            }
+
+        } catch (Exception e) {
+            // TODO: handle exception
+            return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
+
+        }
+    }
+
     // l'ensemble des listes tirer lors de tirage pour kadi
     /*
      * @ApiOperation(value = "Liste tirer lors d'un tirage")
