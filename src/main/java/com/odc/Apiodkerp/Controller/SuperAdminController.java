@@ -36,7 +36,8 @@ public class SuperAdminController {
 
     @Autowired
     private DroitService droitService;
-
+    @Autowired
+    private RoleService roleService;
     @Autowired
     private EtatService etatService;
 
@@ -522,6 +523,7 @@ public class SuperAdminController {
         }
 
     }
+
 
     @ApiOperation(value = "Affichager un responsable")
     @PostMapping("/get/responsable/{id}")
@@ -1649,7 +1651,73 @@ public class SuperAdminController {
 
         }
     }
+    //ROLE===============================================
+    @ApiOperation(value = "Creer un role.")
+    @PostMapping("/create/role")
+    public ResponseEntity<Object> createRole(@RequestParam(value = "role") String role,
+                                               @RequestParam(value = "user") String userVenant) {
+        try {
 
+            Role role1 = new JsonMapper().readValue(role, Role.class);
+
+            Utilisateur utilisateur = new JsonMapper().readValue(userVenant, Utilisateur.class);
+
+            Utilisateur user = utilisateurService.trouverParLoginAndPass(utilisateur.getLogin(),
+                    utilisateur.getPassword());
+
+            Droit createrole = droitService.GetLibelle("Create Role");
+
+            if (user.getRole().getDroits().contains(createrole)) {
+                try {
+                    Historique historique = new Historique();
+                    Date datehisto = new Date();
+                    historique.setDatehistorique(datehisto);
+                    historique
+                            .setDescription(
+                                    "" + user.getPrenom() + " " + user.getNom() + " a crée  une nouvelle role ");
+                    historiqueService.Create(historique);
+                    Role NewEntite = roleService.create(role1);
+                    return ResponseMessage.generateResponse("ok", HttpStatus.OK, NewEntite);
+                } catch (Exception e) {
+                    // TODO: handle exception
+                    return ResponseMessage.generateResponse("iciiii", HttpStatus.OK, e.getMessage());
+
+                }
+
+            } else {
+                return ResponseMessage.generateResponse("error", HttpStatus.OK, "non autorise");
+            }
+
+        } catch (Exception e) {
+            // TODO: handle exception
+            return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
+        }
+
+    }
+    @ApiOperation(value = "Afficher tous les roles")
+    @PostMapping("/role/getAll")
+    public ResponseEntity<Object> GetAllEntite(@RequestParam(value = "user") String userVenant) {
+        try {
+            Utilisateur utilisateur = new JsonMapper().readValue(userVenant, Utilisateur.class);
+
+            Utilisateur user = utilisateurService.trouverParLoginAndPass(utilisateur.getLogin(),
+                    utilisateur.getPassword());
+            Droit getRole = droitService.GetLibelle("Read Role");
+
+            if (user.getRole().getDroits().contains(getRole)) {
+                List<Role> getAllRole = roleService.getAll();
+                return ResponseMessage.generateResponse("ok", HttpStatus.OK, getAllRole);
+            } else {
+                return ResponseMessage.generateResponse("error", HttpStatus.OK, "non autorise");
+            }
+
+        } catch (Exception e) {
+            // TODO: handle exception
+            return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
+        }
+
+    }
+    
     //::::::::::::::::::::::::Toutes les tirages :::::::::::::::::::::::::::::::
     @ApiOperation(value = "Toutes les tirages")
     @PostMapping("/TouteslesTirages")
