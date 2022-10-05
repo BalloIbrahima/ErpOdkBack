@@ -127,4 +127,10 @@ public class TirageServiceImpl implements TirageService {
     public Iterable<Object[]> AfficherListPost(Long idlistepostulant) {
         return tirageRepository.AfficherListPost(idlistepostulant);
     }
+
+    @Override
+    public List<Tirage> tiragesValides(Boolean valide) {
+        // TODO Auto-generated method stub
+        return tirageRepository.findByValider(valide);
+    }
 }
