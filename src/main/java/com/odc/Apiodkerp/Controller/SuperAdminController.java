@@ -1919,8 +1919,7 @@ public class SuperAdminController {
     /// ::::::::::::::::::::::::::Tirages valides
     @ApiOperation(value = "Tirages valides")
     @PostMapping("/tirage/valides")
-    public ResponseEntity<Object> TiragesValides(@PathVariable("identite") Long identite,
-            @RequestParam(value = "user") String userVenant) {
+    public ResponseEntity<Object> TiragesValides(@RequestParam(value = "user") String userVenant) {
         try {
 
             Utilisateur utilisateur = new JsonMapper().readValue(userVenant, Utilisateur.class);

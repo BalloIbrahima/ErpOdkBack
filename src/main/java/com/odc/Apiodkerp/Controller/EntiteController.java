@@ -91,23 +91,25 @@ public class EntiteController {
 
             Utilisateur user = utilisateurService.trouverParLoginAndPass(utilisateur.getLogin(),
                     utilisateur.getPassword());
-           List<Entite> entit = entiteService.GetAll();
+            List<Entite> entit = entiteService.GetAll();
 
             Droit createrole = droitService.GetLibelle("Create Entite");
 
             if (user.getRole().getDroits().contains(createrole)) {
-                for(Entite en:entit){
-                    if(entite.getGerant()==en.getGerant()){
-                        return ResponseMessage.generateResponse("error", HttpStatus.OK, "cette personne est deja gerant d'une entite");
+                for (Entite en : entit) {
+                    if (entite.getGerant() == en.getGerant()) {
+                        return ResponseMessage.generateResponse("error", HttpStatus.OK,
+                                "cette personne est deja gerant d'une entite");
 
-                    }else{
+                    } else {
                         try {
                             Historique historique = new Historique();
                             Date datehisto = new Date();
                             historique.setDatehistorique(datehisto);
                             historique
                                     .setDescription(
-                                            "" + user.getPrenom() + " " + user.getNom() + " a cree  une nouvelle entite ");
+                                            "" + user.getPrenom() + " " + user.getNom()
+                                                    + " a cree  une nouvelle entite ");
                             historiqueService.Create(historique);
                             Entite NewEntite = entiteService.Create(entite);
                             return ResponseMessage.generateResponse("ok", HttpStatus.OK, NewEntite);
@@ -119,14 +121,13 @@ public class EntiteController {
                     }
                 }
 
-
-            }else {
+            } else {
                 return ResponseMessage.generateResponse("error", HttpStatus.OK, "non autorise");
             }
 
             return ResponseMessage.generateResponse("error", HttpStatus.OK, "erreur");
 
-        }catch (Exception e) {
+        } catch (Exception e) {
             // TODO: handle exception
             return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
         }
@@ -208,7 +209,7 @@ public class EntiteController {
 
     @ApiOperation(value = "Affichager une entite")
     @PostMapping("/get/entite/{id}")
-    public ResponseEntity<Object> GetIdEntite(@RequestParam("id") Long id,
+    public ResponseEntity<Object> GetIdEntite(@PathVariable("id") Long id,
             @RequestParam(value = "user") String userVenant) {
         // @RequestParam(value = "entite") String enti
         try {
