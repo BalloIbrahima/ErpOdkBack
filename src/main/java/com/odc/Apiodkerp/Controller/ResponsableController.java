@@ -936,8 +936,9 @@ public class ResponsableController {
                             Historique historique = new Historique();
                             Date datehisto = new Date();
                             historique.setDatehistorique(datehisto);
-                            historique.setDescription("" + users.getPrenom() + " " + users.getNom()
-                                    + " a cree un utilisateur du nom de " + utilisateur.getNom());
+                            historique.setDescription(users.getPrenom() + " " + users.getNom()
+                                    + " a cree un personnel externe du nom de " + utilisateur.getNom());
+                            
                             historiqueService.Create(historique);
 
                             IntervenantExterne NewUser = intervenantExterneService.creer(utilisateur);
@@ -945,7 +946,7 @@ public class ResponsableController {
                             return ResponseMessage.generateResponse("ok", HttpStatus.OK, NewUser);
                         } catch (Exception e) {
                             // TODO: handle exception
-                            return ResponseMessage.generateResponse("iciiii", HttpStatus.OK, e.getMessage());
+                            return ResponseMessage.generateResponse("ijjciiii", HttpStatus.OK, e.getMessage());
 
                         }
 

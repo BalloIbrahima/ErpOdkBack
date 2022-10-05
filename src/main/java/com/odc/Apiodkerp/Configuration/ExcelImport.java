@@ -135,7 +135,7 @@ public class ExcelImport {
                                     //Date dateStr = formater.parse(formatter.formatCellValue(colonneCourante));
                                     //String date = new SimpleDateFormat("yyyy-MM-dd")
                                         //    .format(new Date(formatter.formatCellValue(colonneCourante)));
-                                    postulant.setDateNaissance(d);
+                                    //postulant.setDateNaissance(d);
 
 
                                     //String date = request.getParameter("date");

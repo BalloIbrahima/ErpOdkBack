@@ -123,7 +123,7 @@ public class SuperAdminController {
                             Date datehisto = new Date();
                             historique.setDatehistorique(datehisto);
                             historique.setDescription("" + users.getPrenom() + " " + users.getNom()
-                                    + " a crée un utilisateur du nom de " + utilisateur.getNom());
+                                    + " a cree un utilisateur du nom de " + utilisateur.getNom());
                             historiqueService.Create(historique);
 
                             Utilisateur NewUser = utilisateurService.creer(utilisateur);
@@ -183,7 +183,7 @@ public class SuperAdminController {
                         historique.setDatehistorique(datehisto);
                         historique.setDescription(
                                 "" + users.getPrenom() + " " + users.getNom()
-                                        + " a modifier un utilisateur du nom de ");
+                                        + " a modifie un utilisateur du nom de ");
                         historiqueService.Create(historique);
                     } catch (Exception e) {
                         // TODO: handle exception
@@ -233,7 +233,7 @@ public class SuperAdminController {
                         Date datehisto = new Date();
                         historique.setDatehistorique(datehisto);
                         historique.setDescription("" + user.getPrenom() + " " + user.getNom()
-                                + " a supprimé un utilisateur du nom de " + utilisateurService.getById(id));
+                                + " a supprime un utilisateur du nom de " + utilisateurService.getById(id));
                         historiqueService.Create(historique);
                         utilisateurService.delete(id);
 
@@ -279,7 +279,7 @@ public class SuperAdminController {
                         Historique historique = new Historique();
                         Date datehisto = new Date();
                         historique.setDatehistorique(datehisto);
-                        historique.setDescription("" + user.getPrenom() + "a affiché tous les utilisateurs");
+                        historique.setDescription("" + user.getPrenom() + "a affiche tous les utilisateurs");
                         historiqueService.Create(historique);
 
                         System.out.println(historique.getDescription());
@@ -514,7 +514,7 @@ public class SuperAdminController {
                     Date datehisto = new Date();
                     historique.setDatehistorique(datehisto);
                     historique.setDescription(
-                            "" + user.getPrenom() + " " + user.getNom() + " a affiché tous les responsables");
+                            "" + user.getPrenom() + " " + user.getNom() + " a affiche tous les responsables");
                     historiqueService.Create(historique);
                 } catch (Exception e) {
                     // TODO: handle exception
@@ -555,7 +555,7 @@ public class SuperAdminController {
                     Date datehisto = new Date();
                     historique.setDatehistorique(datehisto);
                     historique.setDescription(
-                            "" + admin.getPrenom() + " " + admin.getNom() + " a affiché le responsable du nom de "
+                            "" + admin.getPrenom() + " " + admin.getNom() + " a affiche le responsable du nom de "
                                     + idResponsable.getNom() + " " + idResponsable.getPrenom());
                     historiqueService.Create(historique);
                 } catch (Exception e) {
@@ -682,7 +682,7 @@ public class SuperAdminController {
                     Date datehisto = new Date();
                     historique.setDatehistorique(datehisto);
                     historique.setDescription(
-                            "" + users.getPrenom() + " " + users.getNom() + " a affiché tous les postulants ");
+                            "" + users.getPrenom() + " " + users.getNom() + " a affiche tous les postulants ");
                     historiqueService.Create(historique);
 
                     return ResponseMessage.generateResponse("ok", HttpStatus.OK, utilisateurService.TotalPersonnel());
@@ -820,7 +820,7 @@ public class SuperAdminController {
                         Date datehisto = new Date();
                         historique.setDatehistorique(datehisto);
                         historique.setDescription(
-                                "" + users.getPrenom() + " " + users.getNom() + " a affiché les activités terminée ");
+                                "" + users.getPrenom() + " " + users.getNom() + " a affiche les activites terminée ");
                         historiqueService.Create(historique);
 
                         return ResponseMessage.generateResponse("error", HttpStatus.OK, activiteService.Termine());
@@ -865,7 +865,7 @@ public class SuperAdminController {
                         Date datehisto = new Date();
                         historique.setDatehistorique(datehisto);
                         historique.setDescription(
-                                "" + users.getPrenom() + " " + users.getNom() + " a affiché les activités par entite ");
+                                "" + users.getPrenom() + " " + users.getNom() + " a affiche les activités par entite ");
                         historiqueService.Create(historique);
                         return ResponseMessage.generateResponse("error", HttpStatus.OK,
                                 activiteService.ActiviteEntiteid(identite));
@@ -934,7 +934,7 @@ public class SuperAdminController {
                                 Date datehisto = new Date();
                                 historique.setDatehistorique(datehisto);
                                 historique.setDescription("" + users.getPrenom() + " " + users.getNom()
-                                        + " a affiché des postulant de l'activite " + activite.getNom());
+                                        + " a affiche des postulant de l'activite " + activite.getNom());
                                 historiqueService.Create(historique);
                             } catch (Exception e) {
                                 // TODO: handle exception
@@ -1250,7 +1250,7 @@ public class SuperAdminController {
                     historique.setDatehistorique(datehisto);
                     historique.setDescription(
                             "" + user.getPrenom() + " " + user.getNom()
-                                    + " a enregistré des apprenants ou participants");
+                                    + " a enregistre des apprenants ou participants");
                     historiqueService.Create(historique);
 
                     Activite ac = activiteService.GetById(idActivite);
@@ -1302,7 +1302,7 @@ public class SuperAdminController {
                     Date datehisto = new Date();
                     historique.setDatehistorique(datehisto);
                     historique.setDescription("" + user.getPrenom() + " " + user.getNom()
-                            + " a modifié l' apprenants ou le participant sur l'activite " + aouP.getActivite());
+                            + " a modifie l apprenants ou le participant sur lactivite " + aouP.getActivite());
                     historiqueService.Create(historique);
 
                     return ResponseMessage.generateResponse("ok", HttpStatus.OK,
@@ -1345,7 +1345,7 @@ public class SuperAdminController {
                     Date datehisto = new Date();
                     historique.setDatehistorique(datehisto);
                     historique.setDescription("" + user.getPrenom() + " " + user.getNom()
-                            + " a supprimé l' apprenants ou le participant sur l'activite " + aouP.getActivite());
+                            + " a supprime l apprenants ou le participant sur lactivite " + aouP.getActivite());
                     historiqueService.Create(historique);
 
                     return ResponseMessage.generateResponse("ok", HttpStatus.OK,
@@ -1389,7 +1389,7 @@ public class SuperAdminController {
                     Date datehisto = new Date();
                     historique.setDatehistorique(datehisto);
                     historique.setDescription(
-                            "" + user.getPrenom() + " " + user.getNom() + " a affiché un apprenant ou un participant ");
+                            "" + user.getPrenom() + " " + user.getNom() + " a affiche un apprenant ou un participant ");
                     historiqueService.Create(historique);
                 } catch (Exception e) {
                     // TODO: handle exception
@@ -1430,7 +1430,7 @@ public class SuperAdminController {
                     Date datehisto = new Date();
                     historique.setDatehistorique(datehisto);
                     historique.setDescription(
-                            "" + user.getPrenom() + " " + user.getNom() + " a ajouté le droit " + drt.getLibelle());
+                            "" + user.getPrenom() + " " + user.getNom() + " a ajoute le droit " + drt.getLibelle());
                     historiqueService.Create(historique);
                     return ResponseMessage.generateResponse("ok", HttpStatus.OK,
                             droitService.Create(drt));
@@ -1470,7 +1470,7 @@ public class SuperAdminController {
                 Date datehisto = new Date();
                 historique.setDatehistorique(datehisto);
                 historique.setDescription(
-                        "" + user.getPrenom() + " " + user.getNom() + " a modifié le droit " + drt.getLibelle());
+                        "" + user.getPrenom() + " " + user.getNom() + " a modifie le droit " + drt.getLibelle());
                 historiqueService.Create(historique);
             } catch (Exception e) {
                 // TODO: handle exception
@@ -1503,7 +1503,7 @@ public class SuperAdminController {
                 Historique historique = new Historique();
                 Date datehisto = new Date();
                 historique.setDatehistorique(datehisto);
-                historique.setDescription("" + user.getPrenom() + " " + user.getNom() + " a supprimé un droit ");
+                historique.setDescription("" + user.getPrenom() + " " + user.getNom() + " a supprime un droit ");
                 historiqueService.Create(historique);
             } catch (Exception e) {
                 // TODO: handle exception
@@ -1537,7 +1537,7 @@ public class SuperAdminController {
                 Date datehisto = new Date();
                 historique.setDatehistorique(datehisto);
                 historique.setDescription(
-                        "" + user.getPrenom() + " " + user.getNom() + " a affiché le droit " + droit.getLibelle());
+                        "" + user.getPrenom() + " " + user.getNom() + " a affiche le droit " + droit.getLibelle());
                 historiqueService.Create(historique);
             } catch (Exception e) {
                 // TODO: handle exception
@@ -1571,7 +1571,7 @@ public class SuperAdminController {
                 Date datehisto = new Date();
                 historique.setDatehistorique(datehisto);
                 historique.setDescription(
-                        "" + user.getPrenom() + " " + user.getNom() + " a affiché tous les  droits ");
+                        "" + user.getPrenom() + " " + user.getNom() + " a affiche tous les  droits ");
                 historiqueService.Create(historique);
             } catch (Exception e) {
                 // TODO: handle exception
@@ -1605,7 +1605,7 @@ public class SuperAdminController {
                 Date datehisto = new Date();
                 historique.setDatehistorique(datehisto);
                 historique
-                        .setDescription("" + user.getPrenom() + " " + user.getNom() + " a affiché le droit " + libelle);
+                        .setDescription("" + user.getPrenom() + " " + user.getNom() + " a affiche le droit " + libelle);
                 historiqueService.Create(historique);
             } catch (Exception e) {
                 // TODO: handle exception
@@ -1695,7 +1695,7 @@ public class SuperAdminController {
                     historique.setDatehistorique(datehisto);
                     historique
                             .setDescription(
-                                    "" + user.getPrenom() + " " + user.getNom() + " a crée  une nouvelle role ");
+                                    "" + user.getPrenom() + " " + user.getNom() + " a cree  une nouvelle role ");
                     historiqueService.Create(historique);
                     Role NewEntite = roleService.create(role1);
                     return ResponseMessage.generateResponse("ok", HttpStatus.OK, NewEntite);
@@ -1727,6 +1727,13 @@ public class SuperAdminController {
             Droit getRole = droitService.GetLibelle("Read Role");
 
             if (user.getRole().getDroits().contains(getRole)) {
+                Historique historique = new Historique();
+                Date datehisto = new Date();
+                historique.setDatehistorique(datehisto);
+                historique
+                        .setDescription(
+                                "" + user.getPrenom() + " " + user.getNom() + " a affiche les roles ");
+                historiqueService.Create(historique);
                 List<Role> getAllRole = roleService.getAll();
                 return ResponseMessage.generateResponse("ok", HttpStatus.OK, getAllRole);
             } else {
@@ -1754,6 +1761,14 @@ public class SuperAdminController {
             Droit ReadTirage = droitService.GetLibelle("Read Tirage");
 
             if (user.getRole().getDroits().contains(ReadTirage)) {
+
+                Historique historique = new Historique();
+                Date datehisto = new Date();
+                historique.setDatehistorique(datehisto);
+                historique
+                        .setDescription(
+                                "" + user.getPrenom() + " " + user.getNom() + " a afficher les tirages ");
+                historiqueService.Create(historique);
                 return ResponseMessage.generateResponse("ok", HttpStatus.OK,
                         tirageService.getAll());
             } else {
@@ -1795,6 +1810,14 @@ public class SuperAdminController {
                         ActiviteEntite.add(a);
                     }
                 }
+
+                Historique historique = new Historique();
+                Date datehisto = new Date();
+                historique.setDatehistorique(datehisto);
+                historique
+                        .setDescription(
+                                "" + user.getPrenom() + " " + user.getNom() + " a affiche les activites par entites ");
+                historiqueService.Create(historique);
 
                 return ResponseMessage.generateResponse("ok", HttpStatus.OK,
                         ActiviteEntite);
@@ -1838,6 +1861,14 @@ public class SuperAdminController {
                 // }
                 // }
 
+                Historique historique = new Historique();
+                Date datehisto = new Date();
+                historique.setDatehistorique(datehisto);
+                historique
+                        .setDescription(
+                                "" + user.getPrenom() + " " + user.getNom() + " a afficher les personnels par entite ");
+                historiqueService.Create(historique);
+
                 return ResponseMessage.generateResponse("ok", HttpStatus.OK,
                         entite.getUtilisateurEntite());
             } else {
@@ -1870,17 +1901,28 @@ public class SuperAdminController {
             if (user.getRole().getDroits().contains(RAoup)) {
                 for (AouP aou : aoup) {
                     if (aou.getActivite() == act.getAoup()) {
-                        return ResponseMessage.generateResponse("ok", HttpStatus.OK, listearetourner.add(aou));
+                        listearetourner.add(aou);
 
                     }
                     ;
                 }
 
+                Historique historique = new Historique();
+                Date datehisto = new Date();
+                historique.setDatehistorique(datehisto);
+                historique
+                        .setDescription(
+                                "" + user.getPrenom() + " " + user.getNom()
+                                        + " a afficher les participant une activite ");
+                historiqueService.Create(historique);
+
+                return ResponseMessage.generateResponse("ok", HttpStatus.OK, listearetourner);
+                // return ResponseMessage.generateResponse("error", HttpStatus.OK, "");
+
             } else {
                 return ResponseMessage.generateResponse("error", HttpStatus.OK, "Non autorisé");
 
             }
-            return ResponseMessage.generateResponse("error", HttpStatus.OK, "");
 
         } catch (Exception e) {
             // TODO: handle exception
@@ -1917,6 +1959,15 @@ public class SuperAdminController {
                     }
                 }
 
+                Historique historique = new Historique();
+                Date datehisto = new Date();
+                historique.setDatehistorique(datehisto);
+                historique
+                        .setDescription(
+                                "" + user.getPrenom() + " " + user.getNom()
+                                        + " a afficher les participant par entite ");
+                historiqueService.Create(historique);
+
                 List<AouP> apprenants = new ArrayList<>();
 
                 for (Activite a : ActiviteEntite) {
@@ -1952,6 +2003,14 @@ public class SuperAdminController {
 
             if (user.getRole().getDroits().contains(RTirage)) {
 
+                Historique historique = new Historique();
+                Date datehisto = new Date();
+                historique.setDatehistorique(datehisto);
+                historique
+                        .setDescription(
+                                "" + user.getPrenom() + " " + user.getNom() + " a afficher les tirages valides ");
+                historiqueService.Create(historique);
+
                 return ResponseMessage.generateResponse("ok", HttpStatus.OK,
                         tirageService.tiragesValides(true));
             } else {
@@ -1983,6 +2042,14 @@ public class SuperAdminController {
             Droit REntite = droitService.GetLibelle("Read ListePostulant");
 
             if (user.getRole().getDroits().contains(REntite)) {
+
+                Historique historique = new Historique();
+                Date datehisto = new Date();
+                historique.setDatehistorique(datehisto);
+                historique
+                        .setDescription(
+                                "" + user.getPrenom() + " " + user.getNom() + " a recuper une liste par  " + idliste);
+                historiqueService.Create(historique);
 
                 return ResponseMessage.generateResponse("ok", HttpStatus.OK,
                         list);
