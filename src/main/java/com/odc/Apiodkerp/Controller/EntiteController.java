@@ -91,31 +91,42 @@ public class EntiteController {
 
             Utilisateur user = utilisateurService.trouverParLoginAndPass(utilisateur.getLogin(),
                     utilisateur.getPassword());
+           List<Entite> entit = entiteService.GetAll();
 
             Droit createrole = droitService.GetLibelle("Create Entite");
 
             if (user.getRole().getDroits().contains(createrole)) {
-                try {
-                    Historique historique = new Historique();
-                    Date datehisto = new Date();
-                    historique.setDatehistorique(datehisto);
-                    historique
-                            .setDescription(
-                                    "" + user.getPrenom() + " " + user.getNom() + " a crée  une nouvelle entite ");
-                    historiqueService.Create(historique);
-                    Entite NewEntite = entiteService.Create(entite);
-                    return ResponseMessage.generateResponse("ok", HttpStatus.OK, NewEntite);
-                } catch (Exception e) {
-                    // TODO: handle exception
-                    return ResponseMessage.generateResponse("iciiii", HttpStatus.OK, e.getMessage());
+                for(Entite en:entit){
+                    if(entite.getGerant()==en.getGerant()){
+                        return ResponseMessage.generateResponse("error", HttpStatus.OK, "cette personne est deja gerant d'une entite");
 
+                    }else{
+                        try {
+                            Historique historique = new Historique();
+                            Date datehisto = new Date();
+                            historique.setDatehistorique(datehisto);
+                            historique
+                                    .setDescription(
+                                            "" + user.getPrenom() + " " + user.getNom() + " a crée  une nouvelle entite ");
+                            historiqueService.Create(historique);
+                            Entite NewEntite = entiteService.Create(entite);
+                            return ResponseMessage.generateResponse("ok", HttpStatus.OK, NewEntite);
+                        } catch (Exception e) {
+                            // TODO: handle exception
+                            return ResponseMessage.generateResponse("iciiii", HttpStatus.OK, e.getMessage());
+
+                        }
+                    }
                 }
 
-            } else {
+
+            }else {
                 return ResponseMessage.generateResponse("error", HttpStatus.OK, "non autorise");
             }
 
-        } catch (Exception e) {
+            return ResponseMessage.generateResponse("error", HttpStatus.OK, "erreur");
+
+        }catch (Exception e) {
             // TODO: handle exception
             return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
         }
