@@ -281,7 +281,7 @@ public class UtilisateurController {
                             historique
                                     .setDescription(
                                             "" + user.getPrenom() + " " + user.getNom()
-                                                    + " a supprime l'activite "
+                                                    + " a supprime l activite "
                                                     + activite.getNom());
                             historiqueService.Create(historique);
                         } catch (Exception e) {
@@ -426,7 +426,7 @@ public class UtilisateurController {
                         Date datehisto = new Date();
                         historique.setDatehistorique(datehisto);
                         historique.setDescription(
-                                "" + user.getPrenom() + " " + user.getNom() + " a affiché  " + activite.getNom());
+                                "" + user.getPrenom() + " " + user.getNom() + " a affiche  " + activite.getNom());
                         historiqueService.Create(historique);
                     } catch (Exception e) {
                         // TODO: handle exception
@@ -619,7 +619,6 @@ public class UtilisateurController {
 
             Salle salle = salleService.read(idsalle);
 
-
             if (file != null) {
                 try {
                     Etat etat = etatService.recupereParStatut("A VENIR");
@@ -627,10 +626,8 @@ public class UtilisateurController {
                     Utilisateur user = utilisateurService.trouverParLoginAndPass(utilisateurs.getLogin(),
                             utilisateurs.getPassword());
                     Droit createActivite = droitService.GetLibelle("Create Activite");
-                    
+
                     TypeActivite type = typeActiviteService.getById(idtype);
-
-
 
                     activite.setTypeActivite(type);
                     activite.setSalle(salle);
@@ -658,16 +655,17 @@ public class UtilisateurController {
                                 historique.setDatehistorique(datehisto);
                                 historique
                                         .setDescription(
-                                                "" + user.getPrenom() + " " + user.getNom() + " a crée l'activité "
+                                                "" + user.getPrenom() + " " + user.getNom() + " a cree l activite "
                                                         + activite.getNom());
                                 historiqueService.Create(historique);
+
+                                return ResponseMessage.generateResponse("ok", HttpStatus.OK,
+                                        activiteService.Create(activite));
                             } catch (Exception e) {
                                 // TODO: handle exception
                                 return ResponseMessage.generateResponse("iciiii", HttpStatus.OK, e.getMessage());
 
                             }
-                            return ResponseMessage.generateResponse("ok", HttpStatus.OK,
-                                    activiteService.Create(activite));
 
                         } else {
                             return ResponseMessage.generateResponse("error", HttpStatus.OK, "Non autorisé");
