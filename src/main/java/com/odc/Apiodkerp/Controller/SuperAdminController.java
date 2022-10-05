@@ -1946,6 +1946,43 @@ public class SuperAdminController {
         }
     }
 
+
+
+    /// ::::::::::::::::::::::::::Liste par id
+    @ApiOperation(value = "recupere une liste par id")
+    @PostMapping("/liste/{idliste}")
+    public ResponseEntity<Object> ListeParId(@PathVariable("idliste") Long idliste,
+            @RequestParam(value = "user") String userVenant) {
+        try {
+
+            Utilisateur utilisateur = new JsonMapper().readValue(userVenant, Utilisateur.class);
+
+            Utilisateur user = utilisateurService.trouverParLoginAndPass(utilisateur.getLogin(),
+                    utilisateur.getPassword());
+
+            ListePostulant list = listePostulantService.GetById(idliste);
+
+
+            Droit REntite = droitService.GetLibelle("Read ListePostulant");
+
+
+            if (user.getRole().getDroits().contains(REntite)) {
+
+                
+                return ResponseMessage.generateResponse("ok", HttpStatus.OK,
+                        list);
+            } else {
+                return ResponseMessage.generateResponse("error", HttpStatus.OK, "Non autorisé");
+
+            }
+
+        } catch (Exception e) {
+            // TODO: handle exception
+            return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
+
+        }
+    }
+
     // l'ensemble des listes tirer lors de tirage pour kadi
     /*
      * @ApiOperation(value = "Liste tirer lors d'un tirage")

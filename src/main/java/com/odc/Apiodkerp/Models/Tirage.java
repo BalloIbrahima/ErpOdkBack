@@ -25,6 +25,7 @@ public class Tirage {
     private Date date;
     private  boolean valider;
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "idlistepostulant")
     ListePostulant listepostulant;
