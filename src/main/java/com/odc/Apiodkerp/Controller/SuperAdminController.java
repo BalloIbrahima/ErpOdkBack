@@ -524,7 +524,6 @@ public class SuperAdminController {
 
     }
 
-
     @ApiOperation(value = "Affichager un responsable")
     @PostMapping("/get/responsable/{id}")
     public ResponseEntity<Object> GetIdResponsable(@PathVariable("id") Long id,
@@ -1217,14 +1216,15 @@ public class SuperAdminController {
     // :::::::::::::::::::::::::::::::::::::::Apprenants ou Participant
     // :::::::::::::::::::::::::::::::
     @ApiOperation(value = "Ajouter AppouParticipant")
-    @PostMapping("/aoup")
+    @PostMapping("/aoup/{idActivite}")
     public ResponseEntity<Object> ajouterAouP(@RequestParam(value = "aoup") String aoup,
-            @RequestParam(value = "user") String userVenant) {
+            @RequestParam(value = "user") String userVenant, @PathVariable("idActivite") Long idActivite) {
         try {
 
             Utilisateur utilisateur = new JsonMapper().readValue(userVenant, Utilisateur.class);
 
-            AouP aou = new JsonMapper().readValue(aoup, AouP.class);
+            Postulant p = new JsonMapper().readValue(aoup, Postulant.class);
+
             Utilisateur user = utilisateurService.trouverParLoginAndPass(utilisateur.getLogin(),
                     utilisateur.getPassword());
 
@@ -1232,6 +1232,7 @@ public class SuperAdminController {
 
             if (user.getRole().getDroits().contains(Caoup)) {
                 try {
+
                     Historique historique = new Historique();
                     Date datehisto = new Date();
                     historique.setDatehistorique(datehisto);
@@ -1239,6 +1240,13 @@ public class SuperAdminController {
                             "" + user.getPrenom() + " " + user.getNom()
                                     + " a enregistré des apprenants ou participants");
                     historiqueService.Create(historique);
+
+                    Activite ac = activiteService.GetById(idActivite);
+                    Postulant createP = postulantService.creer(p);
+
+                    AouP aou = new AouP();
+                    aou.setActivite(ac);
+                    aou.setPostulant(createP);
 
                     return ResponseMessage.generateResponse("ok", HttpStatus.OK,
                             aouPService.Create(aou));
@@ -1651,11 +1659,12 @@ public class SuperAdminController {
 
         }
     }
-    //ROLE===============================================
+
+    // ROLE===============================================
     @ApiOperation(value = "Creer un role.")
     @PostMapping("/create/role")
     public ResponseEntity<Object> createRole(@RequestParam(value = "role") String role,
-                                               @RequestParam(value = "user") String userVenant) {
+            @RequestParam(value = "user") String userVenant) {
         try {
 
             Role role1 = new JsonMapper().readValue(role, Role.class);
@@ -1694,6 +1703,7 @@ public class SuperAdminController {
         }
 
     }
+
     @ApiOperation(value = "Afficher tous les roles")
     @PostMapping("/role/getAll")
     public ResponseEntity<Object> GetAllEntite(@RequestParam(value = "user") String userVenant) {
@@ -1717,8 +1727,8 @@ public class SuperAdminController {
         }
 
     }
-    
-    //::::::::::::::::::::::::Toutes les tirages :::::::::::::::::::::::::::::::
+
+    // ::::::::::::::::::::::::Toutes les tirages :::::::::::::::::::::::::::::::
     @ApiOperation(value = "Toutes les tirages")
     @PostMapping("/TouteslesTirages")
     public ResponseEntity<Object> TouteslesTirages(@RequestParam(value = "user") String userVenant) {
@@ -1745,10 +1755,8 @@ public class SuperAdminController {
 
         }
     }
-          
-    
 
-   /// ::::::::::::::::::::::::::activite par entite
+    /// ::::::::::::::::::::::::::activite par entite
     @ApiOperation(value = "activite par entite")
     @PostMapping("/entiteActivites/{identite}")
     public ResponseEntity<Object> EntitesActivite(@PathVariable("identite") Long identite,
@@ -1834,7 +1842,8 @@ public class SuperAdminController {
 
     @ApiOperation(value = "Les partcipants d'une activite donnée ")
     @PostMapping("/ParticipantParActivte/{idactivite}")
-    public ResponseEntity<Object> ParticipantParActivte(@PathVariable long idactivite,@RequestParam(value = "user") String userVenant) {
+    public ResponseEntity<Object> ParticipantParActivte(@PathVariable long idactivite,
+            @RequestParam(value = "user") String userVenant) {
         try {
             Utilisateur utilisateur = new JsonMapper().readValue(userVenant, Utilisateur.class);
 
@@ -1842,16 +1851,17 @@ public class SuperAdminController {
                     utilisateur.getPassword());
 
             Activite act = activiteService.GetById(idactivite);
-            Droit  RAoup = droitService.GetLibelle("Read AouP");
+            Droit RAoup = droitService.GetLibelle("Read AouP");
             List<AouP> aoup = aouPService.GetAll();
-            List<AouP> listearetourner=new ArrayList<>();
+            List<AouP> listearetourner = new ArrayList<>();
 
             if (user.getRole().getDroits().contains(RAoup)) {
-                for(AouP aou:aoup){
-                    if(aou.getActivite()==act.getAoup()){
-                        return ResponseMessage.generateResponse("ok", HttpStatus.OK,listearetourner.add(aou)    );
+                for (AouP aou : aoup) {
+                    if (aou.getActivite() == act.getAoup()) {
+                        return ResponseMessage.generateResponse("ok", HttpStatus.OK, listearetourner.add(aou));
 
-                    };
+                    }
+                    ;
                 }
 
             } else {
@@ -1859,7 +1869,6 @@ public class SuperAdminController {
 
             }
             return ResponseMessage.generateResponse("error", HttpStatus.OK, "");
-
 
         } catch (Exception e) {
             // TODO: handle exception
@@ -1929,7 +1938,6 @@ public class SuperAdminController {
 
             Droit RTirage = droitService.GetLibelle("Read Tirage");
 
-
             if (user.getRole().getDroits().contains(RTirage)) {
 
                 return ResponseMessage.generateResponse("ok", HttpStatus.OK,
@@ -1946,8 +1954,6 @@ public class SuperAdminController {
         }
     }
 
-
-
     /// ::::::::::::::::::::::::::Liste par id
     @ApiOperation(value = "recupere une liste par id")
     @PostMapping("/liste/{idliste}")
@@ -1962,13 +1968,10 @@ public class SuperAdminController {
 
             ListePostulant list = listePostulantService.GetById(idliste);
 
-
             Droit REntite = droitService.GetLibelle("Read ListePostulant");
-
 
             if (user.getRole().getDroits().contains(REntite)) {
 
-                
                 return ResponseMessage.generateResponse("ok", HttpStatus.OK,
                         list);
             } else {
