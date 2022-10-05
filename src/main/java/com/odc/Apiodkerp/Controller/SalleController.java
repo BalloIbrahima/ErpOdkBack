@@ -114,7 +114,7 @@ public class SalleController {
 
     // ::::::::::Recuperer salle par id
     @ApiOperation(value = "Recuperer salle par id")
-    @PostMapping("getSalle")
+    @PostMapping("getSalle/{id}")
     public ResponseEntity<Object> getSalle(@PathVariable("id") Long id,
             @RequestParam(value = "user") String userVenant) {
         try {
@@ -135,12 +135,13 @@ public class SalleController {
                         historique.setDescription("" + user.getPrenom() + " " + user.getNom()
                                 + " a recuperer une salle du nom de " + salle.getId());
                         historiqueService.Create(historique);
+                        return ResponseMessage.generateResponse("ok", HttpStatus.OK, salleService.read(id));
+
                     } catch (Exception e) {
                         // TODO: handle exception
                         return ResponseMessage.generateResponse("iciiii", HttpStatus.OK, e.getMessage());
 
                     }
-                    return ResponseMessage.generateResponse("ok", HttpStatus.OK, salleService.read(id));
 
                 } else {
                     return ResponseMessage.generateResponse("error", HttpStatus.OK, "Non autorisé");
