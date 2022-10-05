@@ -1650,7 +1650,37 @@ public class SuperAdminController {
         }
     }
 
-    /// ::::::::::::::::::::::::::activite par entite
+    //::::::::::::::::::::::::Toutes les tirages :::::::::::::::::::::::::::::::
+    @ApiOperation(value = "Toutes les tirages")
+    @PostMapping("/TouteslesTirages")
+    public ResponseEntity<Object> TouteslesTirages(@RequestParam(value = "user") String userVenant) {
+        try {
+
+            Utilisateur utilisateur = new JsonMapper().readValue(userVenant, Utilisateur.class);
+
+            Utilisateur user = utilisateurService.trouverParLoginAndPass(utilisateur.getLogin(),
+                    utilisateur.getPassword());
+
+            Droit ReadTirage = droitService.GetLibelle("Read Tirage");
+
+            if (user.getRole().getDroits().contains(ReadTirage)) {
+                return ResponseMessage.generateResponse("ok", HttpStatus.OK,
+                        tirageService.getAll());
+            } else {
+                return ResponseMessage.generateResponse("error", HttpStatus.OK, "Non autorisé");
+
+            }
+
+        } catch (Exception e) {
+            // TODO: handle exception
+            return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
+
+        }
+    }
+          
+    
+
+   /// ::::::::::::::::::::::::::activite par entite
     @ApiOperation(value = "activite par entite")
     @PostMapping("/entiteActivites/{identite}")
     public ResponseEntity<Object> EntitesActivite(@PathVariable("identite") Long identite,
@@ -1726,6 +1756,42 @@ public class SuperAdminController {
                 return ResponseMessage.generateResponse("error", HttpStatus.OK, "Non autorisé");
 
             }
+
+        } catch (Exception e) {
+            // TODO: handle exception
+            return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
+
+        }
+    }
+
+    @ApiOperation(value = "Les partcipants d'une activite donnée ")
+    @PostMapping("/ParticipantParActivte/{idactivite}")
+    public ResponseEntity<Object> ParticipantParActivte(@PathVariable long idactivite,@RequestParam(value = "user") String userVenant) {
+        try {
+            Utilisateur utilisateur = new JsonMapper().readValue(userVenant, Utilisateur.class);
+
+            Utilisateur user = utilisateurService.trouverParLoginAndPass(utilisateur.getLogin(),
+                    utilisateur.getPassword());
+
+            Activite act = activiteService.GetById(idactivite);
+            Droit  RAoup = droitService.GetLibelle("Read AouP");
+            List<AouP> aoup = aouPService.GetAll();
+            List<AouP> listearetourner=new ArrayList<>();
+
+            if (user.getRole().getDroits().contains(RAoup)) {
+                for(AouP aou:aoup){
+                    if(aou.getActivite()==act.getAoup()){
+                        return ResponseMessage.generateResponse("ok", HttpStatus.OK,listearetourner.add(aou)    );
+
+                    };
+                }
+
+            } else {
+                return ResponseMessage.generateResponse("error", HttpStatus.OK, "Non autorisé");
+
+            }
+            return ResponseMessage.generateResponse("error", HttpStatus.OK, "");
+
 
         } catch (Exception e) {
             // TODO: handle exception
