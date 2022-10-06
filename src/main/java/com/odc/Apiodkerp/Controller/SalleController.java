@@ -95,7 +95,7 @@ public class SalleController {
                     Date datehisto = new Date();
                     historique.setDatehistorique(datehisto);
                     historique.setDescription("" + user.getPrenom() + " " + user.getNom()
-                            + " a crée une salle du nom de " + salle.getLibelle());
+                            + " a cree une salle du nom de " + salle.getLibelle());
                     historiqueService.Create(historique);
                 } catch (Exception e) {
                     // TODO: handle exception

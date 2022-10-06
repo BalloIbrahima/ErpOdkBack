@@ -15,4 +15,6 @@ public interface IntervenantExterneService {
     IntervenantExterne getById(Long id);
 
     List<IntervenantExterne> getAll();
+
+    IntervenantExterne getByEmail(String email);
 }
