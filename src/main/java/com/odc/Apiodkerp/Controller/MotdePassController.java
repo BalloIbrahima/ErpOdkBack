@@ -125,24 +125,31 @@ public class MotdePassController {
                      lien=lien+""+randomizedCharacter;
                  }
                  
-                 ForgetPass forget=new ForgetPass();
+                 try {
+                    ForgetPass forget=new ForgetPass();
 
-                 EmailDetails detail=new EmailDetails();
-                 detail.setRecipient(user.getEmail());
-                 detail.setMsgBody("Vous avez demandez une reinitialisation de mot de passe ! \n Veuillez clicquez sur le lien suivant :\nhttp://localhost:8100/forgotpassword/"+lien);
-                 email.sendSimpleMail(detail);
-                    
-                 Date date = new Date();
-                 forget.setCode(lien);
-                 forget.setUser(user);
-                 forget.setDate(date);
-                 forgetpass.Create(forget);
+                    EmailDetails detail=new EmailDetails();
+                    detail.setRecipient(user.getEmail());
+                    detail.setMsgBody("Vous avez demandez une reinitialisation de mot de passe ! \n Veuillez clicquez sur le lien suivant :\nhttp://localhost:8100/forgotpassword/"+lien);
+                    email.sendSimpleMail(detail);
+                        
+                    Date date = new Date();
+                    forget.setCode(lien);
+                    forget.setUser(user);
+                    forget.setDate(date);
+                    forgetpass.Create(forget);
 
 
-                 return ResponseMessage.generateResponse("ok", HttpStatus.OK, "Email envoye !");
+                    return ResponseMessage.generateResponse("ok", HttpStatus.OK, "Email envoye !");
+                 } catch (Exception e) {
+                    // TODO: handle exception
+                    return ResponseMessage.generateResponse("errorhh", HttpStatus.OK, e.getMessage());
+
+                 }
+                 
 
              }else{
-                 return ResponseMessage.generateResponse("error", HttpStatus.OK, "Cet utilisateur n'existe pas !");
+                 return ResponseMessage.generateResponse("errordd", HttpStatus.OK, "Cet utilisateur n'existe pas !");
  
              }
              

@@ -496,7 +496,7 @@ public class ApiodkerpApplication {
 			Utilisateur ballo = new Utilisateur();
 			ballo.setActive(true);
 			ballo.setNom("Ballo");
-			ballo.setEmail("ballo@gmail.com");
+			ballo.setEmail("ibrahimaballo01@gmail.com");
 			ballo.setRole(admin);
 			ballo.setPrenom("Ibrahima");
 			ballo.setGenre(Genre.Masculin);
