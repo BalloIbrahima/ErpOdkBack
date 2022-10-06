@@ -24,12 +24,13 @@ public class ListePostulant {
     private String libelle;
     private Date dateimport;
 
-    @JsonIgnore
     @OneToMany(mappedBy = "listepostulant")
     List<Tirage> tirages = new ArrayList<>();
 
-    @JsonIgnore
     @ManyToMany(mappedBy = "listePostulants")
     private List<Postulant> postulants = new ArrayList<>();
 
+    @ManyToOne
+    @JoinColumn(name = "idactivite")
+    private Activite activite;
 }

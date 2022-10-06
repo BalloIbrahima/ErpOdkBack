@@ -20,21 +20,21 @@ public class Entite {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Column(unique = true)
     private String libelleentite;
     @Lob
     private String description;
-    private  String image;
+    private String image;
 
     @ManyToOne
     @JoinColumn(name = "utilisateur")
     private Utilisateur createur;
-
 
     @JsonIgnore
     @OneToMany(mappedBy = "monEntite")
     List<Utilisateur> utilisateurEntite = new ArrayList<>();
 
     @OneToOne
-    @JoinColumn(name = "idutilisateur", referencedColumnName = "id")
+    @JoinColumn(name = "idutilisateur", referencedColumnName = "id", unique = true)
     private Utilisateur gerant;
 }

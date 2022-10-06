@@ -44,6 +44,7 @@ public class ApiodkerpApplication {
 		urlBasedCorsConfigurationSource.registerCorsConfiguration("/**", corsConfiguration);
 		return new CorsFilter(urlBasedCorsConfigurationSource);
 	}
+
 	public static void main(String[] args) {
 		ApplicationContext ctx = SpringApplication.run(ApiodkerpApplication.class, args);
 		UtilisateurService utilisateurService = ctx.getBean(UtilisateurService.class);
@@ -560,6 +561,7 @@ public class ApiodkerpApplication {
 
 		/// format email
 		FormatEmail formatOrang = new FormatEmail();
+		formatOrang.setId(1L);
 		formatOrang.setLibelle("@orangemali.com");
 		formatEmailService.Create(formatOrang);
 

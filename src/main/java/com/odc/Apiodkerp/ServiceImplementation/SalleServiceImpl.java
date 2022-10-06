@@ -48,7 +48,7 @@ public class SalleServiceImpl implements SalleService {
 
     @Override
     public Salle getByIdsalle(long id) {
-        return salleRepository.getById(id);
+        return salleRepository.findById(id).get();
     }
 
     @Override
