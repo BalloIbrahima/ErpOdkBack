@@ -2138,6 +2138,58 @@ public class SuperAdminController {
         }
     }
 
+
+    @ApiOperation(value = "Ensemble des intervenants.")
+    @PostMapping("/intervenant/all")
+    public ResponseEntity<Object> createIntervenant(@RequestParam(value = "user") String userVenant) {
+        try {
+
+            Utilisateur utilisateu = new JsonMapper().readValue(userVenant, Utilisateur.class);
+
+            // Role role = RoleService.GetByLibelle("USER");
+
+            Utilisateur users = utilisateurService.trouverParLoginAndPass(utilisateu.getLogin(),
+                    utilisateu.getPassword());
+            Droit CUser = droitService.GetLibelle("Read Intervenant");
+
+            if (users != null) {
+                if (users.getRole().getDroits().contains(CUser)) {
+
+
+                    try {
+                        Historique historique = new Historique();
+                        Date datehisto = new Date();
+                        historique.setDatehistorique(datehisto);
+                        historique.setDescription(users.getPrenom() + " " + users.getNom()
+                                + " a cree recuperer la liste des intervenants externes.");
+
+                        historiqueService.Create(historique);
+
+                        //IntervenantExterne NewUser = intervenantExterneService.creer(users);
+                        // System.out.println(NewUser.getLogin());
+                        return ResponseMessage.generateResponse("ok", HttpStatus.OK, intervenantExterneService.getAll());
+                    } catch (Exception e) {
+                        // TODO: handle exception
+                        return ResponseMessage.generateResponse("ijjciiii", HttpStatus.OK, e.getMessage());
+
+                    }
+
+                   
+
+                } else {
+                    return ResponseMessage.generateResponse("error", HttpStatus.OK, "Non autorisé");
+
+                }
+            } else {
+                return ResponseMessage.generateResponse("error", HttpStatus.OK, "Cet utilisateur n'existe pas !");
+
+            }
+        } catch (Exception e) {
+            // TODO: handle exception
+            return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
+        }
+    }
+
     // INTERVENANT
     // EXTERNE-------------------------------------------------------------->
 
