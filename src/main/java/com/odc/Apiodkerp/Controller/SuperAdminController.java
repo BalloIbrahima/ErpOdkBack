@@ -916,7 +916,7 @@ public class SuperAdminController {
             if (activite.getDateDebut().after(date1) && activite.getDateDebut().before(date2)
                     && activite.getDateFin().before(date2)) {
 
-                if (tirage.getActivite().getId() == activite.getId() && pt.getTirage().getId() == tirage.getId()) {
+                if (tirage.getListepostulant().getActivite().getId() == activite.getId() && pt.getTirage().getId() == tirage.getId()) {
 
                     // :::::::::::::::::::::::::::::Histroque::::::::::::::::::::::::::::::::::
 
