@@ -2,6 +2,7 @@ package com.odc.Apiodkerp.Controller;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.odc.Apiodkerp.Configuration.ResponseMessage;
 import com.odc.Apiodkerp.Models.EmailDetails;
+import com.odc.Apiodkerp.Models.ForgetPass;
 import com.odc.Apiodkerp.Models.Utilisateur;
 import com.odc.Apiodkerp.Service.ActiviteService;
 import com.odc.Apiodkerp.Service.AouPService;
@@ -31,6 +32,7 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
@@ -102,7 +104,7 @@ public class MotdePassController {
 
 
      /// ::::::::::::::::::::::::::Liste par id
-     @ApiOperation(value = "recupere une liste par id")
+     @ApiOperation(value = "Send Mail")
      @PostMapping("/forgetpassword")
      public ResponseEntity<Object> SendEmail(@RequestParam(value = "user") String userVenant) {
          try {
@@ -119,11 +121,19 @@ public class MotdePassController {
                      char randomizedCharacter = (char) (random.nextInt(26) + 'a');
                      lien=lien+""+randomizedCharacter;
                  }
- 
+                 
+                 ForgetPass forget=new ForgetPass();
+
                  EmailDetails detail=new EmailDetails();
                  detail.setRecipient(user.getEmail());
                  detail.setMsgBody("Vous avez demandez une reinitialisation de mot de passe ! \n Veuillez clicquez sur le lien suivant :\nhttp://localhost:8100/forgotpassword/"+lien);
                  email.sendSimpleMail(detail);
+                    
+                 Date date = new Date();
+                 forget.setCode(lien);
+                 forget.setUser(user);
+                 forget.setDate(date);
+
 
                  return ResponseMessage.generateResponse("ok", HttpStatus.OK, "Email envoye !");
 
