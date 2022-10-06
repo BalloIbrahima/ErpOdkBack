@@ -324,11 +324,19 @@ public class SalleController {
                                 && act.getDateFin().after(date2)
                                 || act.getDateDebut().after(date1) && act.getDateDebut().after(date2)
                                         && act.getDateFin().before(date1) && act.getDateFin().before(date2)) {
-                            // Historique
-
-                            salle.add(act.getSalle());
+                                
+                                // Historique
+                                salle.add(act.getSalle());
                         }
                     }
+
+                    List<Salle> salles = salleService.getAll();
+                    for (Salle s:salles){
+                        if(s.getActivite().size()==0){
+                            salle.add(s);
+                        }
+                    }
+
 
                     try {
                         Historique historique = new Historique();
