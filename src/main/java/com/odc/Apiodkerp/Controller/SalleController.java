@@ -84,7 +84,7 @@ public class SalleController {
             Utilisateur user = utilisateurService.trouverParLoginAndPass(utilisateur.getLogin(),
                     utilisateur.getPassword());
 
-            Droit cSalle=droitService.GetLibelle("Create Salle");
+            Droit cSalle = droitService.GetLibelle("Create Salle");
 
             // Utilisateur utilisateur = utilisateurService.trouverParLoginAndPass(login,
             // password);
@@ -102,7 +102,7 @@ public class SalleController {
                     return ResponseMessage.generateResponse("iciiii", HttpStatus.OK, e.getMessage());
 
                 }
-                //salle.setUtilisateur(utilisateur);
+                // salle.setUtilisateur(utilisateur);
                 return ResponseMessage.generateResponse("ok", HttpStatus.OK, salleService.create(salle));
             } else {
                 return ResponseMessage.generateResponse("error", HttpStatus.OK, "non autorise");
@@ -324,19 +324,11 @@ public class SalleController {
                                 && act.getDateFin().after(date2)
                                 || act.getDateDebut().after(date1) && act.getDateDebut().after(date2)
                                         && act.getDateFin().before(date1) && act.getDateFin().before(date2)) {
-                                
-                                // Historique
-                                salle.add(act.getSalle());
+
+                            // Historique
+                            salle.add(act.getSalle());
                         }
                     }
-
-                    List<Salle> salles = salleService.getAll();
-                    for (Salle s:salles){
-                        if(s.getActivite().size()==0){
-                            salle.add(s);
-                        }
-                    }
-
 
                     try {
                         Historique historique = new Historique();
@@ -444,6 +436,14 @@ public class SalleController {
                             salle.add(act.getSalle());
                         }
                     }
+
+                    List<Salle> salles = salleService.getAll();
+                    for (Salle s : salles) {
+                        if (s.getActivite().size() == 0) {
+                            salle.add(s);
+                        }
+                    }
+                    
                     try {
                         Historique historique = new Historique();
                         Date datehisto = new Date();
@@ -476,6 +476,46 @@ public class SalleController {
     @ApiOperation(value = "Les salles indisponible")
     @PostMapping("/getSalles/indisponible/{login}/{password}")
     public ResponseEntity<Object> getSallesIndispo(@RequestParam(value = "user") String userVenant) {
+        try {
+
+            Utilisateur utilisateur = new JsonMapper().readValue(userVenant, Utilisateur.class);
+
+            Utilisateur user = utilisateurService.trouverParLoginAndPass(utilisateur.getLogin(),
+                    utilisateur.getPassword());
+            Droit Rsalle = droitService.GetLibelle("Read Salle");
+
+            if (user.getRole().getDroits().contains(Rsalle)) {
+                try {
+                    Historique historique = new Historique();
+                    Date datehisto = new Date();
+                    historique.setDatehistorique(datehisto);
+                    historique.setDescription(
+                            "" + user.getPrenom() + " " + user.getNom() + " a afficher  les salles indisponible");
+                    historiqueService.Create(historique);
+
+                    return ResponseMessage.generateResponse("ok", HttpStatus.OK,
+                            salleService.ParEtat(false));
+                } catch (Exception e) {
+                    // TODO: handle exception
+                    return ResponseMessage.generateResponse("iciiii", HttpStatus.OK, e.getMessage());
+
+                }
+
+            } else {
+                return ResponseMessage.generateResponse("error", HttpStatus.OK, "Non autorise");
+            }
+
+        } catch (Exception e) {
+            // TODO: handle exception
+            return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
+
+        }
+    }
+
+    // :::::::::::::::::::::::Suprimer salle
+    @ApiOperation(value = "Suprimer salle")
+    @PostMapping("/suprime/{idSalle}")
+    public ResponseEntity<Object> SuprimerSalle(@PathVariable("idSalle") Long idSalle) {
         try {
 
             Utilisateur utilisateur = new JsonMapper().readValue(userVenant, Utilisateur.class);

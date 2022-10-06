@@ -87,6 +87,7 @@ public class EntiteController {
 
             entite = new JsonMapper().readValue(enti, Entite.class);
             if (file != null) {
+                System.out.println("ggggg");
                 entite.setImage(SaveImage.save("activite", file, entite.getLibelleentite()));
             }
             Utilisateur utilisateur = new JsonMapper().readValue(userVenant, Utilisateur.class);
