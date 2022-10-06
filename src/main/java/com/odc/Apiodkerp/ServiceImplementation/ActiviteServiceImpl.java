@@ -67,6 +67,11 @@ public class ActiviteServiceImpl implements ActiviteService {
     }
 
     @Override
+    public List<Activite> FindAllActivite() {
+        return activiteRepository.trouveractivitepar();
+    }
+
+    @Override
     public String attribuerSalle(long idsalle, long idactivite) {
         Activite activitecourant = activiteRepository.findById(idactivite).orElse(null);
         Salle salleverifiee = salleRepository.findById(idsalle).orElse(null);

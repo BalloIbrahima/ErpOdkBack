@@ -19,6 +19,7 @@ public interface ActiviteService {
 
     List<Activite> FindAllAct();
 
+   List<Activite> FindAllActivite();
     // Activite en fonction de l'etat
     Activite GetByEtat(Etat etat);
 

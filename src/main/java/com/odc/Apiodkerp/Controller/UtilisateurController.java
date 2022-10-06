@@ -257,17 +257,24 @@ public class UtilisateurController {
 
             @RequestParam(value = "user") String userVenant) {
 
+        Utilisateur user=null;
+        Droit deleteActivite=null;
+        Activite activite = activiteService.GetById(idactivite);
+
         try {
-            Activite activite = activiteService.GetById(idactivite);
             Utilisateur utilisateur = new JsonMapper().readValue(userVenant, Utilisateur.class);
 
             Utilisateur utilisateurs = new JsonMapper().readValue(userVenant, Utilisateur.class);
 
-            Utilisateur user = utilisateurService.trouverParLoginAndPass(utilisateurs.getLogin(),
+             user = utilisateurService.trouverParLoginAndPass(utilisateurs.getLogin(),
                     utilisateurs.getPassword());
 
-            Droit deleteActivite = droitService.GetLibelle("Delete Activite");
+           deleteActivite = droitService.GetLibelle("Delete Activite");
 
+        } catch (Exception e) {
+            // TODO: handle exception
+            return ResponseMessage.generateResponse("error11", HttpStatus.OK, e.getMessage());
+        }
             if (user != null) {
                 if (user.getRole().getDroits().contains(deleteActivite)) {
                     Role admin = RoleService.GetByLibelle("ADMIN");
@@ -305,10 +312,7 @@ public class UtilisateurController {
 
             }
 
-        } catch (Exception e) {
-            // TODO: handle exception
-            return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
-        }
+
 
     }
 
@@ -383,6 +387,53 @@ public class UtilisateurController {
                         historiqueService.Create(historique);
 
                         return ResponseMessage.generateResponse("ok", HttpStatus.OK, activiteService.FindAllAct());
+
+                    } catch (Exception e) {
+                        // TODO: handle exception
+                        return ResponseMessage.generateResponse("iciiii", HttpStatus.OK, e.getMessage());
+
+                    }
+                } else {
+                    return ResponseMessage.generateResponse("error", HttpStatus.OK, "Non autorisé");
+                }
+
+            } else {
+                return ResponseMessage.generateResponse("error", HttpStatus.OK, "Cet utilisateur n'existe pas !");
+
+            }
+
+        } catch (Exception e) {
+            // TODO: handle exception
+            return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
+        }
+    }
+
+
+    //AUTRE METHODE POUR AFFICHER TOUTES LES ACTIVITES
+    @ApiOperation(value = "Afficher toutes les  activite autre methode  ")
+    @PostMapping("/allactivites")
+
+    public ResponseEntity<Object> ToutesActiviteS(@RequestParam(value = "user") String userVenant) {
+        try {
+
+            Utilisateur utilisateurs = new JsonMapper().readValue(userVenant, Utilisateur.class);
+
+            Utilisateur user = utilisateurService.trouverParLoginAndPass(utilisateurs.getLogin(),
+                    utilisateurs.getPassword());
+
+            Droit readActivite = droitService.GetLibelle("Read Activite");
+
+            if (user != null) {
+                if (user.getRole().getDroits().contains(readActivite)) {
+                    try {
+                        Historique historique = new Historique();
+                        Date datehisto = new Date();
+                        historique.setDatehistorique(datehisto);
+                        historique.setDescription(
+                                "" + user.getPrenom() + " " + user.getNom() + " a affiche toutes les activites ");
+                        historiqueService.Create(historique);
+
+                        return ResponseMessage.generateResponse("ok", HttpStatus.OK, activiteService.FindAllActivite());
 
                     } catch (Exception e) {
                         // TODO: handle exception

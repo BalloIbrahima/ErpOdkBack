@@ -64,7 +64,7 @@ public class Activite {
 
 
     @JsonIgnore
-    @OneToMany(mappedBy = "activite")
+    @OneToMany(mappedBy = "activite", cascade = CascadeType.ALL)
     List<AouP> aoup = new ArrayList<>();
 
 
