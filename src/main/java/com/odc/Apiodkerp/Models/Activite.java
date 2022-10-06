@@ -83,4 +83,6 @@ public class Activite {
     @OneToMany(mappedBy = "activite", cascade = CascadeType.ALL)
     List<AouP> aoup = new ArrayList<>();
 
+
+
 }
