@@ -520,27 +520,44 @@ public class SalleController {
 
             Utilisateur utilisateur = new JsonMapper().readValue(userVenant, Utilisateur.class);
 
+            Salle salle=salleService.getByIdsalle(idSalle);
 
             Utilisateur user = utilisateurService.trouverParLoginAndPass(utilisateur.getLogin(),
                     utilisateur.getPassword());
             Droit Rsalle = droitService.GetLibelle("Delete Salle");
 
             if (user.getRole().getDroits().contains(Rsalle)) {
-                try {
-                    Historique historique = new Historique();
-                    Date datehisto = new Date();
-                    historique.setDatehistorique(datehisto);
-                    historique.setDescription(
-                            "" + user.getPrenom() + " " + user.getNom() + " a afficher  les salles indisponible");
-                    historiqueService.Create(historique);
+                if(salle!=null){
 
-                    return ResponseMessage.generateResponse("ok", HttpStatus.OK,
-                            salleService.ParEtat(false));
-                } catch (Exception e) {
-                    // TODO: handle exception
-                    return ResponseMessage.generateResponse("iciiii", HttpStatus.OK, e.getMessage());
+                    if(salle.getActivite().size()==0){
+                        try {
+                            Historique historique = new Historique();
+                            Date datehisto = new Date();
+                            historique.setDatehistorique(datehisto);
+                            historique.setDescription(
+                                    "" + user.getPrenom() + " " + user.getNom() + " a suprime  une salle"+idSalle);
+                            historiqueService.Create(historique);
+        
+                            salleService.delete(idSalle)
+                            return ResponseMessage.generateResponse("ok", HttpStatus.OK,
+                                    "Salle suprime");
+                        } catch (Exception e) {
+                            // TODO: handle exception
+                            return ResponseMessage.generateResponse("iciiii", HttpStatus.OK, e.getMessage());
+        
+                        }
+                    }else{
+                        // for(activite a:salle.getActivite()){
+                        //     if()
+                        // }
+                        return ResponseMessage.generateResponse("error", HttpStatus.OK, "Cette salle est lié a des activites");
+
+                    }
+                    
+                }else{
 
                 }
+                
 
             } else {
                 return ResponseMessage.generateResponse("error", HttpStatus.OK, "Non autorise");
