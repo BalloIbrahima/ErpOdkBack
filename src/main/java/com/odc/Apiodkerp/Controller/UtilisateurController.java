@@ -257,24 +257,16 @@ public class UtilisateurController {
 
             @RequestParam(value = "user") String userVenant) {
 
-        Utilisateur user=null;
-        Droit deleteActivite=null;
-        Activite activite = activiteService.GetById(idactivite);
-
         try {
-            Utilisateur utilisateur = new JsonMapper().readValue(userVenant, Utilisateur.class);
+            Activite activite = activiteService.GetById(idactivite);
 
             Utilisateur utilisateurs = new JsonMapper().readValue(userVenant, Utilisateur.class);
 
-             user = utilisateurService.trouverParLoginAndPass(utilisateurs.getLogin(),
+            Utilisateur user = utilisateurService.trouverParLoginAndPass(utilisateurs.getLogin(),
                     utilisateurs.getPassword());
 
-           deleteActivite = droitService.GetLibelle("Delete Activite");
+            Droit deleteActivite = droitService.GetLibelle("Delete Activite");
 
-        } catch (Exception e) {
-            // TODO: handle exception
-            return ResponseMessage.generateResponse("error11", HttpStatus.OK, e.getMessage());
-        }
             if (user != null) {
                 if (user.getRole().getDroits().contains(deleteActivite)) {
                     Role admin = RoleService.GetByLibelle("ADMIN");
@@ -291,14 +283,15 @@ public class UtilisateurController {
                                                     + " a supprime l activite "
                                                     + activite.getNom());
                             historiqueService.Create(historique);
+                            return ResponseMessage.generateResponse("ok", HttpStatus.OK,
+                                    activiteService.Delete(idactivite));
                         } catch (Exception e) {
                             // TODO: handle exception
                             return ResponseMessage.generateResponse("iciiii", HttpStatus.OK, e.getMessage());
 
                         }
 
-                        return ResponseMessage.generateResponse("ok", HttpStatus.OK,
-                                activiteService.Delete(idactivite));
+
                     } else {
                         return ResponseMessage.generateResponse("error", HttpStatus.OK, "vous n'etes pas autorisé");
                     }
@@ -312,7 +305,10 @@ public class UtilisateurController {
 
             }
 
-
+        } catch (Exception e) {
+            // TODO: handle exception
+            return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
+        }
 
     }
 
@@ -387,53 +383,6 @@ public class UtilisateurController {
                         historiqueService.Create(historique);
 
                         return ResponseMessage.generateResponse("ok", HttpStatus.OK, activiteService.FindAllAct());
-
-                    } catch (Exception e) {
-                        // TODO: handle exception
-                        return ResponseMessage.generateResponse("iciiii", HttpStatus.OK, e.getMessage());
-
-                    }
-                } else {
-                    return ResponseMessage.generateResponse("error", HttpStatus.OK, "Non autorisé");
-                }
-
-            } else {
-                return ResponseMessage.generateResponse("error", HttpStatus.OK, "Cet utilisateur n'existe pas !");
-
-            }
-
-        } catch (Exception e) {
-            // TODO: handle exception
-            return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
-        }
-    }
-
-
-    //AUTRE METHODE POUR AFFICHER TOUTES LES ACTIVITES
-    @ApiOperation(value = "Afficher toutes les  activite autre methode  ")
-    @PostMapping("/allactivites")
-
-    public ResponseEntity<Object> ToutesActiviteS(@RequestParam(value = "user") String userVenant) {
-        try {
-
-            Utilisateur utilisateurs = new JsonMapper().readValue(userVenant, Utilisateur.class);
-
-            Utilisateur user = utilisateurService.trouverParLoginAndPass(utilisateurs.getLogin(),
-                    utilisateurs.getPassword());
-
-            Droit readActivite = droitService.GetLibelle("Read Activite");
-
-            if (user != null) {
-                if (user.getRole().getDroits().contains(readActivite)) {
-                    try {
-                        Historique historique = new Historique();
-                        Date datehisto = new Date();
-                        historique.setDatehistorique(datehisto);
-                        historique.setDescription(
-                                "" + user.getPrenom() + " " + user.getNom() + " a affiche toutes les activites ");
-                        historiqueService.Create(historique);
-
-                        return ResponseMessage.generateResponse("ok", HttpStatus.OK, activiteService.FindAllActivite());
 
                     } catch (Exception e) {
                         // TODO: handle exception
@@ -654,12 +603,10 @@ public class UtilisateurController {
 
     // methode pour la création d'une activité
     @ApiOperation(value = "methode pour la création d'une activité. ::::::::::::::::::::::::::::")
-    @PostMapping("/activite/new/{idsalle}/{idtype}")
+    @PostMapping("/activite/new")
     public ResponseEntity<Object> Createactivite(@RequestParam(value = "data") String acti,
 
-            @RequestParam(value = "user") String userVenant, @PathVariable("idsalle") Long idsalle,
-
-            @PathVariable("idtype") Long idtype,
+            @RequestParam(value = "user") String userVenant,
             @RequestParam(value = "file", required = false) MultipartFile file) throws JsonProcessingException {
         Activite activite = null;
 
@@ -668,7 +615,7 @@ public class UtilisateurController {
             System.out.println(activite);
             Utilisateur utilisateurs = new JsonMapper().readValue(userVenant, Utilisateur.class);
 
-            Salle salle = salleService.read(idsalle);
+            //Salle salle = salleService.read(idsalle);
 
             if (file != null) {
                 try {
@@ -678,10 +625,10 @@ public class UtilisateurController {
                             utilisateurs.getPassword());
                     Droit createActivite = droitService.GetLibelle("Create Activite");
 
-                    TypeActivite type = typeActiviteService.getById(idtype);
+                    //TypeActivite type = typeActiviteService.getById(idtype);
 
-                    activite.setTypeActivite(type);
-                    activite.setSalle(salle);
+                    //activite.setTypeActivite(type);
+                    //activite.setSalle(salle);
                     activite.setCreateur(user);
                     activite.setEtat(etat);
                     activite.setLeader(user);

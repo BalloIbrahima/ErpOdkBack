@@ -46,4 +46,10 @@ public class IntervenantExterneServiceImpl implements IntervenantExterneService 
         return intervenantExtRepo.findAll();
     }
 
+    @Override
+    public IntervenantExterne getByEmail(String email) {
+        // TODO Auto-generated method stub
+        return intervenantExtRepo.findByEmail(email);
+    }
+
 }
