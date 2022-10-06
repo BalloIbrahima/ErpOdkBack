@@ -28,7 +28,7 @@ public class TirageServiceImpl implements TirageService {
     PostulantRepository postulantRepository;
 
     @Override
-    public List<Postulant> creer(Tirage t, List<Postulant> listeatirer, long nombre) {
+    public List<PostulantTire> creer(Tirage t, List<Postulant> listeatirer, long nombre) {
 
         // djedje
 
@@ -51,6 +51,8 @@ public class TirageServiceImpl implements TirageService {
         // declaration de la liste qui sera retourne
         List<Postulant> listpostulant = new ArrayList<>();
         List<Long> listId = new ArrayList<>();
+
+        List<PostulantTire> postulantTires=new ArrayList<>();
 
         for (Postulant p : listeatirer) {
             listId.add(p.getId());
@@ -76,10 +78,10 @@ public class TirageServiceImpl implements TirageService {
             // atribution du postulant
             postulantTrie.setPostulant(p);
             // atribution du tirage
-            postulantTrieRepository.save(postulantTrie);
+            postulantTires.add(postulantTrieRepository.save(postulantTrie));
         }
 
-        return listpostulant;
+        return postulantTires;
     }
 
     @Override

@@ -10,6 +10,7 @@ import com.odc.Apiodkerp.Service.DesignationService;
 import com.odc.Apiodkerp.Service.DroitService;
 import com.odc.Apiodkerp.Service.EntiteService;
 import com.odc.Apiodkerp.Service.EtatService;
+import com.odc.Apiodkerp.Service.ForgetPassService;
 import com.odc.Apiodkerp.Service.FormatEmailService;
 import com.odc.Apiodkerp.Service.HistoriqueService;
 import com.odc.Apiodkerp.Service.ListePostulantService;
@@ -37,7 +38,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
-import static com.odc.Apiodkerp.Configuration.ResponseMessage.generateResponse;
 @RestController
 @RequestMapping("/motdepass")
 @Api(value = "formatemail", description = "Les fonctionnalités liées à une formatemail")
@@ -48,6 +48,9 @@ public class MotdePassController {
 
     @Autowired
     private ActiviteService activiteService;
+
+    @Autowired
+    private ForgetPassService forgetpass;
 
     @Autowired
     private EntiteService entiteService;
@@ -133,6 +136,7 @@ public class MotdePassController {
                  forget.setCode(lien);
                  forget.setUser(user);
                  forget.setDate(date);
+                 forgetpass.Create(forget);
 
 
                  return ResponseMessage.generateResponse("ok", HttpStatus.OK, "Email envoye !");
