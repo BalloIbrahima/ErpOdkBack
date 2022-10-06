@@ -190,29 +190,6 @@ public class FormatEmailController {
     }
 
 
-    @ApiOperation(value = "Afficher toutes les formats mail")
-    @PostMapping("/getAll")
-    public ResponseEntity<Object> getAllformatEmail(@RequestParam(value = "user") String userVenant) {
-        try {
-            Utilisateur utilisateur = new JsonMapper().readValue(userVenant, Utilisateur.class);
 
-            Utilisateur user = utilisateurService.trouverParLoginAndPass(utilisateur.getLogin(),
-                    utilisateur.getPassword());
-            Droit RAoup = droitService.GetLibelle("Read formatEmail");
-
-            if (user.getRole().getDroits().contains(RAoup)) {
-                return ResponseMessage.generateResponse("ok", HttpStatus.OK,formatEmailService.GetAll());
-
-            } else {
-                return ResponseMessage.generateResponse("error", HttpStatus.OK, "Non autorisé");
-
-            }
-
-        } catch (Exception e) {
-            // TODO: handle exception
-            return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
-
-        }
-    }
 
 }
