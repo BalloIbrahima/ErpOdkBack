@@ -133,7 +133,8 @@ public class UtilisateurController {
                 historiqueService.Create(historique);
                 return ResponseMessage.generateResponse("ok", HttpStatus.OK, Simpleutilisateur);
             } else {
-                return ResponseMessage.generateResponse("error", HttpStatus.OK, "vous n'avez pas les droits d'acces  !");
+                return ResponseMessage.generateResponse("error", HttpStatus.OK,
+                        "vous n'avez pas les droits d'acces  !");
             }
 
         } else {
@@ -280,7 +281,7 @@ public class UtilisateurController {
                             historique
                                     .setDescription(
                                             "" + user.getPrenom() + " " + user.getNom()
-                                                    + " a supprime l'activite "
+                                                    + " a supprime l activite "
                                                     + activite.getNom());
                             historiqueService.Create(historique);
                         } catch (Exception e) {
@@ -425,7 +426,7 @@ public class UtilisateurController {
                         Date datehisto = new Date();
                         historique.setDatehistorique(datehisto);
                         historique.setDescription(
-                                "" + user.getPrenom() + " " + user.getNom() + " a affiché  " + activite.getNom());
+                                "" + user.getPrenom() + " " + user.getNom() + " a affiche  " + activite.getNom());
                         historiqueService.Create(historique);
                     } catch (Exception e) {
                         // TODO: handle exception
@@ -602,63 +603,67 @@ public class UtilisateurController {
 
     // methode pour la création d'une activité
     @ApiOperation(value = "methode pour la création d'une activité. ::::::::::::::::::::::::::::")
-    @PostMapping("/activite/new/{idsalle}/{idtype}")
+    @PostMapping("/activite/new")
     public ResponseEntity<Object> Createactivite(@RequestParam(value = "data") String acti,
 
-            @RequestParam(value = "user") String userVenant, @PathVariable("idsalle") Long idsalle,
-
-            @PathVariable("idtype") Long idtype,
+            @RequestParam(value = "user") String userVenant,
             @RequestParam(value = "file", required = false) MultipartFile file) throws JsonProcessingException {
         Activite activite = null;
-        Utilisateur utilisateur = new JsonMapper().readValue(userVenant, Utilisateur.class);
 
         try {
             activite = new JsonMapper().readValue(acti, Activite.class);
             System.out.println(activite);
+            Utilisateur utilisateurs = new JsonMapper().readValue(userVenant, Utilisateur.class);
+
+            //Salle salle = salleService.read(idsalle);
 
             if (file != null) {
                 try {
                     Etat etat = etatService.recupereParStatut("A VENIR");
-                    Utilisateur utilisateurs = new JsonMapper().readValue(userVenant, Utilisateur.class);
 
                     Utilisateur user = utilisateurService.trouverParLoginAndPass(utilisateurs.getLogin(),
                             utilisateurs.getPassword());
-                    Droit createType = droitService.GetLibelle("Create TypeActivite");
+                    Droit createActivite = droitService.GetLibelle("Create Activite");
 
-                    Salle salle = salleService.read(idsalle);
-                    TypeActivite type = typeActiviteService.getById(idtype);
+                    //TypeActivite type = typeActiviteService.getById(idtype);
 
-                    activite.setTypeActivite(type);
-                    activite.setSalle(salle);
+                    //activite.setTypeActivite(type);
+                    //activite.setSalle(salle);
                     activite.setCreateur(user);
                     activite.setEtat(etat);
                     activite.setLeader(user);
                     activite.setDateCreation(new Date());
                     System.out.println(user);
                     // activite.setLeader(user);
+                    try {
+                        activite.setImage(SaveImage.save("activite", file, activite.getNom()));
+                    } catch (Exception e) {
+                        // TODO: handle exception
+                        return ResponseMessage.generateResponse("iciiii", HttpStatus.OK, e.getMessage());
 
-                    activite.setImage(SaveImage.save("activite", file, activite.getNom()));
+                    }
 
                     // ::::::::::::::::::::::::::::Historique ::::::::::::::::
                     // Utilisateur user = utilisateurService.getById(iduser);
                     if (user != null) {
-                        if (user.getRole().getDroits().contains(createType)) {
+                        if (user.getRole().getDroits().contains(createActivite)) {
                             try {
                                 Historique historique = new Historique();
                                 Date datehisto = new Date();
                                 historique.setDatehistorique(datehisto);
                                 historique
                                         .setDescription(
-                                                "" + user.getPrenom() + " " + user.getNom() + " a crée l'activité "
+                                                "" + user.getPrenom() + " " + user.getNom() + " a cree l activite "
                                                         + activite.getNom());
                                 historiqueService.Create(historique);
+
+                                return ResponseMessage.generateResponse("ok", HttpStatus.OK,
+                                        activiteService.Create(activite));
                             } catch (Exception e) {
                                 // TODO: handle exception
                                 return ResponseMessage.generateResponse("iciiii", HttpStatus.OK, e.getMessage());
 
                             }
-                            return ResponseMessage.generateResponse("ok", HttpStatus.OK,
-                                    activiteService.Create(activite));
 
                         } else {
                             return ResponseMessage.generateResponse("error", HttpStatus.OK, "Non autorisé");
@@ -960,7 +965,8 @@ public class UtilisateurController {
 
     }
 
-    // ::::::::::::::::::::::Afficher toutes les liste Postulant ::::::::::::::::::::::::
+    // ::::::::::::::::::::::Afficher toutes les liste Postulant
+    // ::::::::::::::::::::::::
     @ApiOperation(value = "Afficher toutes les listes Postulant ")
     @PostMapping("/AllListePost")
     public ResponseEntity<Object> AllListePost(@RequestParam(value = "user") String userVenant) {
@@ -983,6 +989,55 @@ public class UtilisateurController {
                         historiqueService.Create(historique);
 
                         return ResponseMessage.generateResponse("ok", HttpStatus.OK, listePostulantService.getAll());
+
+                    } catch (Exception e) {
+                        // TODO: handle exception
+                        return ResponseMessage.generateResponse("iciiii", HttpStatus.OK,
+                                e.getMessage());
+
+                    }
+
+                } else {
+                    return ResponseMessage.generateResponse("error", HttpStatus.OK, "Non autorisé");
+
+                }
+
+            } else {
+                return ResponseMessage.generateResponse("error", HttpStatus.OK,
+                        "Vous n'êtes pas autorisé à afficher tous les liste");
+            }
+
+        } catch (Exception e) {
+            // TODO: handle exception
+            return ResponseMessage.generateResponse("errortt", HttpStatus.OK,
+                    e.getMessage());
+        }
+
+    }
+
+    @ApiOperation(value = "Afficher tirage par id")
+    @PostMapping("/tirageById/{id}")
+    public ResponseEntity<Object> getTirageById(@RequestParam(value = "user") String userVenant,
+            @PathVariable long id) {
+        try {
+            Utilisateur utilisateur = new JsonMapper().readValue(userVenant, Utilisateur.class);
+
+            Utilisateur user = utilisateurService.trouverParLoginAndPass(utilisateur.getLogin(),
+                    utilisateur.getPassword());
+            Droit readTirage = droitService.GetLibelle("Read Tirage");
+
+            if (user != null) {
+                if (user.getRole().getDroits().contains(readTirage)) {
+                    try {
+
+                        Historique historique = new Historique();
+                        Date datehisto = new Date();
+                        historique.setDatehistorique(datehisto);
+                        historique.setDescription(
+                                "" + user.getPrenom() + " " + user.getNom() + " a affiche un tirage");
+                        historiqueService.Create(historique);
+
+                        return ResponseMessage.generateResponse("ok", HttpStatus.OK, tirageService.getById(id));
 
                     } catch (Exception e) {
                         // TODO: handle exception
