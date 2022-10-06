@@ -857,7 +857,7 @@ public class SuperAdminController {
             Utilisateur utilisateur = new JsonMapper().readValue(userVenant, Utilisateur.class);
             Utilisateur users = utilisateurService.trouverParLoginAndPass(utilisateur.getLogin(),
                     utilisateur.getPassword());
-            Droit Ractivite = droitService.GetLibelle("Read Actvite");
+            Droit Ractivite = droitService.GetLibelle("Read Activite");
 
             if (users != null) {
                 if (users.getRole().getDroits().contains(Ractivite)) {
