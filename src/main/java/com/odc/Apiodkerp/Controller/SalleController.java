@@ -84,7 +84,7 @@ public class SalleController {
             Utilisateur user = utilisateurService.trouverParLoginAndPass(utilisateur.getLogin(),
                     utilisateur.getPassword());
 
-            Droit cSalle=droitService.GetLibelle("Create Salle");
+            Droit cSalle = droitService.GetLibelle("Create Salle");
 
             // Utilisateur utilisateur = utilisateurService.trouverParLoginAndPass(login,
             // password);
@@ -102,7 +102,7 @@ public class SalleController {
                     return ResponseMessage.generateResponse("iciiii", HttpStatus.OK, e.getMessage());
 
                 }
-                //salle.setUtilisateur(utilisateur);
+                // salle.setUtilisateur(utilisateur);
                 return ResponseMessage.generateResponse("ok", HttpStatus.OK, salleService.create(salle));
             } else {
                 return ResponseMessage.generateResponse("error", HttpStatus.OK, "non autorise");
@@ -324,19 +324,11 @@ public class SalleController {
                                 && act.getDateFin().after(date2)
                                 || act.getDateDebut().after(date1) && act.getDateDebut().after(date2)
                                         && act.getDateFin().before(date1) && act.getDateFin().before(date2)) {
-                                
-                                // Historique
-                                salle.add(act.getSalle());
+
+                            // Historique
+                            salle.add(act.getSalle());
                         }
                     }
-
-                    List<Salle> salles = salleService.getAll();
-                    for (Salle s:salles){
-                        if(s.getActivite().size()==0){
-                            salle.add(s);
-                        }
-                    }
-
 
                     try {
                         Historique historique = new Historique();
@@ -386,6 +378,13 @@ public class SalleController {
                             // Historique
 
                             salle.add(act.getSalle());
+                        }
+                    }
+
+                    List<Salle> salles = salleService.getAll();
+                    for (Salle s : salles) {
+                        if (s.getActivite().size() == 0) {
+                            salle.add(s);
                         }
                     }
 
