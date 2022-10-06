@@ -443,7 +443,7 @@ public class SalleController {
                             salle.add(s);
                         }
                     }
-                    
+
                     try {
                         Historique historique = new Historique();
                         Date datehisto = new Date();
@@ -515,14 +515,15 @@ public class SalleController {
     // :::::::::::::::::::::::Suprimer salle
     @ApiOperation(value = "Suprimer salle")
     @PostMapping("/suprime/{idSalle}")
-    public ResponseEntity<Object> SuprimerSalle(@PathVariable("idSalle") Long idSalle) {
+    public ResponseEntity<Object> SuprimerSalle(@PathVariable("idSalle") Long idSalle,@RequestParam(value = "user") String userVenant) {
         try {
 
             Utilisateur utilisateur = new JsonMapper().readValue(userVenant, Utilisateur.class);
 
+
             Utilisateur user = utilisateurService.trouverParLoginAndPass(utilisateur.getLogin(),
                     utilisateur.getPassword());
-            Droit Rsalle = droitService.GetLibelle("Read Salle");
+            Droit Rsalle = droitService.GetLibelle("Delete Salle");
 
             if (user.getRole().getDroits().contains(Rsalle)) {
                 try {
