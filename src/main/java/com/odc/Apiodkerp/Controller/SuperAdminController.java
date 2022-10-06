@@ -732,12 +732,13 @@ public class SuperAdminController {
                         historique.setDescription(
                                 "" + users.getPrenom() + " " + users.getNom() + " a affiche les activites a venir");
                         historiqueService.Create(historique);
+                        return ResponseMessage.generateResponse("error", HttpStatus.OK, activiteService.Avenir());
+
                     } catch (Exception e) {
                         // TODO: handle exception
                         return ResponseMessage.generateResponse("iciiii", HttpStatus.OK, e.getMessage());
 
                     }
-                    return ResponseMessage.generateResponse("error", HttpStatus.OK, activiteService.Avenir());
 
                 } else {
                     return ResponseMessage.generateResponse("error", HttpStatus.OK, "Non autorisé");
@@ -786,7 +787,7 @@ public class SuperAdminController {
                     }
 
                 } else {
-                    return ResponseMessage.generateResponse("error", HttpStatus.OK, "Non autorisé");
+                    return ResponseMessage.generateResponse("error", HttpStatus.OK, "Non autorise");
 
                 }
             } else {
@@ -820,6 +821,7 @@ public class SuperAdminController {
                         Date datehisto = new Date();
                         historique.setDatehistorique(datehisto);
                         historique.setDescription(
+
                                 "" + users.getPrenom() + " " + users.getNom() + " a affiche les activites terminée ");
                         historiqueService.Create(historique);
 
@@ -831,7 +833,7 @@ public class SuperAdminController {
                     }
 
                 } else {
-                    return ResponseMessage.generateResponse("error", HttpStatus.OK, "Non autorisé");
+                    return ResponseMessage.generateResponse("error", HttpStatus.OK, "Non autorise");
 
                 }
             } else {
@@ -879,7 +881,7 @@ public class SuperAdminController {
                 }
 
                 else {
-                    return ResponseMessage.generateResponse("error", HttpStatus.OK, "Non autorisé");
+                    return ResponseMessage.generateResponse("error", HttpStatus.OK, "Non autorise");
 
                 }
             } else {
@@ -944,7 +946,7 @@ public class SuperAdminController {
                             return ResponseMessage.generateResponse("error", HttpStatus.OK,
                                     postulantTrieService.getAll());
                         } else {
-                            return ResponseMessage.generateResponse("error", HttpStatus.OK, "Non autorisé");
+                            return ResponseMessage.generateResponse("error", HttpStatus.OK, "Non autorise");
 
                         }
                     } else {
@@ -1004,7 +1006,7 @@ public class SuperAdminController {
 
                     }
                 } else {
-                    return ResponseMessage.generateResponse("error", HttpStatus.OK, "Non autorisé");
+                    return ResponseMessage.generateResponse("error", HttpStatus.OK, "Non autorise");
 
                 }
             } else {
@@ -1043,7 +1045,7 @@ public class SuperAdminController {
                     if (dateTodate.after(act.getDateDebut()) && dateTodate.before(act.getDateFin())) {
                         return ResponseMessage.generateResponse("En cours", HttpStatus.OK, "L'activité est en cours");
                     } else if (dateTodate.after(act.getDateFin())) {
-                        return ResponseMessage.generateResponse("Terminé", HttpStatus.OK, "L'activité est terminée");
+                        return ResponseMessage.generateResponse("Termine", HttpStatus.OK, "L'activité est terminée");
                     } else if (dateTodate.before(act.getDateDebut())) {
                         return ResponseMessage.generateResponse("A Venir", HttpStatus.OK, "L'activité est à Venir");
                     } else {
@@ -1090,7 +1092,7 @@ public class SuperAdminController {
                             utilisateurService.RecupererUserParEtat(true));
 
                 } else {
-                    return ResponseMessage.generateResponse("error", HttpStatus.OK, "Non autorisé");
+                    return ResponseMessage.generateResponse("error", HttpStatus.OK, "Non autorise");
                 }
 
             } catch (Exception e) {
@@ -1132,7 +1134,7 @@ public class SuperAdminController {
                             utilisateurService.getAll());
 
                 } else {
-                    return ResponseMessage.generateResponse("error", HttpStatus.OK, "Non autorisé");
+                    return ResponseMessage.generateResponse("error", HttpStatus.OK, "Non autorise");
                 }
 
             } catch (Exception e) {
@@ -1176,7 +1178,7 @@ public class SuperAdminController {
                 return ResponseMessage.generateResponse("ok", HttpStatus.OK,
                         utilisateurService.RecupererUserParEtat(false));
             } else {
-                return ResponseMessage.generateResponse("error", HttpStatus.OK, "Non autorisé");
+                return ResponseMessage.generateResponse("error", HttpStatus.OK, "Non autorise");
             }
 
         } catch (Exception e) {
@@ -1215,7 +1217,7 @@ public class SuperAdminController {
                 return ResponseMessage.generateResponse("ok", HttpStatus.OK, salleService.ParEtat(true));
 
             } else {
-                return ResponseMessage.generateResponse("error", HttpStatus.OK, "Non autorisé");
+                return ResponseMessage.generateResponse("error", HttpStatus.OK, "Non autorise");
             }
 
         } catch (Exception e) {
@@ -1314,7 +1316,7 @@ public class SuperAdminController {
                 }
 
             } else {
-                return ResponseMessage.generateResponse("error", HttpStatus.OK, "Non autorisé");
+                return ResponseMessage.generateResponse("error", HttpStatus.OK, "Non autorise");
             }
 
         } catch (Exception e) {
