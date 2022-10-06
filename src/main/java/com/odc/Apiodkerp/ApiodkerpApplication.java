@@ -515,8 +515,20 @@ public class ApiodkerpApplication {
 			abasse.setId(2L);
 			abasse.setLogin("abasse");
 
+			Utilisateur malle = new Utilisateur();
+			abasse.setActive(true);
+			abasse.setNom("Malle");
+			abasse.setEmail("malle@gmail.com");
+			abasse.setRole(admin);
+			abasse.setPrenom("Alassane");
+			abasse.setGenre(Genre.Masculin);
+			abasse.setPassword("alassane");
+			abasse.setId(3L);
+			abasse.setLogin("alass");
+
 			utilisateurService.creer(ballo);
 			utilisateurService.creer(abasse);
+			utilisateurService.creer(malle);
 		}
 
 		// création des etats

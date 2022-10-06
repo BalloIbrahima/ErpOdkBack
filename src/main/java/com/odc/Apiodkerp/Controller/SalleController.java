@@ -200,7 +200,7 @@ public class SalleController {
     }
 
     @ApiOperation(value = "Lien pour suprimer une salle")
-    @PostMapping("/supprimersalle/{id}/")
+    @PostMapping("/supprimersalle/{id}")
     public ResponseEntity<Object> supprimer(@PathVariable long id, @RequestParam(value = "user") String userVenant) {
         try {
             Utilisateur utilisateur = new JsonMapper().readValue(userVenant, Utilisateur.class);
@@ -513,43 +513,6 @@ public class SalleController {
     }
 
     // :::::::::::::::::::::::Suprimer salle
-    @ApiOperation(value = "Suprimer salle")
-    @PostMapping("/suprime/{idSalle}")
-    public ResponseEntity<Object> SuprimerSalle(@PathVariable("idSalle") Long idSalle) {
-        try {
 
-            Utilisateur utilisateur = new JsonMapper().readValue(userVenant, Utilisateur.class);
-
-            Utilisateur user = utilisateurService.trouverParLoginAndPass(utilisateur.getLogin(),
-                    utilisateur.getPassword());
-            Droit Rsalle = droitService.GetLibelle("Read Salle");
-
-            if (user.getRole().getDroits().contains(Rsalle)) {
-                try {
-                    Historique historique = new Historique();
-                    Date datehisto = new Date();
-                    historique.setDatehistorique(datehisto);
-                    historique.setDescription(
-                            "" + user.getPrenom() + " " + user.getNom() + " a afficher  les salles indisponible");
-                    historiqueService.Create(historique);
-
-                    return ResponseMessage.generateResponse("ok", HttpStatus.OK,
-                            salleService.ParEtat(false));
-                } catch (Exception e) {
-                    // TODO: handle exception
-                    return ResponseMessage.generateResponse("iciiii", HttpStatus.OK, e.getMessage());
-
-                }
-
-            } else {
-                return ResponseMessage.generateResponse("error", HttpStatus.OK, "Non autorise");
-            }
-
-        } catch (Exception e) {
-            // TODO: handle exception
-            return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
-
-        }
-    }
 
 }
