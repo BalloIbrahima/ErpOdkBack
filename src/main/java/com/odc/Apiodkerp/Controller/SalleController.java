@@ -538,7 +538,7 @@ public class SalleController {
                                     "" + user.getPrenom() + " " + user.getNom() + " a suprime  une salle"+idSalle);
                             historiqueService.Create(historique);
         
-                            salleService.delete(idSalle)
+                            salleService.delete(idSalle);
                             return ResponseMessage.generateResponse("ok", HttpStatus.OK,
                                     "Salle suprime");
                         } catch (Exception e) {
