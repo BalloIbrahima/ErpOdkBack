@@ -418,36 +418,42 @@ public class ResponsableController {
 
                 System.out.println(listePostulant.getPostulants());
 
-                List<Postulant> postulanttires = tirageService.creer(tirage, listePostulant.getPostulants(), nombre);
+                if(nombre <= listePostulant.getPostulants().size()){
+                    List<Postulant> postulanttires = tirageService.creer(tirage, listePostulant.getPostulants(), nombre);
 
-                if (utilisateur != null) {
-                    if (utilisateur.getRole().getDroits().contains(createTirage)) {
-                        try {
+                    if (utilisateur != null) {
+                        if (utilisateur.getRole().getDroits().contains(createTirage)) {
+                            try {
 
-                            //
-                            Historique historique = new Historique();
-                            historique.setDatehistorique(new Date());
-                            historique.setDescription(utilisateur.getPrenom() + " " + utilisateur.getNom()
-                                    + " a effectuer un tirage.");
-                            historiqueService.Create(historique);
+                                //
+                                Historique historique = new Historique();
+                                historique.setDatehistorique(new Date());
+                                historique.setDescription(utilisateur.getPrenom() + " " + utilisateur.getNom()
+                                        + " a effectuer un tirage.");
+                                historiqueService.Create(historique);
 
-                            //
-                            return ResponseMessage.generateResponse("ok", HttpStatus.OK, postulanttires);
+                                //
+                                return ResponseMessage.generateResponse("ok", HttpStatus.OK, postulanttires);
 
-                        } catch (Exception e) {
-                            // TODO: handle exception
-                            return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
+                            } catch (Exception e) {
+                                // TODO: handle exception
+                                return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
+
+                            }
+                        } else {
+                            return ResponseMessage.generateResponse("error", HttpStatus.OK, "Non autorise !");
 
                         }
                     } else {
-                        return ResponseMessage.generateResponse("error", HttpStatus.OK, "Non autorise !");
+                        return ResponseMessage.generateResponse("error", HttpStatus.OK, "Cet utilisateur n'existe pas !");
 
                     }
-                } else {
-                    return ResponseMessage.generateResponse("error", HttpStatus.OK, "Cet utilisateur n'existe pas !");
+
+                }else{
+                    return ResponseMessage.generateResponse("error", HttpStatus.OK, "Nombra de postulant insufusant !");
 
                 }
-
+                
             } else {
                 return ResponseMessage.generateResponse("error", HttpStatus.OK, "Ce tirage existe deja !");
             }

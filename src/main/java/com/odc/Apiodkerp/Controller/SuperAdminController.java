@@ -869,7 +869,7 @@ public class SuperAdminController {
                         historique.setDescription(
                                 "" + users.getPrenom() + " " + users.getNom() + " a affiche les activités par entite ");
                         historiqueService.Create(historique);
-                        return ResponseMessage.generateResponse("error", HttpStatus.OK,
+                        return ResponseMessage.generateResponse("ok", HttpStatus.OK,
                                 activiteService.ActiviteEntiteid(identite));
 
                     } catch (Exception e) {
