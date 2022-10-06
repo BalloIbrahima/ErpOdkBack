@@ -555,6 +555,7 @@ public class SalleController {
                     }
                     
                 }else{
+                    return ResponseMessage.generateResponse("error", HttpStatus.OK, "Cette salle n'existe pas !");
 
                 }
                 
