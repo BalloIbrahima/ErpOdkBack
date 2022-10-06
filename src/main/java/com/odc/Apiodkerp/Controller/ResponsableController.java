@@ -134,8 +134,9 @@ public class ResponsableController {
     // ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
     // la methode pour importer une liste de postulant
     @ApiOperation(value = "la methode pour importer une liste de postulant.")
-    @PostMapping("/listpostulant/new/{libelleliste}")
+    @PostMapping("/listpostulant/new/{libelleliste}/{idActivite}")
     public ResponseEntity<Object> ImportListePostulant(@PathVariable("libelleliste") String libelleliste,
+            @PathVariable("idActivite") Long idActivite,
             @RequestParam(value = "user") String userVenant,
             @RequestParam("file") MultipartFile file) {
 
@@ -146,6 +147,7 @@ public class ResponsableController {
             Utilisateur Simpleutilisateur = utilisateurService.trouverParLoginAndPass(utilisateur.getLogin(),
                     utilisateur.getPassword());
 
+            Activite activite = activiteService.GetById(idActivite);
             Droit createListe = droitService.GetLibelle("Create ListePostulant");
 
             if (Simpleutilisateur != null) {
@@ -157,6 +159,7 @@ public class ResponsableController {
 
                             listePostulant.setLibelle(libelleliste);
                             listePostulant.setDateimport(new Date());
+                            listePostulant.setActivite(activite);
 
                             ListePostulant listSaved = listePostulantService.creer(listePostulant);
 
@@ -219,8 +222,9 @@ public class ResponsableController {
     // :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
     // la methode pour importer une liste de participant
     @ApiOperation(value = "la methode pour importer une liste de participant.")
-    @PostMapping("/listparticipant/new/{idactivite}")
+    @PostMapping("/listparticipant/new/{libelleliste}/{idactivite}")
     public ResponseEntity<Object> ImportListeParticipant(@RequestParam("file") MultipartFile file,
+            @PathVariable("libelleliste") String libelleliste,
             @PathVariable("idactivite") Long idactivite, @RequestParam(value = "user") String userVenant) {
 
         try {
@@ -237,53 +241,76 @@ public class ResponsableController {
 
                 if (Simpleutilisateur.getRole().getDroits().contains(createAoup)) {
                     if (activite != null) {
-                        if (ExcelImport.verifier(file)) {
+                        ListePostulant liste = listePostulantService.retrouveParLibelle(libelleliste);
+                        if (liste == null) {
+                            if (ExcelImport.verifier(file)) {
 
-                            List<Postulant> postulants = ExcelImport.postulantsExcel(file);
-                            // insertion des postulants recuperes à partir du fichier excel
-                            for (Postulant p : postulants) {
+                                ///
+                                ListePostulant listePostulant = new ListePostulant();
 
-                                if (postulantService.GetByEmail(p.getEmail()) == null
-                                        & p.getNom() != null & p.getPrenom() != null) {
-                                    Postulant pc = postulantService.creer(p);
+                                listePostulant.setLibelle(libelleliste);
+                                listePostulant.setDateimport(new Date());
+                                listePostulant.setActivite(activite);
 
-                                    AouP aprenants = new AouP();
-                                    aprenants.setActivite(activite);
-                                    aprenants.setPostulant(pc);
-                                    aprenants.setTirage(false);
-                                    aouPService.Create(aprenants);
-                                    // tirageService.ajouterParticipant(pc, idTirage);
-                                    // p.getListePostulants().add(listePostulant);
-                                    // listePostulant.getPostulants().add(pc);
+                                ListePostulant listSaved = listePostulantService.creer(listePostulant);
 
-                                } else if (p.getEmail() != null & p.getNom() != null & p.getPrenom() != null) {
+                                ///
+                                List<Postulant> postulants = ExcelImport.postulantsExcel(file);
+                                // insertion des postulants recuperes à partir du fichier excel
+                                for (Postulant p : postulants) {
 
-                                    Postulant pc = postulantService.GetByEmail(p.getEmail());
+                                    if (postulantService.GetByEmail(p.getEmail()) == null
+                                            & p.getNom() != null & p.getPrenom() != null) {
+                                        Postulant pc1 = postulantService.creer(p);
+                                        pc1.getListePostulants().add(listSaved);
+                                        Postulant pc = postulantService.creer(p);
 
-                                    AouP aprenants = new AouP();
-                                    aprenants.setActivite(activite);
-                                    aprenants.setPostulant(pc);
-                                    aprenants.setTirage(false);
-                                    aouPService.Create(aprenants);
-                                    //tirageService.ajouterParticipant(pc, idTirage);
+                                        AouP aprenants = new AouP();
+                                        aprenants.setActivite(activite);
+                                        aprenants.setPostulant(pc);
+                                        aprenants.setTirage(false);
+                                        aouPService.Create(aprenants);
+                                        // tirageService.ajouterParticipant(pc, idTirage);
+                                        // p.getListePostulants().add(listePostulant);
+                                        // listePostulant.getPostulants().add(pc);
+
+                                    } else if (p.getEmail() != null & p.getNom() != null & p.getPrenom() != null) {
+
+                                        Postulant pc1 = postulantService.GetByEmail(p.getEmail());
+                                        pc1.getListePostulants().add(listSaved);
+                                        Postulant pc = postulantService.creer(pc1);
+
+                                        AouP aprenants = new AouP();
+                                        aprenants.setActivite(activite);
+                                        aprenants.setPostulant(pc);
+                                        aprenants.setTirage(false);
+                                        aouPService.Create(aprenants);
+                                        // tirageService.ajouterParticipant(pc, idTirage);
+                                    }
+
                                 }
 
+                                Historique historique = new Historique();
+                                historique.setDatehistorique(new Date());
+                                historique
+                                        .setDescription(Simpleutilisateur.getPrenom() + " " + Simpleutilisateur.getNom()
+                                                + " a importer une liste de participant.");
+
+                                historiqueService.Create(historique);
+
+                                return ResponseMessage.generateResponse("ok", HttpStatus.OK,
+                                        null);
+
+                            } else {
+                                return ResponseMessage.generateResponse("error", HttpStatus.OK,
+                                        "Veuiller fournir un fichier Excel valide !");
                             }
-
-                            Historique historique = new Historique();
-                            historique.setDatehistorique(new Date());
-                            historique.setDescription(Simpleutilisateur.getPrenom() + " " + Simpleutilisateur.getNom()
-                                    + " a importer une liste de participant.");
-
-                            historiqueService.Create(historique);
-
-                            return ResponseMessage.generateResponse("ok", HttpStatus.OK,
-                                    null);
-
                         } else {
-                            return ResponseMessage.generateResponse("error", HttpStatus.OK,
-                                    "Veuiller fournir un fichier Excel valide !");
+                            // Il existe une liste avec la même libelle
+                            return ResponseMessage.generateResponse("error", HttpStatus.OK, "Cette lise existe deja");
+
                         }
+
                     } else {
                         // Il existe une liste avec la même libelle
                         return ResponseMessage.generateResponse("error", HttpStatus.OK, "Cette activite existe deja");
@@ -381,7 +408,7 @@ public class ResponsableController {
                 Tirage tirage = new Tirage();
                 tirage.setLibelle(libelleTirage);
                 tirage.setListepostulant(listePostulant);
-                //tirage.setActivite(activite);
+                // tirage.setActivite(activite);
                 tirage.setValider(false);
                 tirage.setUtilisateur(utilisateur);
 
@@ -391,36 +418,42 @@ public class ResponsableController {
 
                 System.out.println(listePostulant.getPostulants());
 
-                List<Postulant> postulanttires = tirageService.creer(tirage, listePostulant.getPostulants(), nombre);
+                if(nombre <= listePostulant.getPostulants().size()){
+                    List<Postulant> postulanttires = tirageService.creer(tirage, listePostulant.getPostulants(), nombre);
 
-                if (utilisateur != null) {
-                    if (utilisateur.getRole().getDroits().contains(createTirage)) {
-                        try {
+                    if (utilisateur != null) {
+                        if (utilisateur.getRole().getDroits().contains(createTirage)) {
+                            try {
 
-                            //
-                            Historique historique = new Historique();
-                            historique.setDatehistorique(new Date());
-                            historique.setDescription(utilisateur.getPrenom() + " " + utilisateur.getNom()
-                                    + " a effectuer un tirage.");
-                            historiqueService.Create(historique);
+                                //
+                                Historique historique = new Historique();
+                                historique.setDatehistorique(new Date());
+                                historique.setDescription(utilisateur.getPrenom() + " " + utilisateur.getNom()
+                                        + " a effectuer un tirage.");
+                                historiqueService.Create(historique);
 
-                            //
-                            return ResponseMessage.generateResponse("ok", HttpStatus.OK, postulanttires);
+                                //
+                                return ResponseMessage.generateResponse("ok", HttpStatus.OK, postulanttires);
 
-                        } catch (Exception e) {
-                            // TODO: handle exception
-                            return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
+                            } catch (Exception e) {
+                                // TODO: handle exception
+                                return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
+
+                            }
+                        } else {
+                            return ResponseMessage.generateResponse("error", HttpStatus.OK, "Non autorise !");
 
                         }
                     } else {
-                        return ResponseMessage.generateResponse("error", HttpStatus.OK, "Non autorise !");
+                        return ResponseMessage.generateResponse("error", HttpStatus.OK, "Cet utilisateur n'existe pas !");
 
                     }
-                } else {
-                    return ResponseMessage.generateResponse("error", HttpStatus.OK, "Cet utilisateur n'existe pas !");
+
+                }else{
+                    return ResponseMessage.generateResponse("error", HttpStatus.OK, "Nombra de postulant insufusant !");
 
                 }
-
+                
             } else {
                 return ResponseMessage.generateResponse("error", HttpStatus.OK, "Ce tirage existe deja !");
             }
@@ -909,9 +942,9 @@ public class ResponsableController {
 
     }
 
-
     // ---------------------------CRUD
-    // INTERVENANT EXTERNE-------------------------------------------------------------->
+    // INTERVENANT
+    // EXTERNE-------------------------------------------------------------->
     @ApiOperation(value = "Creer un intervenant interne.")
     @PostMapping("/create/intervenant")
     public ResponseEntity<Object> createIntervenant(@RequestParam(value = "data") String data,
@@ -932,18 +965,18 @@ public class ResponsableController {
                 if (users.getRole().getDroits().contains(CUser)) {
 
                     if (intervenantExterneService.getByEmail(utilisateur.getEmail()) == null) {
-                       
+
                         try {
                             Historique historique = new Historique();
                             Date datehisto = new Date();
                             historique.setDatehistorique(datehisto);
                             historique.setDescription(users.getPrenom() + " " + users.getNom()
                                     + " a cree un personnel externe du nom de " + utilisateur.getNom());
-                            
+
                             historiqueService.Create(historique);
 
                             IntervenantExterne NewUser = intervenantExterneService.creer(utilisateur);
-                            //System.out.println(NewUser.getLogin());
+                            // System.out.println(NewUser.getLogin());
                             return ResponseMessage.generateResponse("ok", HttpStatus.OK, NewUser);
                         } catch (Exception e) {
                             // TODO: handle exception
@@ -953,6 +986,69 @@ public class ResponsableController {
 
                     } else {
                         return ResponseMessage.generateResponse("error", HttpStatus.OK, "Adresse mail existante");
+
+                    }
+
+                } else {
+                    return ResponseMessage.generateResponse("error", HttpStatus.OK, "Non autorisé");
+
+                }
+            } else {
+                return ResponseMessage.generateResponse("error", HttpStatus.OK, "Cet utilisateur n'existe pas !");
+
+            }
+        } catch (Exception e) {
+            // TODO: handle exception
+            return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
+        }
+    }
+
+    // INTERVENANT
+    // EXTERNE-------------------------------------------------------------->
+    @ApiOperation(value = "Creer un intervenant interne.")
+    @PostMapping("/valider/tirage/{idTirage}")
+    public ResponseEntity<Object> validerTirage(@PathVariable("idTirage") Long idTirage,
+            @RequestParam(value = "user") String userVenant) {
+        try {
+
+            Utilisateur utilisateu = new JsonMapper().readValue(userVenant, Utilisateur.class);
+
+            Tirage tirage = tirageService.getById(idTirage);
+
+            // Role role = RoleService.GetByLibelle("USER");
+
+            Utilisateur users = utilisateurService.trouverParLoginAndPass(utilisateu.getLogin(),
+                    utilisateu.getPassword());
+            Droit Utirage = droitService.GetLibelle("Update Tirage");
+
+            if (users != null) {
+                if (users.getRole().getDroits().contains(Utirage)) {
+
+                    try {
+                        tirage.setValider(true);
+
+                        Historique historique = new Historique();
+                        Date datehisto = new Date();
+                        historique.setDatehistorique(datehisto);
+                        historique.setDescription(users.getPrenom() + " " + users.getNom()
+                                + " a valider le tirage " + tirage.getId());
+
+                        historiqueService.Create(historique);
+                        for (PostulantTire pt : tirage.getPostulanttires()) {
+                            AouP aoup = new AouP();
+                            aoup.setPostulant(pt.getPostulant());
+                            aoup.setTirage(true);
+                            aoup.setActivite(tirage.getListepostulant().getActivite());
+
+                            aouPService.Create(aoup);
+
+                        }
+
+                        // System.out.println(NewUser.getLogin());
+                        return ResponseMessage.generateResponse("ok", HttpStatus.OK, "Tirage validé");
+                    } catch (Exception e) {
+                        // TODO: handle exception
+                        return ResponseMessage.generateResponse("ijjciiii", HttpStatus.OK, e.getMessage());
 
                     }
 
