@@ -81,51 +81,61 @@ public class EntiteController {
     public ResponseEntity<Object> createEntite(@RequestParam(value = "entite") String enti,
             @RequestParam(value = "file", required = true) MultipartFile file,
             @RequestParam(value = "user") String userVenant) {
-        try {
+                Entite entite=null;
+                Utilisateur user=null;
+            try {
 
-            Entite entite = new JsonMapper().readValue(enti, Entite.class);
+            entite = new JsonMapper().readValue(enti, Entite.class);
             if (file != null) {
                 entite.setImage(SaveImage.save("activite", file, entite.getLibelleentite()));
             }
             Utilisateur utilisateur = new JsonMapper().readValue(userVenant, Utilisateur.class);
 
-            Utilisateur user = utilisateurService.trouverParLoginAndPass(utilisateur.getLogin(),
+            
+             user = utilisateurService.trouverParLoginAndPass(utilisateur.getLogin(),
                     utilisateur.getPassword());
+                
             List<Entite> entit = entiteService.GetAll();
-
+            Boolean IsGerant=false;
             Droit createrole = droitService.GetLibelle("Create Entite");
 
             if (user.getRole().getDroits().contains(createrole)) {
                 for (Entite en : entit) {
                     if (entite.getGerant() == en.getGerant()) {
-                        return ResponseMessage.generateResponse("error", HttpStatus.OK,
-                                "cette personne est deja gerant d'une entite");
-
-                    } else {
-                        try {
-                            Historique historique = new Historique();
-                            Date datehisto = new Date();
-                            historique.setDatehistorique(datehisto);
-                            historique
-                                    .setDescription(
-                                            "" + user.getPrenom() + " " + user.getNom()
-                                                    + " a cree  une nouvelle entite ");
-                            historiqueService.Create(historique);
-                            Entite NewEntite = entiteService.Create(entite);
-                            return ResponseMessage.generateResponse("ok", HttpStatus.OK, NewEntite);
-                        } catch (Exception e) {
-                            // TODO: handle exception
-                            return ResponseMessage.generateResponse("iciiii", HttpStatus.OK, e.getMessage());
-
-                        }
+                        IsGerant=true;
+                        break;
                     }
                 }
+
+                if(IsGerant==true){
+                    return ResponseMessage.generateResponse("error", HttpStatus.OK,
+                                "cette personne est deja gerant d'une entite");
+                }else{
+                    try {
+                        Historique historique = new Historique();
+                        Date datehisto = new Date();
+                        historique.setDatehistorique(datehisto);
+                        historique
+                                .setDescription(
+                                        "" + user.getPrenom() + " " + user.getNom()
+                                                + " a cree  une nouvelle entite ");
+                        historiqueService.Create(historique);
+                        Entite NewEntite = entiteService.Create(entite);
+    
+                        return ResponseMessage.generateResponse("ok", HttpStatus.OK, NewEntite);
+    
+                    } catch (Exception e) {
+                        // TODO: handle exception
+                        return ResponseMessage.generateResponse("iciiii", HttpStatus.OK, e.getMessage());
+    
+                    }
+                }
+                
+                
 
             } else {
                 return ResponseMessage.generateResponse("error", HttpStatus.OK, "non autorise");
             }
-
-            return ResponseMessage.generateResponse("error", HttpStatus.OK, "erreur");
 
         } catch (Exception e) {
             // TODO: handle exception

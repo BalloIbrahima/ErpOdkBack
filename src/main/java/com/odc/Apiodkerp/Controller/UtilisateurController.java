@@ -603,12 +603,10 @@ public class UtilisateurController {
 
     // methode pour la création d'une activité
     @ApiOperation(value = "methode pour la création d'une activité. ::::::::::::::::::::::::::::")
-    @PostMapping("/activite/new/{idsalle}/{idtype}")
+    @PostMapping("/activite/new")
     public ResponseEntity<Object> Createactivite(@RequestParam(value = "data") String acti,
 
-            @RequestParam(value = "user") String userVenant, @PathVariable("idsalle") Long idsalle,
-
-            @PathVariable("idtype") Long idtype,
+            @RequestParam(value = "user") String userVenant,
             @RequestParam(value = "file", required = false) MultipartFile file) throws JsonProcessingException {
         Activite activite = null;
 
@@ -617,7 +615,7 @@ public class UtilisateurController {
             System.out.println(activite);
             Utilisateur utilisateurs = new JsonMapper().readValue(userVenant, Utilisateur.class);
 
-            Salle salle = salleService.read(idsalle);
+            //Salle salle = salleService.read(idsalle);
 
             if (file != null) {
                 try {
@@ -627,10 +625,10 @@ public class UtilisateurController {
                             utilisateurs.getPassword());
                     Droit createActivite = droitService.GetLibelle("Create Activite");
 
-                    TypeActivite type = typeActiviteService.getById(idtype);
+                    //TypeActivite type = typeActiviteService.getById(idtype);
 
-                    activite.setTypeActivite(type);
-                    activite.setSalle(salle);
+                    //activite.setTypeActivite(type);
+                    //activite.setSalle(salle);
                     activite.setCreateur(user);
                     activite.setEtat(etat);
                     activite.setLeader(user);

@@ -30,4 +30,7 @@ public class ListePostulant {
     @ManyToMany(mappedBy = "listePostulants")
     private List<Postulant> postulants = new ArrayList<>();
 
+    @ManyToOne
+    @JoinColumn(name = "idactivite")
+    private Activite activite;
 }
