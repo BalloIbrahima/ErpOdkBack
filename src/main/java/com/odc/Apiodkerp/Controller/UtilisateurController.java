@@ -382,7 +382,7 @@ public class UtilisateurController {
                                 "" + user.getPrenom() + " " + user.getNom() + " a affiche toutes les activites ");
                         historiqueService.Create(historique);
 
-                        return ResponseMessage.generateResponse("ok", HttpStatus.OK, activiteService.FindAllAct());
+                        return ResponseMessage.generateResponse("ok", HttpStatus.OK, activiteService.FindAllActivite());
 
                     } catch (Exception e) {
                         // TODO: handle exception
