@@ -1,5 +1,6 @@
 package com.odc.Apiodkerp.ServiceImplementation;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.odc.Apiodkerp.Models.ForgetPass;
@@ -9,6 +10,7 @@ import com.odc.Apiodkerp.Service.ForgetPassService;
 @Service
 public class ForgetPassServiceImpleme implements ForgetPassService {
 
+    @Autowired
     ForgetPassRepo forgetRepo;
 
     @Override

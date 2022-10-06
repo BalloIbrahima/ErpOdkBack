@@ -105,6 +105,10 @@ public class MotdePassController {
     @Autowired
     JavaMailSender javaMailSender;
 
+    @Autowired 
+    private EmailService emailService;
+
+
 
      /// ::::::::::::::::::::::::::Liste par id
      @ApiOperation(value = "Send Mail")
@@ -116,6 +120,7 @@ public class MotdePassController {
  
              Utilisateur user = utilisateurService.getByEmail(utilisateur.getEmail());
  
+
              if(user !=null){
                  String lien="";
                  for(int i=0; i<20;i++){
@@ -125,13 +130,15 @@ public class MotdePassController {
                      lien=lien+""+randomizedCharacter;
                  }
                  
-                 try {
+                try {
                     ForgetPass forget=new ForgetPass();
 
+                    System.out.println(utilisateur.getEmail());
+                    System.out.println(user.getEmail());
                     EmailDetails detail=new EmailDetails();
                     detail.setRecipient(user.getEmail());
                     detail.setMsgBody("Vous avez demandez une reinitialisation de mot de passe ! \n Veuillez clicquez sur le lien suivant :\nhttp://localhost:8100/forgotpassword/"+lien);
-                    email.sendSimpleMail(detail);
+                    System.out.println(emailService.sendSimpleMail(detail));
                         
                     Date date = new Date();
                     forget.setCode(lien);
@@ -141,15 +148,15 @@ public class MotdePassController {
 
 
                     return ResponseMessage.generateResponse("ok", HttpStatus.OK, "Email envoye !");
-                 } catch (Exception e) {
+                } catch (Exception e) {
                     // TODO: handle exception
-                    return ResponseMessage.generateResponse("errorhh", HttpStatus.OK, e.getMessage());
+                    return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
 
-                 }
+                }
                  
 
              }else{
-                 return ResponseMessage.generateResponse("errordd", HttpStatus.OK, "Cet utilisateur n'existe pas !");
+                 return ResponseMessage.generateResponse("errorUser", HttpStatus.OK, "Cet utilisateur n'existe pas !");
  
              }
              
@@ -188,7 +195,6 @@ public class MotdePassController {
 
 
 
-    @Autowired private EmailService emailService;
 
     // Sending a simple Email
     @PostMapping("/sendMailsansAt")

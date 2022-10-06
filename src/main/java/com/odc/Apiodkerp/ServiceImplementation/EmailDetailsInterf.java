@@ -14,7 +14,6 @@ import javax.mail.internet.MimeMessage;
 import java.io.File;
 
 @Service
-
 public class EmailDetailsInterf implements EmailService{
 
 
@@ -49,7 +48,9 @@ public class EmailDetailsInterf implements EmailService{
 
         // Catch block to handle the exceptions
         catch (Exception e) {
-            return "Error while Sending bb Mail";
+            // return "Error while Sending bb Mail";
+                        return e.getMessage();
+
         }
     }
 

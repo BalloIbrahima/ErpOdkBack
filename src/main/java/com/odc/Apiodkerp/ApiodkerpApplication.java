@@ -567,9 +567,11 @@ public class ApiodkerpApplication {
 
 		// status
 		Statut encours = new Statut();
+		encours.setId(1L);
 		encours.setLibelle("ENCOUR");
 
 		Statut terminee = new Statut();
+		encours.setId(2L);
 		terminee.setLibelle("TERMINE");
 
 		statusService.creer(encours);
