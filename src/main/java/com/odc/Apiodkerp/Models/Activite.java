@@ -36,9 +36,9 @@ public class Activite {
     @ManyToMany(mappedBy = "activitesFormateurs")
     List<Utilisateur> utilisateurs = new ArrayList<>();
 
-    @JsonIgnore
-    @OneToMany(mappedBy = "activite", cascade = CascadeType.ALL)
-    private List<Tirage> tirages = new ArrayList<>();
+    // @JsonIgnore
+    // @OneToMany(mappedBy = "activite", cascade = CascadeType.ALL)
+    // private List<Tirage> tirages = new ArrayList<>();
 
     @ManyToOne
     @JoinColumn(name = "createur")
