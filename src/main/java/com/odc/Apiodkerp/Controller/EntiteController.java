@@ -107,7 +107,7 @@ public class EntiteController {
                             historique.setDatehistorique(datehisto);
                             historique
                                     .setDescription(
-                                            "" + user.getPrenom() + " " + user.getNom() + " a crée  une nouvelle entite ");
+                                            "" + user.getPrenom() + " " + user.getNom() + " a cree  une nouvelle entite ");
                             historiqueService.Create(historique);
                             Entite NewEntite = entiteService.Create(entite);
                             return ResponseMessage.generateResponse("ok", HttpStatus.OK, NewEntite);
@@ -263,7 +263,7 @@ public class EntiteController {
                     return ResponseMessage.generateResponse("ok", HttpStatus.OK, utilisateurService.TotalEntite());
 
                 } else {
-                    return ResponseMessage.generateResponse("error", HttpStatus.OK, "Non autorisé");
+                    return ResponseMessage.generateResponse("error", HttpStatus.OK, "Non autorise");
 
                 }
             } else {

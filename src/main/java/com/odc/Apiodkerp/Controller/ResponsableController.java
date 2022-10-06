@@ -506,7 +506,7 @@ public class ResponsableController {
                     Historique historique = new Historique();
                     historique.setDatehistorique(new Date());
                     historique.setDescription(utilisateur.getPrenom() + " " + utilisateur.getNom()
-                            + " a afficher le participant: " + post.getPostulant().getEmail());
+                            + " a affiche le participant: " + post.getPostulant().getEmail());
 
                     historiqueService.Create(historique);
 

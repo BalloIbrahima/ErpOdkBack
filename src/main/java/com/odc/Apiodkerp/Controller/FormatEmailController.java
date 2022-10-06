@@ -64,7 +64,7 @@ public class FormatEmailController {
                 return ResponseMessage.generateResponse("ok", HttpStatus.OK,
                         formatEmailService.Create(formatEmai));
             } else {
-                return ResponseMessage.generateResponse("error", HttpStatus.OK, "Non autorisé");
+                return ResponseMessage.generateResponse("error", HttpStatus.OK, "Non autorise");
             }
 
         } catch (Exception e) {
@@ -94,7 +94,7 @@ public class FormatEmailController {
                 return ResponseMessage.generateResponse("ok", HttpStatus.OK,
                         formatEmailService.Update(id, formatEmai));
             } else {
-                return ResponseMessage.generateResponse("error", HttpStatus.OK, "Non autorisé");
+                return ResponseMessage.generateResponse("error", HttpStatus.OK, "Non autorise");
             }
 
         } catch (Exception e) {
@@ -123,7 +123,7 @@ public class FormatEmailController {
                 return ResponseMessage.generateResponse("ok", HttpStatus.OK,
                         formatEmailService.Delete(id));
             } else {
-                return ResponseMessage.generateResponse("error", HttpStatus.OK, "Non autorisé");
+                return ResponseMessage.generateResponse("error", HttpStatus.OK, "Non autorise");
 
             }
 
@@ -152,7 +152,7 @@ public class FormatEmailController {
                 return ResponseMessage.generateResponse("ok", HttpStatus.OK,
                         formatEmailService.GetById(id));
             } else {
-                return ResponseMessage.generateResponse("error", HttpStatus.OK, "Non autorisé");
+                return ResponseMessage.generateResponse("error", HttpStatus.OK, "Non autorise");
 
             }
 
@@ -178,7 +178,7 @@ public class FormatEmailController {
                 return ResponseMessage.generateResponse("ok", HttpStatus.OK,formatEmailService.GetAll());
 
             } else {
-                return ResponseMessage.generateResponse("error", HttpStatus.OK, "Non autorisé");
+                return ResponseMessage.generateResponse("error", HttpStatus.OK, "Non autorise");
 
             }
 
