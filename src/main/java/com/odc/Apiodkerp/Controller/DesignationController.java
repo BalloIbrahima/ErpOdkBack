@@ -95,7 +95,7 @@ public class DesignationController {
                     Historique historique = new Historique();
                     Date datehisto = new Date();
                     historique.setDatehistorique(datehisto);
-                    historique.setDescription("" + user.getPrenom() + " " + user.getNom() + " a ajouté la desigantion "
+                    historique.setDescription("" + user.getPrenom() + " " + user.getNom() + " a ajoute la desigantion "
                             + desi.getLibelle());
                     historiqueService.Create(historique);
 
@@ -108,7 +108,7 @@ public class DesignationController {
                 }
 
             } else {
-                return ResponseMessage.generateResponse("error", HttpStatus.OK, "Non autorisé");
+                return ResponseMessage.generateResponse("error", HttpStatus.OK, "Non autorise");
             }
 
         } catch (Exception e) {
@@ -140,7 +140,7 @@ public class DesignationController {
                     Historique historique = new Historique();
                     Date datehisto = new Date();
                     historique.setDatehistorique(datehisto);
-                    historique.setDescription("" + user.getPrenom() + " " + user.getNom() + " a modifié la desigantion "
+                    historique.setDescription("" + user.getPrenom() + " " + user.getNom() + " a modifie la desigantion "
                             + desi.getLibelle());
                     historiqueService.Create(historique);
 
@@ -186,7 +186,7 @@ public class DesignationController {
                     Date datehisto = new Date();
                     historique.setDatehistorique(datehisto);
                     historique
-                            .setDescription("" + user.getPrenom() + " " + user.getNom() + " a supprimé la desigantion "
+                            .setDescription("" + user.getPrenom() + " " + user.getNom() + " a supprime la desigantion "
                                     + designation.getLibelle());
                     historiqueService.Create(historique);
 
@@ -199,7 +199,7 @@ public class DesignationController {
                 }
 
             } else {
-                return ResponseMessage.generateResponse("error", HttpStatus.OK, "Non autorisé");
+                return ResponseMessage.generateResponse("error", HttpStatus.OK, "Non autorise");
             }
 
         } catch (Exception e) {
@@ -231,7 +231,7 @@ public class DesignationController {
                     Date datehisto = new Date();
                     historique.setDatehistorique(datehisto);
                     historique.setDescription(
-                            "" + user.getPrenom() + " " + user.getNom() + " a affiché une designation ");
+                            "" + user.getPrenom() + " " + user.getNom() + " a affiche une designation ");
                     historiqueService.Create(historique);
 
                     return ResponseMessage.generateResponse("ok", HttpStatus.OK,
@@ -243,7 +243,7 @@ public class DesignationController {
                 }
 
             } else {
-                return ResponseMessage.generateResponse("error", HttpStatus.OK, "Non autorisé");
+                return ResponseMessage.generateResponse("error", HttpStatus.OK, "Non autorise");
             }
 
         } catch (Exception e) {

@@ -187,7 +187,7 @@ public class SalleController {
                     }
                     return ResponseMessage.generateResponse("ok", HttpStatus.OK, salleService.update(salle, id));
                 } else {
-                    return ResponseMessage.generateResponse("error", HttpStatus.OK, "Non autorisé");
+                    return ResponseMessage.generateResponse("error", HttpStatus.OK, "Non autorise");
 
                 }
             } else {
@@ -218,7 +218,7 @@ public class SalleController {
                         Date datehisto = new Date();
                         historique.setDatehistorique(datehisto);
                         historique.setDescription(
-                                "" + user.getPrenom() + " " + user.getNom() + " a supprimé une salle du nom de ");
+                                "" + user.getPrenom() + " " + user.getNom() + " a supprime une salle du nom de ");
                         historiqueService.Create(historique);
                     } catch (Exception e) {
                         // TODO: handle exception
@@ -226,9 +226,9 @@ public class SalleController {
 
                     }
                     salleService.delete(id);
-                    return ResponseMessage.generateResponse("ok", HttpStatus.OK, "Salle supprimer avec succès !");
+                    return ResponseMessage.generateResponse("ok", HttpStatus.OK, "Salle supprime avec succes !");
                 } else {
-                    return ResponseMessage.generateResponse("error", HttpStatus.OK, "Non autorisé");
+                    return ResponseMessage.generateResponse("error", HttpStatus.OK, "Non autorise");
 
                 }
             } else {
@@ -259,7 +259,7 @@ public class SalleController {
                         Date datehisto = new Date();
                         historique.setDatehistorique(datehisto);
                         historique.setDescription("" + user.getPrenom() + " " + user.getNom()
-                                + " a attribué  une salle du nom de  " + salleService.getByIdsalle(idsalle)
+                                + " a attribue  une salle du nom de  " + salleService.getByIdsalle(idsalle)
                                 + " à l'activte " + activiteService.GetById(idactivite));
                         historiqueService.Create(historique);
                     } catch (Exception e) {
@@ -270,7 +270,7 @@ public class SalleController {
                     return ResponseMessage.generateResponse("ok", HttpStatus.OK,
                             activiteService.attribuerSalle(idsalle, idactivite));
                 } else {
-                    return ResponseMessage.generateResponse("error", HttpStatus.OK, "Non autorisé");
+                    return ResponseMessage.generateResponse("error", HttpStatus.OK, "Non autorise");
 
                 }
             } else {
@@ -295,7 +295,7 @@ public class SalleController {
                 return ResponseMessage.generateResponse("ok", HttpStatus.OK,
                         salleService.getAll());
             } else {
-                return ResponseMessage.generateResponse("error", HttpStatus.OK, "Non autorisé");
+                return ResponseMessage.generateResponse("error", HttpStatus.OK, "Non autorise");
             }
 
         } catch (Exception e) {
@@ -324,11 +324,19 @@ public class SalleController {
                                 && act.getDateFin().after(date2)
                                 || act.getDateDebut().after(date1) && act.getDateDebut().after(date2)
                                         && act.getDateFin().before(date1) && act.getDateFin().before(date2)) {
-                            // Historique
-
-                            salle.add(act.getSalle());
+                                
+                                // Historique
+                                salle.add(act.getSalle());
                         }
                     }
+
+                    List<Salle> salles = salleService.getAll();
+                    for (Salle s:salles){
+                        if(s.getActivite().size()==0){
+                            salle.add(s);
+                        }
+                    }
+
 
                     try {
                         Historique historique = new Historique();
@@ -346,7 +354,7 @@ public class SalleController {
                     }
 
                 } else {
-                    return ResponseMessage.generateResponse("error", HttpStatus.OK, "Non autorisé");
+                    return ResponseMessage.generateResponse("error", HttpStatus.OK, "Non autorise");
                 }
             }
 
@@ -397,7 +405,7 @@ public class SalleController {
                     }
 
                 } else {
-                    return ResponseMessage.generateResponse("error", HttpStatus.OK, "Non autorisé");
+                    return ResponseMessage.generateResponse("error", HttpStatus.OK, "Non autorise");
                 }
             }
 
@@ -453,7 +461,7 @@ public class SalleController {
                     }
 
                 } else {
-                    return ResponseMessage.generateResponse("error", HttpStatus.OK, "Non autorisé");
+                    return ResponseMessage.generateResponse("error", HttpStatus.OK, "Non autorise");
                 }
             }
 
@@ -494,7 +502,7 @@ public class SalleController {
                 }
 
             } else {
-                return ResponseMessage.generateResponse("error", HttpStatus.OK, "Non autorisé");
+                return ResponseMessage.generateResponse("error", HttpStatus.OK, "Non autorise");
             }
 
         } catch (Exception e) {

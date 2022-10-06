@@ -259,7 +259,6 @@ public class UtilisateurController {
 
         try {
             Activite activite = activiteService.GetById(idactivite);
-            Utilisateur utilisateur = new JsonMapper().readValue(userVenant, Utilisateur.class);
 
             Utilisateur utilisateurs = new JsonMapper().readValue(userVenant, Utilisateur.class);
 
@@ -284,14 +283,15 @@ public class UtilisateurController {
                                                     + " a supprime l activite "
                                                     + activite.getNom());
                             historiqueService.Create(historique);
+                            return ResponseMessage.generateResponse("ok", HttpStatus.OK,
+                                    activiteService.Delete(idactivite));
                         } catch (Exception e) {
                             // TODO: handle exception
                             return ResponseMessage.generateResponse("iciiii", HttpStatus.OK, e.getMessage());
 
                         }
 
-                        return ResponseMessage.generateResponse("ok", HttpStatus.OK,
-                                activiteService.Delete(idactivite));
+
                     } else {
                         return ResponseMessage.generateResponse("error", HttpStatus.OK, "vous n'etes pas autorisé");
                     }
