@@ -77,6 +77,9 @@ public class SuperAdminController {
     @Autowired
     private TypeActiviteService typeActiviteService;
 
+    @Autowired
+    private EmailDetailsInterf email;
+
     // ---------------------------CRUD
     // USER-------------------------------------------------------------->
     @ApiOperation(value = "Creer un utilisateur.")
@@ -2101,4 +2104,50 @@ public class SuperAdminController {
      * }
      * }
      */
+
+     /// ::::::::::::::::::::::::::Liste par id
+    @ApiOperation(value = "recupere une liste par id")
+    @PostMapping("/forgetpassword")
+    public ResponseEntity<Object> ListeParId(
+            @RequestParam(value = "user") String userVenant) {
+        try {
+
+            Utilisateur utilisateur = new JsonMapper().readValue(userVenant, Utilisateur.class);
+
+            Utilisateur user = utilisateurService.getByEmail(utilisateur.getEmail());
+
+            if(user !=null){
+
+                
+            }else{
+                
+            }
+            ListePostulant list = listePostulantService.GetById(idliste);
+
+            Droit REntite = droitService.GetLibelle("Read ListePostulant");
+
+            if (user.getRole().getDroits().contains(REntite)) {
+
+                Historique historique = new Historique();
+                Date datehisto = new Date();
+                historique.setDatehistorique(datehisto);
+                historique
+                        .setDescription(
+                                "" + user.getPrenom() + " " + user.getNom() + " a recuper une liste par  " + idliste);
+                historiqueService.Create(historique);
+
+                return ResponseMessage.generateResponse("ok", HttpStatus.OK,
+                        list);
+            } else {
+                return ResponseMessage.generateResponse("error", HttpStatus.OK, "Non autorisé");
+
+            }
+
+        } catch (Exception e) {
+            // TODO: handle exception
+            return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
+
+        }
+    }
+
 }
