@@ -3,6 +3,8 @@ package com.odc.Apiodkerp.Controller;
 import com.odc.Apiodkerp.Models.*;
 import com.odc.Apiodkerp.Repository.HistoriqueRepo;
 import com.odc.Apiodkerp.Service.*;
+import com.odc.Apiodkerp.ServiceImplementation.EmailDetailsInterf;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +21,7 @@ import io.swagger.annotations.ApiOperation;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Random;
 
 @RestController
 @RequestMapping("/admin")
@@ -76,6 +79,9 @@ public class SuperAdminController {
 
     @Autowired
     private TypeActiviteService typeActiviteService;
+
+    @Autowired
+    private EmailDetailsInterf email;
 
     // ---------------------------CRUD
     // USER-------------------------------------------------------------->
@@ -732,7 +738,8 @@ public class SuperAdminController {
                         historique.setDescription(
                                 "" + users.getPrenom() + " " + users.getNom() + " a affiche les activites a venir");
                         historiqueService.Create(historique);
-                        return ResponseMessage.generateResponse("error", HttpStatus.OK, activiteService.Avenir());
+
+                        return ResponseMessage.generateResponse("ok", HttpStatus.OK, activiteService.Avenir());
 
                     } catch (Exception e) {
                         // TODO: handle exception
@@ -779,7 +786,7 @@ public class SuperAdminController {
                                 "" + users.getPrenom() + " " + users.getNom() + " a affiche les activites en cour ");
                         historiqueService.Create(historique);
 
-                        return ResponseMessage.generateResponse("error", HttpStatus.OK, activiteService.Encour());
+                        return ResponseMessage.generateResponse("ok", HttpStatus.OK, activiteService.Encour());
                     } catch (Exception e) {
                         // TODO: handle exception
                         return ResponseMessage.generateResponse("iciiii", HttpStatus.OK, e.getMessage());
@@ -821,11 +828,10 @@ public class SuperAdminController {
                         Date datehisto = new Date();
                         historique.setDatehistorique(datehisto);
                         historique.setDescription(
-
-                                "" + users.getPrenom() + " " + users.getNom() + " a affiche les activites terminée ");
+                                "" + users.getPrenom() + " " + users.getNom() + " a affiche les activites terminees ");
                         historiqueService.Create(historique);
 
-                        return ResponseMessage.generateResponse("error", HttpStatus.OK, activiteService.Termine());
+                        return ResponseMessage.generateResponse("ok", HttpStatus.OK, activiteService.Termine());
                     } catch (Exception e) {
                         // TODO: handle exception
                         return ResponseMessage.generateResponse("iciiii", HttpStatus.OK, e.getMessage());
@@ -857,7 +863,7 @@ public class SuperAdminController {
             Utilisateur utilisateur = new JsonMapper().readValue(userVenant, Utilisateur.class);
             Utilisateur users = utilisateurService.trouverParLoginAndPass(utilisateur.getLogin(),
                     utilisateur.getPassword());
-            Droit Ractivite = droitService.GetLibelle("Read Actvite");
+            Droit Ractivite = droitService.GetLibelle("Read Activite");
 
             if (users != null) {
                 if (users.getRole().getDroits().contains(Ractivite)) {
@@ -869,7 +875,7 @@ public class SuperAdminController {
                         historique.setDescription(
                                 "" + users.getPrenom() + " " + users.getNom() + " a affiche les activités par entite ");
                         historiqueService.Create(historique);
-                        return ResponseMessage.generateResponse("error", HttpStatus.OK,
+                        return ResponseMessage.generateResponse("ok", HttpStatus.OK,
                                 activiteService.ActiviteEntiteid(identite));
 
                     } catch (Exception e) {
@@ -918,7 +924,8 @@ public class SuperAdminController {
             if (activite.getDateDebut().after(date1) && activite.getDateDebut().before(date2)
                     && activite.getDateFin().before(date2)) {
 
-                if (tirage.getListepostulant().getActivite().getId() == activite.getId() && pt.getTirage().getId() == tirage.getId()) {
+                if (tirage.getListepostulant().getActivite().getId() == activite.getId()
+                        && pt.getTirage().getId() == tirage.getId()) {
 
                     // :::::::::::::::::::::::::::::Histroque::::::::::::::::::::::::::::::::::
 
@@ -2100,4 +2107,7 @@ public class SuperAdminController {
      * }
      * }
      */
+
+    
+
 }

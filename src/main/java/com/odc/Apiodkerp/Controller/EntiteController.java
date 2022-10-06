@@ -276,7 +276,6 @@ public class EntiteController {
 
                 } else {
                     return ResponseMessage.generateResponse("error", HttpStatus.OK, "Non autorise");
-
                 }
             } else {
                 return ResponseMessage.generateResponse("error", HttpStatus.OK, "Cet utilisateur n'existe pas !");
