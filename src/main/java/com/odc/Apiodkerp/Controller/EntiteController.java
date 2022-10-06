@@ -197,7 +197,7 @@ public class EntiteController {
 
     @ApiOperation(value = "Affichager une entite")
     @PostMapping("/get/entite/{id}")
-    public ResponseEntity<Object> GetIdEntite(@RequestParam("id") Long id,
+    public ResponseEntity<Object> GetIdEntite(@PathVariable("id") Long id,
             @RequestParam(value = "user") String userVenant) {
         // @RequestParam(value = "entite") String enti
         try {
