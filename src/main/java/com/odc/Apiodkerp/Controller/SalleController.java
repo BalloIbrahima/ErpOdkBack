@@ -84,7 +84,7 @@ public class SalleController {
             Utilisateur user = utilisateurService.trouverParLoginAndPass(utilisateur.getLogin(),
                     utilisateur.getPassword());
 
-            Droit cSalle=droitService.GetLibelle("Create Salle");
+            Droit cSalle = droitService.GetLibelle("Create Salle");
 
             // Utilisateur utilisateur = utilisateurService.trouverParLoginAndPass(login,
             // password);
@@ -102,7 +102,7 @@ public class SalleController {
                     return ResponseMessage.generateResponse("iciiii", HttpStatus.OK, e.getMessage());
 
                 }
-                //salle.setUtilisateur(utilisateur);
+                // salle.setUtilisateur(utilisateur);
                 return ResponseMessage.generateResponse("ok", HttpStatus.OK, salleService.create(salle));
             } else {
                 return ResponseMessage.generateResponse("error", HttpStatus.OK, "non autorise");
@@ -324,8 +324,8 @@ public class SalleController {
                                 && act.getDateFin().after(date2)
                                 || act.getDateDebut().after(date1) && act.getDateDebut().after(date2)
                                         && act.getDateFin().before(date1) && act.getDateFin().before(date2)) {
-                            // Historique
 
+                            // Historique
                             salle.add(act.getSalle());
                         }
                     }
@@ -436,6 +436,14 @@ public class SalleController {
                             salle.add(act.getSalle());
                         }
                     }
+
+                    List<Salle> salles = salleService.getAll();
+                    for (Salle s : salles) {
+                        if (s.getActivite().size() == 0) {
+                            salle.add(s);
+                        }
+                    }
+
                     try {
                         Historique historique = new Historique();
                         Date datehisto = new Date();
@@ -492,6 +500,65 @@ public class SalleController {
                     return ResponseMessage.generateResponse("iciiii", HttpStatus.OK, e.getMessage());
 
                 }
+
+            } else {
+                return ResponseMessage.generateResponse("error", HttpStatus.OK, "Non autorise");
+            }
+
+        } catch (Exception e) {
+            // TODO: handle exception
+            return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
+
+        }
+    }
+
+    // :::::::::::::::::::::::Suprimer salle
+    @ApiOperation(value = "Suprimer salle")
+    @PostMapping("/suprime/{idSalle}")
+    public ResponseEntity<Object> SuprimerSalle(@PathVariable("idSalle") Long idSalle,@RequestParam(value = "user") String userVenant) {
+        try {
+
+            Utilisateur utilisateur = new JsonMapper().readValue(userVenant, Utilisateur.class);
+
+            Salle salle=salleService.getByIdsalle(idSalle);
+
+            Utilisateur user = utilisateurService.trouverParLoginAndPass(utilisateur.getLogin(),
+                    utilisateur.getPassword());
+            Droit Rsalle = droitService.GetLibelle("Delete Salle");
+
+            if (user.getRole().getDroits().contains(Rsalle)) {
+                if(salle!=null){
+
+                    if(salle.getActivite().size()==0){
+                        try {
+                            Historique historique = new Historique();
+                            Date datehisto = new Date();
+                            historique.setDatehistorique(datehisto);
+                            historique.setDescription(
+                                    "" + user.getPrenom() + " " + user.getNom() + " a suprime  une salle"+idSalle);
+                            historiqueService.Create(historique);
+        
+                            salleService.delete(idSalle);
+                            return ResponseMessage.generateResponse("ok", HttpStatus.OK,
+                                    "Salle suprime");
+                        } catch (Exception e) {
+                            // TODO: handle exception
+                            return ResponseMessage.generateResponse("iciiii", HttpStatus.OK, e.getMessage());
+        
+                        }
+                    }else{
+                        // for(activite a:salle.getActivite()){
+                        //     if()
+                        // }
+                        return ResponseMessage.generateResponse("error", HttpStatus.OK, "Cette salle est lié a des activites");
+
+                    }
+                    
+                }else{
+                    return ResponseMessage.generateResponse("error", HttpStatus.OK, "Cette salle n'existe pas !");
+
+                }
+                
 
             } else {
                 return ResponseMessage.generateResponse("error", HttpStatus.OK, "Non autorise");
