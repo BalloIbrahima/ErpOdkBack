@@ -732,12 +732,14 @@ public class SuperAdminController {
                         historique.setDescription(
                                 "" + users.getPrenom() + " " + users.getNom() + " a affiche les activites a venir");
                         historiqueService.Create(historique);
+
+                        return ResponseMessage.generateResponse("ok", HttpStatus.OK, activiteService.Avenir());
+
                     } catch (Exception e) {
                         // TODO: handle exception
                         return ResponseMessage.generateResponse("iciiii", HttpStatus.OK, e.getMessage());
 
                     }
-                    return ResponseMessage.generateResponse("error", HttpStatus.OK, activiteService.Avenir());
 
                 } else {
                     return ResponseMessage.generateResponse("error", HttpStatus.OK, "Non autorisé");
@@ -778,7 +780,7 @@ public class SuperAdminController {
                                 "" + users.getPrenom() + " " + users.getNom() + " a affiche les activites en cour ");
                         historiqueService.Create(historique);
 
-                        return ResponseMessage.generateResponse("error", HttpStatus.OK, activiteService.Encour());
+                        return ResponseMessage.generateResponse("ok", HttpStatus.OK, activiteService.Encour());
                     } catch (Exception e) {
                         // TODO: handle exception
                         return ResponseMessage.generateResponse("iciiii", HttpStatus.OK, e.getMessage());
@@ -820,10 +822,10 @@ public class SuperAdminController {
                         Date datehisto = new Date();
                         historique.setDatehistorique(datehisto);
                         historique.setDescription(
-                                "" + users.getPrenom() + " " + users.getNom() + " a affiche les activites terminée ");
+                                "" + users.getPrenom() + " " + users.getNom() + " a affiche les activites terminees ");
                         historiqueService.Create(historique);
 
-                        return ResponseMessage.generateResponse("error", HttpStatus.OK, activiteService.Termine());
+                        return ResponseMessage.generateResponse("ok", HttpStatus.OK, activiteService.Termine());
                     } catch (Exception e) {
                         // TODO: handle exception
                         return ResponseMessage.generateResponse("iciiii", HttpStatus.OK, e.getMessage());
@@ -916,7 +918,8 @@ public class SuperAdminController {
             if (activite.getDateDebut().after(date1) && activite.getDateDebut().before(date2)
                     && activite.getDateFin().before(date2)) {
 
-                if (tirage.getListepostulant().getActivite().getId() == activite.getId() && pt.getTirage().getId() == tirage.getId()) {
+                if (tirage.getListepostulant().getActivite().getId() == activite.getId()
+                        && pt.getTirage().getId() == tirage.getId()) {
 
                     // :::::::::::::::::::::::::::::Histroque::::::::::::::::::::::::::::::::::
 
