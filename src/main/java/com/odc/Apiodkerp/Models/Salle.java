@@ -26,8 +26,8 @@ public class Salle {
     @Lob
     private String description;
 
-    @OneToMany(mappedBy = "salle")
     @JsonIgnore
+    @OneToMany(mappedBy = "salle")
     List<Activite> activite = new ArrayList<>();
 
     @ManyToOne

@@ -85,6 +85,7 @@ public class SalleController {
                     utilisateur.getPassword());
 
             Droit cSalle=droitService.GetLibelle("Create Salle");
+
             // Utilisateur utilisateur = utilisateurService.trouverParLoginAndPass(login,
             // password);
             System.out.println(utilisateur);
@@ -113,7 +114,7 @@ public class SalleController {
 
     // ::::::::::Recuperer salle par id
     @ApiOperation(value = "Recuperer salle par id")
-    @PostMapping("getSalle")
+    @PostMapping("getSalle/{id}")
     public ResponseEntity<Object> getSalle(@PathVariable("id") Long id,
             @RequestParam(value = "user") String userVenant) {
         try {
@@ -134,12 +135,13 @@ public class SalleController {
                         historique.setDescription("" + user.getPrenom() + " " + user.getNom()
                                 + " a recuperer une salle du nom de " + salle.getId());
                         historiqueService.Create(historique);
+                        return ResponseMessage.generateResponse("ok", HttpStatus.OK, salleService.read(id));
+
                     } catch (Exception e) {
                         // TODO: handle exception
                         return ResponseMessage.generateResponse("iciiii", HttpStatus.OK, e.getMessage());
 
                     }
-                    return ResponseMessage.generateResponse("ok", HttpStatus.OK, salleService.read(id));
 
                 } else {
                     return ResponseMessage.generateResponse("error", HttpStatus.OK, "Non autorisé");
@@ -178,12 +180,14 @@ public class SalleController {
                         historique.setDescription("" + user.getPrenom() + " " + user.getNom()
                                 + " a modifier une salle du nom de " + salleService.getByIdsalle(id).getLibelle());
                         historiqueService.Create(historique);
+
+                        return ResponseMessage.generateResponse("ok", HttpStatus.OK, salleService.update(salle, id));
+
                     } catch (Exception e) {
                         // TODO: handle exception
                         return ResponseMessage.generateResponse("iciiii", HttpStatus.OK, e.getMessage());
 
                     }
-                    return ResponseMessage.generateResponse("ok", HttpStatus.OK, salleService.update(salle, id));
                 } else {
                     return ResponseMessage.generateResponse("error", HttpStatus.OK, "Non autorisé");
 
