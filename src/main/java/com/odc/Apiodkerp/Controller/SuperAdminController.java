@@ -2168,68 +2168,6 @@ public class SuperAdminController {
     }
 
 
-    // ---------------------------CRUD
-    // INTERVENANT
-    // EXTERNE-------------------------------------------------------------->
-    @ApiOperation(value = "Creer un intervenant interne.")
-    @PostMapping("/create/intervenant")
-    public ResponseEntity<Object> createIntervenant(@RequestParam(value = "data") String data,
-            @RequestParam(value = "user") String userVenant) {
-        try {
-
-            Utilisateur utilisateu = new JsonMapper().readValue(userVenant, Utilisateur.class);
-
-            IntervenantExterne utilisateur = new JsonMapper().readValue(data, IntervenantExterne.class);
-
-            // Role role = RoleService.GetByLibelle("USER");
-
-            Utilisateur users = utilisateurService.trouverParLoginAndPass(utilisateu.getLogin(),
-                    utilisateu.getPassword());
-            Droit CUser = droitService.GetLibelle("Create Intervenant");
-
-            if (users != null) {
-                if (users.getRole().getDroits().contains(CUser)) {
-
-                    if (intervenantExterneService.getByEmail(utilisateur.getEmail()) == null) {
-
-                        try {
-                            Historique historique = new Historique();
-                            Date datehisto = new Date();
-                            historique.setDatehistorique(datehisto);
-                            historique.setDescription(users.getPrenom() + " " + users.getNom()
-                                    + " a cree un personnel externe du nom de " + utilisateur.getNom());
-
-                            historiqueService.Create(historique);
-
-                            IntervenantExterne NewUser = intervenantExterneService.creer(utilisateur);
-                            // System.out.println(NewUser.getLogin());
-                            return ResponseMessage.generateResponse("ok", HttpStatus.OK, NewUser);
-                        } catch (Exception e) {
-                            // TODO: handle exception
-                            return ResponseMessage.generateResponse("ijjciiii", HttpStatus.OK, e.getMessage());
-
-                        }
-
-                    } else {
-                        return ResponseMessage.generateResponse("error", HttpStatus.OK, "Adresse mail existante");
-
-                    }
-
-                } else {
-                    return ResponseMessage.generateResponse("error", HttpStatus.OK, "Non autorisé");
-
-                }
-            } else {
-                return ResponseMessage.generateResponse("error", HttpStatus.OK, "Cet utilisateur n'existe pas !");
-
-            }
-        } catch (Exception e) {
-            // TODO: handle exception
-            return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
-        }
-    }
-
-
     @ApiOperation(value = "Ensemble des intervenants.")
     @PostMapping("/intervenant/all")
     public ResponseEntity<Object> createIntervenant(@RequestParam(value = "user") String userVenant) {

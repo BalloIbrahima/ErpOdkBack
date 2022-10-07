@@ -1,19 +1,13 @@
 package com.odc.Apiodkerp.Controller;
 
+import com.odc.Apiodkerp.Models.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.odc.Apiodkerp.Configuration.ResponseMessage;
-import com.odc.Apiodkerp.Models.Droit;
-import com.odc.Apiodkerp.Models.Historique;
-import com.odc.Apiodkerp.Models.Utilisateur;
 import com.odc.Apiodkerp.Service.ActiviteService;
 import com.odc.Apiodkerp.Service.AouPService;
 import com.odc.Apiodkerp.Service.DroitService;
@@ -36,6 +30,8 @@ import com.odc.Apiodkerp.Service.UtilisateurService;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+
+import java.util.Date;
 
 @RestController
 @RequestMapping("/notification")
@@ -129,7 +125,100 @@ public class NotificationController {
         }
     }
 
+   /* @ApiOperation(value = "Affichager une notification")
+    @PostMapping("/get/notification/{id}")
+    public ResponseEntity<Object> GetIdNotif(@PathVariable("id") Long id,
+                                                   @RequestParam(value = "user") String userVenant) {
+        try {
+            Utilisateur utilisateur = new JsonMapper().readValue(userVenant, Utilisateur.class);
 
-    
-    
+            Utilisateur user = utilisateurService.trouverParLoginAndPass(utilisateur.getLogin(),
+                    utilisateur.getPassword());
+
+            Notification notification = new Notification();
+            Droit Rnotification = droitService.GetLibelle("Read notification");
+
+            if (user != null) {
+                if (user.getRole().getDroits().contains(Rnotification)) {
+
+                    try {
+                        Historique historique = new Historique();
+                        Date datehisto = new Date();
+                        historique.setDatehistorique(datehisto);
+                        historique.setDescription("" + user.getPrenom() + " " + user.getNom()
+                                + " a regarder le notification " + notificationService.getById(id));
+                        historiqueService.Create(historique);
+                        Notification idNotif = notificationService.getById(id);
+                        return ResponseMessage.generateResponse("ok", HttpStatus.OK, idNotif);
+                    } catch (Exception e) {
+                        // TODO: handle exception
+                        return ResponseMessage.generateResponse("iciiii", HttpStatus.OK, e.getMessage());
+
+                    }
+
+                } else {
+                    return ResponseMessage.generateResponse("error", HttpStatus.OK, "Non autorisé");
+
+                }
+            } else {
+                return ResponseMessage.generateResponse("error", HttpStatus.OK, "Cet utilisateur n'existe pas !");
+
+            }
+        } catch (Exception e) {
+            // TODO: handle exception
+            return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
+        }
+
+    }
+*/
+
+
+    // ::::::::::Recuperer salle par id
+   @ApiOperation(value = "Recuperer salle par id")
+    @PostMapping("/get/notification/{id}")
+    public ResponseEntity<Object> getNotification(@PathVariable("id") Long id,
+                                           @RequestParam(value = "user") String userVenant) {
+        try {
+            Utilisateur utilisateur = new JsonMapper().readValue(userVenant, Utilisateur.class);
+
+            Utilisateur user = utilisateurService.trouverParLoginAndPass(utilisateur.getLogin(),
+                    utilisateur.getPassword());
+            Notification notification = new Notification();
+            Droit Rsalle = droitService.GetLibelle("Read notification");
+
+            if (user != null) {
+                if (user.getRole().getDroits().contains(Rsalle)) {
+
+                    try {
+                        Historique historique = new Historique();
+                        Date datehisto = new Date();
+                        historique.setDatehistorique(datehisto);
+                        historique.setDescription("" + user.getPrenom() + " " + user.getNom()
+                                + " a regarder le notification " + notification.getId());
+                        historiqueService.Create(historique);
+                        return ResponseMessage.generateResponse("ok", HttpStatus.OK, notificationService.getById(id));
+
+                    } catch (Exception e) {
+                        // TODO: handle exception
+                        return ResponseMessage.generateResponse("iciiii", HttpStatus.OK, e.getMessage());
+
+                    }
+
+                } else {
+                    return ResponseMessage.generateResponse("error", HttpStatus.OK, "Non autorisé");
+
+                }
+            } else {
+                return ResponseMessage.generateResponse("error", HttpStatus.OK, "Cet utilisateur n'existe pas !");
+
+            }
+        } catch (Exception e) {
+            // TODO: handle exception
+            return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
+
+        }
+    }
+
+
+
 }
