@@ -27,4 +27,10 @@ public class Role {
     @OneToMany(mappedBy = "role")
     List<Utilisateur> utilisateurs = new ArrayList<>();
 
+    @ManyToMany
+    @JoinTable(name = "RoleDroit", joinColumns = {
+            @JoinColumn(name = "id_role") }, inverseJoinColumns = {
+                    @JoinColumn(name = "id_droit") })
+    List<Droit> droits = new ArrayList<>();
+
 }

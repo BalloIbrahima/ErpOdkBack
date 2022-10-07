@@ -7,13 +7,14 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.odc.Apiodkerp.Models.Role;
 import com.odc.Apiodkerp.Models.Utilisateur;
-import com.odc.Apiodkerp.Repository.UtilisateurRepository;
 
 public interface UtilisateurService {
 
     Utilisateur creer(Utilisateur utilisateur);
 
     Utilisateur update(Utilisateur utilisateur);
+
+    Utilisateur modifierRole(Utilisateur utilisateur);
 
     Utilisateur login(String login, String password);
 
@@ -26,5 +27,13 @@ public interface UtilisateurService {
     List<Utilisateur> getAll();
 
     List<Utilisateur> RetrouverParRole(Role role);
+
+    Long TotalPersonnel();
+
+    Long TotalEntite();
+
+    Utilisateur trouverParLoginAndPass(String login, String password);
+
+    List<Utilisateur> RecupererUserParEtat(Boolean bool);
 
 }

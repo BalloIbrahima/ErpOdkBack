@@ -27,6 +27,7 @@ public class SalleServiceImpl implements SalleService {
 
     @Override
     public Salle update(Salle salle, long id) {
+
         return salleRepository.save(salle);
     }
 
@@ -43,6 +44,17 @@ public class SalleServiceImpl implements SalleService {
     @Override
     public Salle getByLibelle(String libelle) {
         return salleRepository.findByLibelle(libelle);
+    }
+
+    @Override
+    public Salle getByIdsalle(long id) {
+        return salleRepository.findById(id).get();
+    }
+
+    @Override
+    public List<Salle> ParEtat(Boolean disponibilite) {
+        // TODO Auto-generated method stub
+        return salleRepository.findByDisponibilite(disponibilite);
     }
 
 }

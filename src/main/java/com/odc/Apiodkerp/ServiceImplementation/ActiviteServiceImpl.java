@@ -12,6 +12,8 @@ import com.odc.Apiodkerp.Service.ActiviteService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -60,14 +62,15 @@ public class ActiviteServiceImpl implements ActiviteService {
     }
 
     @Override
-    public Activite FindAllAct() {
-        return (Activite) activiteRepository.findAll();
+    public List<Activite> FindAllAct() {
+        return activiteRepository.findAll();
     }
 
     @Override
     public String attribuerSalle(long idsalle, long idactivite) {
         Activite activitecourant = activiteRepository.findById(idactivite).orElse(null);
         Salle salleverifiee = salleRepository.findById(idsalle).orElse(null);
+
         if (salleverifiee != null) {
             activitecourant.setSalle(salleverifiee);
             activiteRepository.save(activitecourant);
@@ -77,8 +80,92 @@ public class ActiviteServiceImpl implements ActiviteService {
     }
 
     @Override
-    public Activite GetByEtat(long idetat) {
-        return activiteRepository.findByEtat(idetat);
+    public Long TotalActivite() {
+        return activiteRepository.Total();
+    }
+
+    @Override
+    public Long ToutActivite() {
+        return activiteRepository.toutActivite();
+    }
+
+    public List<Activite> ToutActivit() {
+        return activiteRepository.findAll();
+    }
+
+    @Override
+    public Activite GetByEtat(Etat etat) {
+        return activiteRepository.findByEtat(etat);
+    }
+
+    @Override
+    public List<Activite> Avenir() {
+        // TODO Auto-generated method stub
+        List<Activite> all = activiteRepository.findAll();
+
+        List<Activite> avenirs = new ArrayList<>();
+        Date today = new Date();
+
+        for (Activite activite : all) {
+
+            if (today.before(activite.getDateDebut())) {
+                avenirs.add(activite);
+            }
+
+        }
+
+        return avenirs;
+    }
+
+    @Override
+    public List<Activite> Encour() {
+        // TODO Auto-generated method stub
+
+        List<Activite> all = activiteRepository.findAll();
+
+        List<Activite> encour = new ArrayList<>();
+
+        Date today = new Date();
+        try {
+            for (Activite activite : all) {
+
+                if (today.after(activite.getDateDebut()) && today.before(activite.getDateFin())) {
+                    encour.add(activite);
+                }
+
+            }
+
+        } catch (Exception e) {
+            // TODO: handle exception
+        }
+
+        return encour;
+    }
+
+    @Override
+    public List<Activite> Termine() {
+        // TODO Auto-generated method stub
+
+        List<Activite> all = activiteRepository.findAll();
+
+        List<Activite> termines = new ArrayList<>();
+
+        Date today = new Date();
+
+        for (Activite activite : all) {
+
+            if (today.after(activite.getDateFin())) {
+                termines.add(activite);
+            }
+
+        }
+
+        return termines;
+    }
+
+    @Override
+    public List<Activite> ActiviteEntiteid(long identite) {
+        return  activiteRepository.actEntite(identite);
     }
 
 }

@@ -1,6 +1,5 @@
 package com.odc.Apiodkerp.Configuration;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -11,7 +10,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 public class SaveImage {
 
-    public static String localhost = "http://localhost/";
+    public static String localhost = "http://127.0.0.1/";
     public static String serveruser = localhost + "erpodk/images/utilisateurs/";
     public static String serveractivite = localhost + "erpodk/images/activites/";
 
@@ -57,6 +56,7 @@ public class SaveImage {
                             + file.getOriginalFilename().substring(index).toLowerCase();
                 } else {
                     // si le fichier existe pas deja on le suprime et le recrèe
+
                     Files.delete(newchemin);
 
                     Files.copy(file.getInputStream(), chemin

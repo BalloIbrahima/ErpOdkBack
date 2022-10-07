@@ -27,7 +27,7 @@ public class Presence {
     private Long id;
     private Date date;
     @ManyToOne
-    PostulantTire postulantTire;
+    AouP aouP;
 
     @ManyToOne
     Activite activite;

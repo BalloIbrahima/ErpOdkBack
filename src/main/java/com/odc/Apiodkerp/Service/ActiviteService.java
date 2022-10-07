@@ -17,10 +17,25 @@ public interface ActiviteService {
 
     Activite GetById(long id);
 
-    Activite FindAllAct();
+    List<Activite> FindAllAct();
 
     // Activite en fonction de l'etat
     Activite GetByEtat(long idetat);
 
     String attribuerSalle(long idsalle, long idactivite);
+
+    Long TotalActivite();
+
+    Long ToutActivite();
+
+    List<Activite> ToutActivit();
+
+    List<Activite> Avenir();
+
+    List<Activite> Encour();
+
+    List<Activite> Termine();
+
+    List<Activite> ActiviteEntiteid(long identite);
+
 }

@@ -1,9 +1,16 @@
 package com.odc.Apiodkerp.Configuration;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
+import com.odc.Apiodkerp.Enum.Genre;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
@@ -93,12 +100,56 @@ public class ExcelImport {
                                 case 1:
                                     postulant.setPrenom(formatter.formatCellValue(colonneCourante));
                                     break;
-                                // troixième colonne contenant le numero
+                                // deuxième colonne contenant le prenom
                                 case 2:
+
+                                    String g= formatter.formatCellValue(colonneCourante);
+                                    if(g=="M" || g=="Masculin" || g=="MASCULIN"){
+                                        postulant.setGenre(Genre.Masculin);
+                                    }else{
+                                        postulant.setGenre(Genre.Feminin);
+                                    }
+
+
+                                    break;
+                                // deuxième colonne contenant le prenom
+                                case 3:
+
+                                  /*  = new SimpleDateFormat("dd/MM/yyyy").parse(formatter.formatCellValue(colonneCourante));
+                                    DateTimeFormatter  a= DateTimeFormatter.ofPattern("dd/MM/yyyy");
+                                    LocalDate fet = LocalDate.parse(formatter.formatCellValue(colonneCourante),a);*/
+                                    SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+                                    Date d=null;
+                                    try {
+                                        //d= sdf.parse(colonneCourante.getStringCellValue());
+                                        d = colonneCourante.getDateCellValue();
+                                    } catch (IllegalStateException e) {
+                                        // TODO Auto-generated catch block
+                                        d=null;
+                                        e.printStackTrace();
+                                        continue;
+                                    }
+
+                                    SimpleDateFormat formater = new SimpleDateFormat("dd-MM-yyyy"); // your template here
+                                    //Date dateStr = formater.parse(formatter.formatCellValue(colonneCourante));
+
+                                    //Date dateStr = formater.parse(formatter.formatCellValue(colonneCourante));
+                                    //String date = new SimpleDateFormat("yyyy-MM-dd")
+                                        //    .format(new Date(formatter.formatCellValue(colonneCourante)));
+
+                                    postulant.setDateNaissance(d);
+
+
+                                    //String date = request.getParameter("date");
+                                    //SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd"); // your template here
+                                    //java.util.Date dateStr = formatter.parse(date);
+                                    break;
+                                // troixième colonne contenant le numero
+                                case 4:
                                     postulant.setNumero(formatter.formatCellValue(colonneCourante));
                                     break;
                                 // dernière colonne contenant l'adresse mail
-                                case 3:
+                                case 5:
                                     postulant.setEmail(formatter.formatCellValue(colonneCourante));
                                     break;
                                 default:
@@ -194,5 +245,10 @@ public class ExcelImport {
             return null;
         }
 
+    }
+
+    private String modifyDateLayout(String inputDate) throws ParseException {
+        Date date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss z").parse(inputDate);
+        return new SimpleDateFormat("dd.MM.yyyy HH:mm:ss").format(date);
     }
 }
