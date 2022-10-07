@@ -37,8 +37,8 @@ public class Tirage {
     @OneToMany(mappedBy = "tirage")
     List<PostulantTire> postulanttires = new ArrayList<>();
 
-    // @ManyToOne
-    // @JoinColumn(name = "activite_id", referencedColumnName = "id")
-    // private Activite activite;
+    @ManyToOne
+    @JoinColumn(name = "activite_id", referencedColumnName = "id")
+    private Activite activite;
 
 }

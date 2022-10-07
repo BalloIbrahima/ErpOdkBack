@@ -408,7 +408,8 @@ public class ResponsableController {
                 Tirage tirage = new Tirage();
                 tirage.setLibelle(libelleTirage);
                 tirage.setListepostulant(listePostulant);
-                // tirage.setActivite(activite);
+                
+                tirage.setActivite(activite);
                 tirage.setValider(false);
                 tirage.setUtilisateur(utilisateur);
 
