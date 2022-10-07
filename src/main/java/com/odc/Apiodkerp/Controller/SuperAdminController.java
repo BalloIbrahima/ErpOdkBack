@@ -2190,6 +2190,60 @@ public class SuperAdminController {
         }
     }
 
+
+    @ApiOperation(value = "Participant par activite.")
+    @PostMapping("/participants/{idActivite}")
+    public ResponseEntity<Object> ParticipantActivite(@RequestParam(value = "user") String userVenant,@PathVariable("idActivite") Long idActivite) {
+        try {
+
+            Utilisateur utilisateu = new JsonMapper().readValue(userVenant, Utilisateur.class);
+
+            // Role role = RoleService.GetByLibelle("USER");
+
+            Utilisateur users = utilisateurService.trouverParLoginAndPass(utilisateu.getLogin(),
+                    utilisateu.getPassword());
+            Droit CAoup= droitService.GetLibelle("Read AouP");
+
+            if (users != null) {
+                if (users.getRole().getDroits().contains(CAoup)) {
+
+
+                    try {
+
+                        Activite activite=activiteService.GetById(idActivite);
+                        Historique historique = new Historique();
+                        Date datehisto = new Date();
+                        historique.setDatehistorique(datehisto);
+                        historique.setDescription(users.getPrenom() + " " + users.getNom()
+                                + " a cree recuperer la liste des participants de lactivite "+idActivite);
+
+                        historiqueService.Create(historique);
+
+                        //IntervenantExterne NewUser = intervenantExterneService.creer(users);
+                        // System.out.println(NewUser.getLogin());
+                        return ResponseMessage.generateResponse("ok", HttpStatus.OK, activite.getAoup());
+                    } catch (Exception e) {
+                        // TODO: handle exception
+                        return ResponseMessage.generateResponse("ijjciiii", HttpStatus.OK, e.getMessage());
+
+                    }
+
+                   
+
+                } else {
+                    return ResponseMessage.generateResponse("error", HttpStatus.OK, "Non autorisé");
+
+                }
+            } else {
+                return ResponseMessage.generateResponse("error", HttpStatus.OK, "Cet utilisateur n'existe pas !");
+
+            }
+        } catch (Exception e) {
+            // TODO: handle exception
+            return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
+        }
+    }
+
     // INTERVENANT
     // EXTERNE-------------------------------------------------------------->
 
