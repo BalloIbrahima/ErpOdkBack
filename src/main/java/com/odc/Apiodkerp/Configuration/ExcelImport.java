@@ -1,6 +1,7 @@
 package com.odc.Apiodkerp.Configuration;
 
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -102,7 +103,14 @@ public class ExcelImport {
                                 // deuxième colonne contenant le prenom
                                 case 2:
 
-                                    postulant.setGenre(Genre.valueOf(formatter.formatCellValue(colonneCourante)));
+                                    String g= formatter.formatCellValue(colonneCourante);
+                                    if(g=="M" || g=="Masculin" || g=="MASCULIN"){
+                                        postulant.setGenre(Genre.Masculin);
+                                    }else{
+                                        postulant.setGenre(Genre.Feminin);
+                                    }
+
+
                                     break;
                                 // deuxième colonne contenant le prenom
                                 case 3:
@@ -110,8 +118,31 @@ public class ExcelImport {
                                   /*  = new SimpleDateFormat("dd/MM/yyyy").parse(formatter.formatCellValue(colonneCourante));
                                     DateTimeFormatter  a= DateTimeFormatter.ofPattern("dd/MM/yyyy");
                                     LocalDate fet = LocalDate.parse(formatter.formatCellValue(colonneCourante),a);*/
+                                    SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+                                    Date d=null;
+                                    try {
+                                        //d= sdf.parse(colonneCourante.getStringCellValue());
+                                        d = colonneCourante.getDateCellValue();
+                                    } catch (IllegalStateException e) {
+                                        // TODO Auto-generated catch block
+                                        d=null;
+                                        e.printStackTrace();
+                                        continue;
+                                    }
 
-                                    postulant.setDateNaissance(formatter.formatCellValue(colonneCourante));
+                                    SimpleDateFormat formater = new SimpleDateFormat("dd-MM-yyyy"); // your template here
+                                    //Date dateStr = formater.parse(formatter.formatCellValue(colonneCourante));
+
+                                    //Date dateStr = formater.parse(formatter.formatCellValue(colonneCourante));
+                                    //String date = new SimpleDateFormat("yyyy-MM-dd")
+                                        //    .format(new Date(formatter.formatCellValue(colonneCourante)));
+
+                                    postulant.setDateNaissance(d);
+
+
+                                    //String date = request.getParameter("date");
+                                    //SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd"); // your template here
+                                    //java.util.Date dateStr = formatter.parse(date);
                                     break;
                                 // troixième colonne contenant le numero
                                 case 4:
@@ -214,5 +245,10 @@ public class ExcelImport {
             return null;
         }
 
+    }
+
+    private String modifyDateLayout(String inputDate) throws ParseException {
+        Date date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss z").parse(inputDate);
+        return new SimpleDateFormat("dd.MM.yyyy HH:mm:ss").format(date);
     }
 }
