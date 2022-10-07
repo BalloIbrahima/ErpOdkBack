@@ -20,6 +20,7 @@ public class Salle {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     private long nombreplace;
+    @Column(unique = true)
     private String libelle;
     private String etage;
     private Boolean disponibilite;

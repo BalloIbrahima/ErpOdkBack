@@ -83,7 +83,7 @@ public class AouPServImpleme implements AouPService {
             int d2 = Integer.parseInt(formatter.format(now));
             int age = (d2 - d1) / 10000;
 
-            if (age < 18) {
+            if (age < 16) {
                 listArenvoyer.add(a);
             }
         }

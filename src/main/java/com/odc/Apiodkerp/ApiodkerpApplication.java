@@ -44,6 +44,7 @@ public class ApiodkerpApplication {
 		urlBasedCorsConfigurationSource.registerCorsConfiguration("/**", corsConfiguration);
 		return new CorsFilter(urlBasedCorsConfigurationSource);
 	}
+
 	public static void main(String[] args) {
 		ApplicationContext ctx = SpringApplication.run(ApiodkerpApplication.class, args);
 		UtilisateurService utilisateurService = ctx.getBean(UtilisateurService.class);
@@ -495,7 +496,7 @@ public class ApiodkerpApplication {
 			Utilisateur ballo = new Utilisateur();
 			ballo.setActive(true);
 			ballo.setNom("Ballo");
-			ballo.setEmail("ballo@gmail.com");
+			ballo.setEmail("ibrahimaballo01@gmail.com");
 			ballo.setRole(admin);
 			ballo.setPrenom("Ibrahima");
 			ballo.setGenre(Genre.Masculin);
@@ -560,14 +561,17 @@ public class ApiodkerpApplication {
 
 		/// format email
 		FormatEmail formatOrang = new FormatEmail();
+		formatOrang.setId(1L);
 		formatOrang.setLibelle("@orangemali.com");
 		formatEmailService.Create(formatOrang);
 
 		// status
 		Statut encours = new Statut();
+		encours.setId(1L);
 		encours.setLibelle("ENCOUR");
 
 		Statut terminee = new Statut();
+		encours.setId(2L);
 		terminee.setLibelle("TERMINE");
 
 		statusService.creer(encours);

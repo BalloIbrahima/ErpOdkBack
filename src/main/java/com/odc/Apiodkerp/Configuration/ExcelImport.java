@@ -118,11 +118,12 @@ public class ExcelImport {
                                   /*  = new SimpleDateFormat("dd/MM/yyyy").parse(formatter.formatCellValue(colonneCourante));
                                     DateTimeFormatter  a= DateTimeFormatter.ofPattern("dd/MM/yyyy");
                                     LocalDate fet = LocalDate.parse(formatter.formatCellValue(colonneCourante),a);*/
-                                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                                    SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
                                     Date d=null;
                                     try {
-                                        d= sdf.parse(colonneCourante.getStringCellValue());
-                                    } catch (ParseException e) {
+                                        //d= sdf.parse(colonneCourante.getStringCellValue());
+                                        d = colonneCourante.getDateCellValue();
+                                    } catch (IllegalStateException e) {
                                         // TODO Auto-generated catch block
                                         d=null;
                                         e.printStackTrace();
@@ -135,6 +136,7 @@ public class ExcelImport {
                                     //Date dateStr = formater.parse(formatter.formatCellValue(colonneCourante));
                                     //String date = new SimpleDateFormat("yyyy-MM-dd")
                                         //    .format(new Date(formatter.formatCellValue(colonneCourante)));
+
                                     postulant.setDateNaissance(d);
 
 

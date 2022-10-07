@@ -81,35 +81,59 @@ public class EntiteController {
     public ResponseEntity<Object> createEntite(@RequestParam(value = "entite") String enti,
             @RequestParam(value = "file", required = true) MultipartFile file,
             @RequestParam(value = "user") String userVenant) {
-        try {
+                Entite entite=null;
+                Utilisateur user=null;
+            try {
 
-            Entite entite = new JsonMapper().readValue(enti, Entite.class);
+            entite = new JsonMapper().readValue(enti, Entite.class);
             if (file != null) {
+                System.out.println("ggggg");
                 entite.setImage(SaveImage.save("activite", file, entite.getLibelleentite()));
             }
             Utilisateur utilisateur = new JsonMapper().readValue(userVenant, Utilisateur.class);
 
-            Utilisateur user = utilisateurService.trouverParLoginAndPass(utilisateur.getLogin(),
+            
+             user = utilisateurService.trouverParLoginAndPass(utilisateur.getLogin(),
                     utilisateur.getPassword());
-
+                
+            List<Entite> entit = entiteService.GetAll();
+            Boolean IsGerant=false;
             Droit createrole = droitService.GetLibelle("Create Entite");
 
             if (user.getRole().getDroits().contains(createrole)) {
-                try {
-                    Historique historique = new Historique();
-                    Date datehisto = new Date();
-                    historique.setDatehistorique(datehisto);
-                    historique
-                            .setDescription(
-                                    "" + user.getPrenom() + " " + user.getNom() + " a crée  une nouvelle entite ");
-                    historiqueService.Create(historique);
-                    Entite NewEntite = entiteService.Create(entite);
-                    return ResponseMessage.generateResponse("ok", HttpStatus.OK, NewEntite);
-                } catch (Exception e) {
-                    // TODO: handle exception
-                    return ResponseMessage.generateResponse("iciiii", HttpStatus.OK, e.getMessage());
 
+                for (Entite en : entit) {
+                    if (entite.getGerant() == en.getGerant()) {
+                        IsGerant=true;
+                        break;
+                    }
                 }
+
+                if(IsGerant==true){
+                    return ResponseMessage.generateResponse("error", HttpStatus.OK,
+                                "cette personne est deja gerant d'une entite");
+                }else{
+                    try {
+                        Historique historique = new Historique();
+                        Date datehisto = new Date();
+                        historique.setDatehistorique(datehisto);
+                        historique
+                                .setDescription(
+                                        "" + user.getPrenom() + " " + user.getNom()
+                                                + " a cree  une nouvelle entite ");
+                        historiqueService.Create(historique);
+                        Entite NewEntite = entiteService.Create(entite);
+    
+                        return ResponseMessage.generateResponse("ok", HttpStatus.OK, NewEntite);
+    
+                    } catch (Exception e) {
+                        // TODO: handle exception
+                        return ResponseMessage.generateResponse("iciiii", HttpStatus.OK, e.getMessage());
+    
+                    }
+                }
+                
+                
 
             } else {
                 return ResponseMessage.generateResponse("error", HttpStatus.OK, "non autorise");
@@ -197,7 +221,7 @@ public class EntiteController {
 
     @ApiOperation(value = "Affichager une entite")
     @PostMapping("/get/entite/{id}")
-    public ResponseEntity<Object> GetIdEntite(@RequestParam("id") Long id,
+    public ResponseEntity<Object> GetIdEntite(@PathVariable("id") Long id,
             @RequestParam(value = "user") String userVenant) {
         // @RequestParam(value = "entite") String enti
         try {
@@ -252,8 +276,7 @@ public class EntiteController {
                     return ResponseMessage.generateResponse("ok", HttpStatus.OK, utilisateurService.TotalEntite());
 
                 } else {
-                    return ResponseMessage.generateResponse("error", HttpStatus.OK, "Non autorisé");
-
+                    return ResponseMessage.generateResponse("error", HttpStatus.OK, "Non autorise");
                 }
             } else {
                 return ResponseMessage.generateResponse("error", HttpStatus.OK, "Cet utilisateur n'existe pas !");
