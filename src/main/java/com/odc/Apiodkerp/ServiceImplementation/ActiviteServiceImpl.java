@@ -42,7 +42,7 @@ public class ActiviteServiceImpl implements ActiviteService {
                     activite1.setDateCreation(activite1.getDateCreation());
                     activite1.setDateDebut(activite1.getDateDebut());
                     activite1.setDateFin(activite1.getDateFin());
-                    activite1.setLieu(activite1.getLieu());
+                   /* activite1.setLieu(activite1.getLieu());*/
                     activite1.setDescription(activite1.getDescription());
                     activite1.setImage(activite1.getImage());
 
@@ -95,9 +95,8 @@ public class ActiviteServiceImpl implements ActiviteService {
 
     @Override
     public Activite GetByEtat(Etat etat) {
-        return activiteRepository.findByEtat(etat);
+        return activiteRepository.findByEtat(etat.getId());
     }
-
     @Override
     public List<Activite> Avenir() {
         // TODO Auto-generated method stub

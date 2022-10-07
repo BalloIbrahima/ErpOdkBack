@@ -19,6 +19,8 @@ import java.util.List;
 public class IntervenantExterne extends Personne {
 
     private  String numero;
+    private String login;
+    private String password;
 
     @ManyToMany
     @JoinTable(name = "ActiviteIntervenant", joinColumns = {
