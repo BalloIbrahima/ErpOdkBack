@@ -1,5 +1,6 @@
 package com.odc.Apiodkerp.Models;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -68,6 +69,7 @@ public class Activite {
     @OneToMany(mappedBy = "activite", cascade = CascadeType.ALL)
     List<ListePostulant> listePostulants = new ArrayList<>();
 
+    @JsonFormat(with = JsonFormat.Feature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
     @ManyToMany(mappedBy = "intervenuDansActivite")
     List<IntervenantExterne> intervenantExternes = new ArrayList<>();
 
