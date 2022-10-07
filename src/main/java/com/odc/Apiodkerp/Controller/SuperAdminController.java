@@ -1188,7 +1188,7 @@ public class SuperAdminController {
             }
 
         } catch (Exception e) {
-            // TODO: handle exception
+            // TODO: handle exceptroleion
             return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
 
         }
@@ -2061,6 +2061,55 @@ public class SuperAdminController {
 
                 return ResponseMessage.generateResponse("ok", HttpStatus.OK,
                         list);
+            } else {
+                return ResponseMessage.generateResponse("error", HttpStatus.OK, "Non autorisé");
+
+            }
+
+        } catch (Exception e) {
+            // TODO: handle exception
+            return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
+
+        }
+    }
+
+
+    //::::::::::::::::::PERSONNEL PAR ENTITE::::::::::::::::
+    @ApiOperation(value = "PERSONNEL PAR ENTITE")
+    @PostMapping("/personnelEntite/{identite}")
+    public ResponseEntity<Object> PersonnelEntite(@PathVariable("identite") Long identite,
+                                             @RequestParam(value = "user") String userVenant) {
+        try {
+
+
+            Entite entite = entiteService.GetById(identite);
+            Utilisateur utilisateur = new JsonMapper().readValue(userVenant, Utilisateur.class);
+
+            Utilisateur user = utilisateurService.trouverParLoginAndPass(utilisateur.getLogin(),
+                    utilisateur.getPassword());
+
+        List<Utilisateur> us = utilisateurService.getAll();
+            List<Utilisateur> aRetourner = new ArrayList<>();
+            for (Utilisateur u: us) {
+                if (u.getMonEntite() == entite.getUtilisateurEntite()) {
+                    aRetourner.add(u);
+
+                }
+            }
+            Droit REntite = droitService.GetLibelle("Read ListePostulant");
+
+            if (user.getRole().getDroits().contains(REntite)) {
+
+                Historique historique = new Historique();
+                Date datehisto = new Date();
+                historique.setDatehistorique(datehisto);
+                historique
+                        .setDescription(
+                                "" + user.getPrenom() + " " + user.getNom() + " a recuper les personnels  de l'entite  " + entite.getLibelleentite());
+                historiqueService.Create(historique);
+
+                return ResponseMessage.generateResponse("ok", HttpStatus.OK,
+                        aRetourner);
             } else {
                 return ResponseMessage.generateResponse("error", HttpStatus.OK, "Non autorisé");
 

@@ -155,7 +155,7 @@ public class MotdePassController {
 
 
 
-    @ApiOperation(value = "Envoyer email")
+ /*   @ApiOperation(value = "Envoyer email")
     @PostMapping("/sendMail1")
     public ResponseEntity<Object> sendEmail(@PathVariable String mail){
 
@@ -178,7 +178,7 @@ public class MotdePassController {
 
         return  new ResponseEntity<Object>(mp,st);
     }
-
+*/
 
 
     @Autowired private EmailService emailService;
@@ -188,8 +188,7 @@ public class MotdePassController {
     public String
     sendMail(@RequestBody EmailDetails details)
     {
-        String status
-                = emailService.sendSimpleMail(details);
+        String status = emailService.sendSimpleMail(details);
 
         return status;
     }

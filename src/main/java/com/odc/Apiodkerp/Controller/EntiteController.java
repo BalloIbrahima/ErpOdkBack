@@ -179,11 +179,11 @@ public class EntiteController {
             Utilisateur utilisateur = new JsonMapper().readValue(userVenant, Utilisateur.class);
             Utilisateur user = utilisateurService.trouverParLoginAndPass(utilisateur.getLogin(),
                     utilisateur.getPassword());
+            Entite entite =entiteService.GetById(id);
             Droit deleterole = droitService.GetLibelle("Delete Entite");
 
             if (user.getRole().getDroits().contains(deleterole)) {
-                entiteService.Delete(id);
-                return ResponseMessage.generateResponse("ok", HttpStatus.OK, null);
+                return ResponseMessage.generateResponse("ok", HttpStatus.OK,  entiteService.Delete(entite));
             } else {
                 return ResponseMessage.generateResponse("error", HttpStatus.OK, "non autorise");
             }
