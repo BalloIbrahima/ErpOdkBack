@@ -33,7 +33,7 @@ public class Tirage {
     @ManyToOne
     Utilisateur utilisateur;
 
-    @JsonIgnore
+    //@JsonIgnore
     @OneToMany(mappedBy = "tirage")
     List<PostulantTire> postulanttires = new ArrayList<>();
 
