@@ -411,7 +411,8 @@ public class ResponsableController {
                 Tirage tirage = new Tirage();
                 tirage.setLibelle(libelleTirage);
                 tirage.setListepostulant(listePostulant);
-                // tirage.setActivite(activite);
+                
+                tirage.setActivite(activite);
                 tirage.setValider(false);
                 tirage.setUtilisateur(utilisateur);
 
@@ -421,8 +422,9 @@ public class ResponsableController {
 
                 System.out.println(listePostulant.getPostulants());
 
-                if(nombre <= listePostulant.getPostulants().size()){
-                    List<Postulant> postulanttires = tirageService.creer(tirage, listePostulant.getPostulants(), nombre);
+                if (nombre <= listePostulant.getPostulants().size()) {
+                    Tirage postulanttires = tirageService.creer(tirage, listePostulant.getPostulants(),
+                            nombre);
 
                     if (utilisateur != null) {
                         if (utilisateur.getRole().getDroits().contains(createTirage)) {
@@ -448,12 +450,13 @@ public class ResponsableController {
 
                         }
                     } else {
-                        return ResponseMessage.generateResponse("error", HttpStatus.OK, "Cet utilisateur n'existe pas !");
+                        return ResponseMessage.generateResponse("error", HttpStatus.OK,
+                                "Cet utilisateur n'existe pas !");
 
                     }
 
-                }else{
-                    return ResponseMessage.generateResponse("error", HttpStatus.OK, "Nombra de postulant insufusant !");
+                } else {
+                    return ResponseMessage.generateResponse("error", HttpStatus.OK, "Nombre de postulants insufusant !");
 
                 }
 
@@ -467,6 +470,67 @@ public class ResponsableController {
         }
 
     }
+
+    // la methode pour retourner l'ensemble des postulants tires par id du tirage
+    @ApiOperation(value = "la methode pour retourner l'ensemble des postulants tires par id du tirage.")
+    @PostMapping("/tirage/postulants/{idTirage}")
+    public ResponseEntity<Object> DoTirage(@PathVariable("idTirage") Long idTirage,
+            @RequestParam(value = "user") String userVenant) {
+
+        try {
+            Tirage exist = tirageService.getById(idTirage);
+            if (exist != null) {
+                Droit ReadTirage = droitService.GetLibelle("Read Tirage");
+
+                Utilisateur utilisateurs = new JsonMapper().readValue(userVenant, Utilisateur.class);
+
+                Utilisateur utilisateur = utilisateurService.trouverParLoginAndPass(utilisateurs.getLogin(),
+                        utilisateurs.getPassword());
+
+              
+
+
+                if (utilisateur != null) {
+                    if (utilisateur.getRole().getDroits().contains(ReadTirage)) {
+                        try {
+
+                            //
+                            Historique historique = new Historique();
+                            historique.setDatehistorique(new Date());
+                            historique.setDescription(utilisateur.getPrenom() + " " + utilisateur.getNom()
+                                    + " a afficher l'ensemble des postulants tires du tirage."+idTirage);
+                            historiqueService.Create(historique);
+
+                            //
+                            return ResponseMessage.generateResponse("ok", HttpStatus.OK, exist.getPostulanttires());
+
+                        } catch (Exception e) {
+                            // TODO: handle exception
+                            return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
+
+                        }
+                    } else {
+                        return ResponseMessage.generateResponse("error", HttpStatus.OK, "Non autorise !");
+
+                    }
+                } else {
+                    return ResponseMessage.generateResponse("error", HttpStatus.OK,
+                            "Cet utilisateur n'existe pas !");
+
+                }
+
+               
+            } else {
+                return ResponseMessage.generateResponse("error", HttpStatus.OK, "Ce tirage n'existe pas !");
+            }
+        } catch (Exception e) {
+            // TODO: handle exception
+            return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
+
+        }
+
+    }
+
 
     // ---------------------------------Postulant
     // Tire---------------------------------------//
@@ -945,70 +1009,7 @@ public class ResponsableController {
 
     }
 
-    // ---------------------------CRUD
-    // INTERVENANT
-    // EXTERNE-------------------------------------------------------------->
-    @ApiOperation(value = "Creer un intervenant interne.")
-    @PostMapping("/create/intervenant")
-    public ResponseEntity<Object> createIntervenant(@RequestParam(value = "data") String data,
-            @RequestParam(value = "user") String userVenant) {
-        try {
-
-            Utilisateur utilisateu = new JsonMapper().readValue(userVenant, Utilisateur.class);
-
-            IntervenantExterne utilisateur = new JsonMapper().readValue(data, IntervenantExterne.class);
-
-            // Role role = RoleService.GetByLibelle("USER");
-
-            Utilisateur users = utilisateurService.trouverParLoginAndPass(utilisateu.getLogin(),
-                    utilisateu.getPassword());
-            Droit CUser = droitService.GetLibelle("Create Intervenant");
-
-            if (users != null) {
-                if (users.getRole().getDroits().contains(CUser)) {
-
-                    if (intervenantExterneService.getByEmail(utilisateur.getEmail()) == null) {
-
-                        try {
-                            Historique historique = new Historique();
-                            Date datehisto = new Date();
-                            historique.setDatehistorique(datehisto);
-                            historique.setDescription(users.getPrenom() + " " + users.getNom()
-                                    + " a cree un personnel externe du nom de " + utilisateur.getNom());
-
-                            historiqueService.Create(historique);
-
-                            IntervenantExterne NewUser = intervenantExterneService.creer(utilisateur);
-                            // System.out.println(NewUser.getLogin());
-                            return ResponseMessage.generateResponse("ok", HttpStatus.OK, NewUser);
-                        } catch (Exception e) {
-                            // TODO: handle exception
-                            return ResponseMessage.generateResponse("ijjciiii", HttpStatus.OK, e.getMessage());
-
-                        }
-
-                    } else {
-                        return ResponseMessage.generateResponse("error", HttpStatus.OK, "Adresse mail existante");
-
-                    }
-
-                } else {
-                    return ResponseMessage.generateResponse("error", HttpStatus.OK, "Non autorisé");
-
-                }
-            } else {
-                return ResponseMessage.generateResponse("error", HttpStatus.OK, "Cet utilisateur n'existe pas !");
-
-            }
-        } catch (Exception e) {
-            // TODO: handle exception
-            return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
-        }
-    }
-
-    // INTERVENANT
-    // EXTERNE-------------------------------------------------------------->
-    @ApiOperation(value = "Creer un intervenant interne.")
+    @ApiOperation(value = "Valider tirage.")
     @PostMapping("/valider/tirage/{idTirage}")
     public ResponseEntity<Object> validerTirage(@PathVariable("idTirage") Long idTirage,
             @RequestParam(value = "user") String userVenant) {

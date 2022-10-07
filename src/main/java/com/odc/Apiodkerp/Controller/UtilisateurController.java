@@ -648,6 +648,13 @@ public class UtilisateurController {
                     if (user != null) {
                         if (user.getRole().getDroits().contains(createActivite)) {
                             try {
+                                Activite act=activiteService.Create(activite);
+                                Notification notif=new Notification();
+                                notif.setActivite(act);
+                                notif.setDatenotif(new Date());
+                                //notif.setDescription(description);
+                                notificationService.creer(notif);
+
                                 Historique historique = new Historique();
                                 Date datehisto = new Date();
                                 historique.setDatehistorique(datehisto);
@@ -658,7 +665,7 @@ public class UtilisateurController {
                                 historiqueService.Create(historique);
 
                                 return ResponseMessage.generateResponse("ok", HttpStatus.OK,
-                                        activiteService.Create(activite));
+                                act);
                             } catch (Exception e) {
                                 // TODO: handle exception
                                 return ResponseMessage.generateResponse("iciiii", HttpStatus.OK, e.getMessage());
