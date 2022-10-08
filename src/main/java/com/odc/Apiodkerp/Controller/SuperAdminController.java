@@ -1755,6 +1755,97 @@ public class SuperAdminController {
 
     }
 
+    // ::::::::::::::Modifier Role ::::::::::::::::::::::::::::::::::::::::::::::::::
+
+    @ApiOperation(value = "Modifier un role.")
+    @PostMapping("/update/role/{idrole}")
+    public ResponseEntity<Object> UpdateRole(@PathVariable long idrole,@RequestParam(value = "role") String role,
+                                             @RequestParam(value = "user") String userVenant) {
+        try {
+
+            Role role1 = new JsonMapper().readValue(role, Role.class);
+
+            Utilisateur utilisateur = new JsonMapper().readValue(userVenant, Utilisateur.class);
+
+            Utilisateur user = utilisateurService.trouverParLoginAndPass(utilisateur.getLogin(),
+                    utilisateur.getPassword());
+
+            Droit createrole = droitService.GetLibelle("Update Role");
+
+            if (user.getRole().getDroits().contains(createrole)) {
+                try {
+                    Historique historique = new Historique();
+                    Date datehisto = new Date();
+                    historique.setDatehistorique(datehisto);
+                    historique
+                            .setDescription(
+                                    "" + user.getPrenom() + " " + user.getNom() + " a modifier  le  role "+role1.getLibellerole());
+                    historiqueService.Create(historique);
+                    Role NewEntite = roleService.update(role1,idrole);
+                    return ResponseMessage.generateResponse("ok", HttpStatus.OK, NewEntite);
+                } catch (Exception e) {
+                    // TODO: handle exception
+                    return ResponseMessage.generateResponse("iciiii", HttpStatus.OK, e.getMessage());
+
+                }
+
+            } else {
+                return ResponseMessage.generateResponse("error", HttpStatus.OK, "non autorise");
+            }
+
+        } catch (Exception e) {
+            // TODO: handle exception
+            return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
+        }
+
+    }
+
+    // ::::::::::::::::::::::::::::::::Supprimer role ::::::::::::::::::::::::::::::::::
+    // ::::::::::::::Modifier Role ::::::::::::::::::::::::::::::::::::::::::::::::::
+
+    @ApiOperation(value = "Supprimer un role.")
+    @PostMapping("/Delete/role/{idrole}")
+    public ResponseEntity<Object> DeleteRole(@PathVariable long idrole,
+                                             @RequestParam(value = "user") String userVenant) {
+        try {
+
+
+            Utilisateur utilisateur = new JsonMapper().readValue(userVenant, Utilisateur.class);
+
+            Utilisateur user = utilisateurService.trouverParLoginAndPass(utilisateur.getLogin(),
+                    utilisateur.getPassword());
+
+            Droit Deleterole = droitService.GetLibelle("Delete Role");
+
+            if (user.getRole().getDroits().contains(Deleterole)) {
+                try {
+                    Historique historique = new Historique();
+                    Date datehisto = new Date();
+                    historique.setDatehistorique(datehisto);
+                    historique
+                            .setDescription(
+                                    "" + user.getPrenom() + " " + user.getNom() + " a Supprimer  un  role ");
+                    historiqueService.Create(historique);
+                    Role NewEntite = roleService.delete(idrole);
+                    return ResponseMessage.generateResponse("ok", HttpStatus.OK, NewEntite);
+                } catch (Exception e) {
+                    // TODO: handle exception
+                    return ResponseMessage.generateResponse("iciiii", HttpStatus.OK, e.getMessage());
+
+                }
+
+            } else {
+                return ResponseMessage.generateResponse("error", HttpStatus.OK, "non autorise");
+            }
+
+        } catch (Exception e) {
+            // TODO: handle exception
+            return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
+        }
+
+    }
+
+
     // ::::::::::::::::::::::::Toutes les tirages :::::::::::::::::::::::::::::::
     @ApiOperation(value = "Toutes les tirages")
     @PostMapping("/TouteslesTirages")
