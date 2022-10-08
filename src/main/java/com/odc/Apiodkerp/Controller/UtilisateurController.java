@@ -455,16 +455,16 @@ public class UtilisateurController {
     }
 
     // Ajouter des participants ou apprenants à la liste de presence
-    @ApiOperation(value = "Creer la liste de presence ")
-    @PostMapping("/lapresence/{idactivite}/{idpostulanttire}")
-    public ResponseEntity<Object> presence(@PathVariable("idactivite") long idactivite,
-            @PathVariable("idpostulanttire") long idpostulanttire, @RequestParam(value = "user") String userVenant) {
+    @ApiOperation(value = "Add un apprenant à la liste de presence ")
+    @PostMapping("/lapresence/{idpresence}")
+    public ResponseEntity<Object> presence(
+            @PathVariable("idpresence") long idpresence, @RequestParam(value = "user") String userVenant) {
         try {
-            Presence presence = new Presence();
-            Activite activite = activiteService.GetById(idactivite);
-            presence.setActivite(activite);
-            presence.setDate(new Date());
-            PostulantTire postulantTire = postulantTrieService.read(idpostulanttire);
+            //Presence presence = new Presence();
+            //Activite activite = activiteService.GetById(idactivite);
+            // presence.setActivite(activite);
+            // presence.setDate(new Date());
+            // AouP aouP = aPService.GetById(idaoup);
             Utilisateur utilisateur = new JsonMapper().readValue(userVenant, Utilisateur.class);
 
             Utilisateur user = utilisateurService.trouverParLoginAndPass(utilisateur.getLogin(),
@@ -475,6 +475,7 @@ public class UtilisateurController {
 
             Droit createpresence = droitService.GetLibelle("Create Presence");
 
+            Presence presence=presenceService.getById(idpresence);
             if (user != null) {
                 if (user.getRole().getDroits().contains(createpresence)) {
                     try {
@@ -482,14 +483,18 @@ public class UtilisateurController {
                         Date datehisto = new Date();
                         historique.setDatehistorique(datehisto);
                         historique.setDescription("" + user.getPrenom() + " " + user.getNom()
-                                + " a géré la presence de l'activité " + activite.getNom());
+                                + " a ajouter "+presence.getAouP().getPostulant().getEmail() +" a la liste de presence de l'activité " + presence.getActivite().getNom());
                         historiqueService.Create(historique);
+
+                        presence.setEtat(true);
+                        
+                        return ResponseMessage.generateResponse("ok", HttpStatus.OK, presenceService.creer(presence));
+
                     } catch (Exception e) {
                         // TODO: handle exception
                         return ResponseMessage.generateResponse("iciiii", HttpStatus.OK, e.getMessage());
 
                     }
-                    return ResponseMessage.generateResponse("ok", HttpStatus.OK, presenceService.creer(presence));
                 } else {
                     return ResponseMessage.generateResponse("error", HttpStatus.OK, "Non autorisé");
 

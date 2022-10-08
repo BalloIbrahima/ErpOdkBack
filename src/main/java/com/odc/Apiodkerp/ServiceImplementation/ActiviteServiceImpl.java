@@ -232,9 +232,11 @@ public class ActiviteServiceImpl implements ActiviteService {
             try {
                 if (today.after(tache.getDatedebut()) && today.before(tache.getDatefin())) {
                     tache.setStatut(encourEtat);
+                    tacheRepository.save(tache);
                 
                 }else if (today.after(tache.getDatefin())) {
                     tache.setStatut(termineEtat);
+                    tacheRepository.save(tache);
                 }
 
             } catch (Exception e) {
@@ -246,10 +248,13 @@ public class ActiviteServiceImpl implements ActiviteService {
             try {
                 if (today.after(activite.getDateDebut()) && today.before(activite.getDateFin())) {
                     activite.setEtat(encour);
+                    activiteRepository.save(activite);
                 }else if (today.before(activite.getDateDebut())) {
                     activite.setEtat(avenir);
+                    activiteRepository.save(activite);
                 }else if (today.after(activite.getDateFin())) {
                     activite.setEtat(termine);
+                    activiteRepository.save(activite);
                 }
 
             } catch (Exception e) {

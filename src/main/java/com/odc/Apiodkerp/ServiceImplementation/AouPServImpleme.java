@@ -3,15 +3,18 @@ package com.odc.Apiodkerp.ServiceImplementation;
 import com.odc.Apiodkerp.Enum.Genre;
 import com.odc.Apiodkerp.Models.AouP;
 import com.odc.Apiodkerp.Models.Entite;
+import com.odc.Apiodkerp.Models.Presence;
 import com.odc.Apiodkerp.Models.TypeActivite;
 import com.odc.Apiodkerp.Repository.ActiviteRepository;
 import com.odc.Apiodkerp.Repository.AouPReposy;
+import com.odc.Apiodkerp.Repository.PresenceRepository;
 import com.odc.Apiodkerp.Repository.TypeActiviteRepository;
 import com.odc.Apiodkerp.Service.AouPService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -26,14 +29,41 @@ public class AouPServImpleme implements AouPService {
     @Autowired
     TypeActiviteRepository typeActiviteRepository;
 
+    @Autowired
+    PresenceRepository presenceRepository;
+
     @Override
     public AouP Create(AouP aoup) {
         TypeActivite talk=typeActiviteRepository.findByLibelle("Talk");
         TypeActivite Evenement=typeActiviteRepository.findByLibelle("Evenement");
 
+        DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+
         if(aoup.getActivite().getTypeActivite().equals(talk) || aoup.getActivite().getTypeActivite().equals(Evenement)){
-            // Date debut=
-            // Date fin=
+
+            try {
+                Date debut=formatter.parse(formatter.format(aoup.getActivite().getDateDebut()));
+                Date fin=formatter.parse(formatter.format(aoup.getActivite().getDateFin()));
+
+
+                long diff = debut.getTime() - fin.getTime();
+                Long nbrejour = (diff / (1000*60*60*24));
+
+
+                for(int i=0; i< nbrejour;i++) {
+                    Presence presence=new Presence();
+                    presence.setActivite(aoup.getActivite());
+                    presence.setAouP(aoup);
+                    presence.setDate(new Date());
+                    presence.setEtat(false);
+
+                    presenceRepository.save(presence);
+                }
+
+            } catch (ParseException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
         }
         return aouprepos.save(aoup);
     }

@@ -26,6 +26,8 @@ public class Presence {
     @Column(name = "id", nullable = false)
     private Long id;
     private Date date;
+    private Boolean etat;
+
     @ManyToOne
     AouP aouP;
 
