@@ -235,7 +235,7 @@ public class MotdePassController {
         }
     }
 
-    @ApiOperation(value = "Envoyer email")
+ /*   @ApiOperation(value = "Envoyer email")
     @PostMapping("/sendMail1")
     public ResponseEntity<Object> sendEmail(@PathVariable String mail) {
 
@@ -258,6 +258,7 @@ public class MotdePassController {
 
         return new ResponseEntity<Object>(mp, st);
     }
+
 
     // Sending a simple Email
     @PostMapping("/sendMailsansAt")
