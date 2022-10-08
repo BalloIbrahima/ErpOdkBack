@@ -433,7 +433,6 @@ public class ApiodkerpApplication {
 		droitService.Create(Rrole);
 		droitService.Create(Urole);
 		droitService.Create(Drole);
-
 		droitService.Create(Csalle);
 		droitService.Create(Rsalle);
 		droitService.Create(Usalle);
@@ -496,7 +495,7 @@ public class ApiodkerpApplication {
 			Utilisateur ballo = new Utilisateur();
 			ballo.setActive(true);
 			ballo.setNom("Ballo");
-			ballo.setEmail("ballo@gmail.com");
+			ballo.setEmail("ibrahimaballo01@gmail.com");
 			ballo.setRole(admin);
 			ballo.setPrenom("Ibrahima");
 			ballo.setGenre(Genre.Masculin);

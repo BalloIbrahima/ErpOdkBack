@@ -199,6 +199,7 @@ public class SalleController {
         }
     }
 
+
     @ApiOperation(value = "Lien pour suprimer une salle")
     @PostMapping("/supprimersalle/{id}")
     public ResponseEntity<Object> supprimer(@PathVariable long id, @RequestParam(value = "user") String userVenant) {
@@ -239,6 +240,47 @@ public class SalleController {
             return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
         }
     }
+    // @ApiOperation(value = "Lien pour suprimer une salle")
+    // @PostMapping("/supprimersalle/{id}")
+    // public ResponseEntity<Object> supprimer(@PathVariable long id, @RequestParam(value = "user") String userVenant) {
+    //     try {
+    //         Utilisateur utilisateur = new JsonMapper().readValue(userVenant, Utilisateur.class);
+
+    //         Utilisateur user = utilisateurService.trouverParLoginAndPass(utilisateur.getLogin(),
+    //                 utilisateur.getPassword());
+
+    //         Droit DSalle = droitService.GetLibelle("Delete Salle");
+
+    //         if (user != null) {
+    //             if (user.getRole().getDroits().contains(DSalle)) {
+
+    //                 try {
+    //                     Historique historique = new Historique();
+    //                     Date datehisto = new Date();
+    //                     historique.setDatehistorique(datehisto);
+    //                     historique.setDescription(
+    //                             "" + user.getPrenom() + " " + user.getNom() + " a supprime une salle du nom de ");
+    //                     historiqueService.Create(historique);
+    //                 } catch (Exception e) {
+    //                     // TODO: handle exception
+    //                     return ResponseMessage.generateResponse("iciiii", HttpStatus.OK, e.getMessage());
+
+    //                 }
+    //                 salleService.delete(id);
+    //                 return ResponseMessage.generateResponse("ok", HttpStatus.OK, "Salle supprime avec succes !");
+    //             } else {
+    //                 return ResponseMessage.generateResponse("error", HttpStatus.OK, "Non autorise");
+
+    //             }
+    //         } else {
+    //             return ResponseMessage.generateResponse("error", HttpStatus.OK, "Cet utilisateur n'existe pas !");
+
+    //         }
+    //     } catch (Exception e) {
+    //         return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
+    //     }
+    // }
+
 
     @ApiOperation(value = "Lien pour lier une salle à une activite")
     @PostMapping("/attribuersalle/{idsalle}/{idactivite}")
@@ -443,7 +485,7 @@ public class SalleController {
                             salle.add(s);
                         }
                     }
-                    
+
                     try {
                         Historique historique = new Historique();
                         Date datehisto = new Date();
@@ -513,6 +555,64 @@ public class SalleController {
     }
 
     // :::::::::::::::::::::::Suprimer salle
+
+    @ApiOperation(value = "Suprimer salle")
+    @PostMapping("/suprime/{idSalle}")
+    public ResponseEntity<Object> SuprimerSalle(@PathVariable("idSalle") Long idSalle,@RequestParam(value = "user") String userVenant) {
+        try {
+
+            Utilisateur utilisateur = new JsonMapper().readValue(userVenant, Utilisateur.class);
+
+            Salle salle=salleService.getByIdsalle(idSalle);
+
+            Utilisateur user = utilisateurService.trouverParLoginAndPass(utilisateur.getLogin(),
+                    utilisateur.getPassword());
+            Droit Rsalle = droitService.GetLibelle("Delete Salle");
+
+            if (user.getRole().getDroits().contains(Rsalle)) {
+                if(salle!=null){
+
+                    if(salle.getActivite().size()==0){
+                        try {
+                            Historique historique = new Historique();
+                            Date datehisto = new Date();
+                            historique.setDatehistorique(datehisto);
+                            historique.setDescription(
+                                    "" + user.getPrenom() + " " + user.getNom() + " a suprime  une salle"+idSalle);
+                            historiqueService.Create(historique);
+        
+                            salleService.delete(idSalle);
+                            return ResponseMessage.generateResponse("ok", HttpStatus.OK,
+                                    "Salle suprime");
+                        } catch (Exception e) {
+                            // TODO: handle exception
+                            return ResponseMessage.generateResponse("iciiii", HttpStatus.OK, e.getMessage());
+        
+                        }
+                    }else{
+                        // for(activite a:salle.getActivite()){
+                        //     if()
+                        // }
+                        return ResponseMessage.generateResponse("error", HttpStatus.OK, "Cette salle est lié a des activites");
+
+                    }
+                    
+                }else{
+                    return ResponseMessage.generateResponse("error", HttpStatus.OK, "Cette salle n'existe pas !");
+
+                }
+                
+
+            } else {
+                return ResponseMessage.generateResponse("error", HttpStatus.OK, "Non autorise");
+            }
+
+        } catch (Exception e) {
+            // TODO: handle exception
+            return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
+
+        }
+    }
 
 
 }
