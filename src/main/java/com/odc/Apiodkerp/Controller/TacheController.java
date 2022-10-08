@@ -2,10 +2,7 @@ package com.odc.Apiodkerp.Controller;
 
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.odc.Apiodkerp.Configuration.ResponseMessage;
-import com.odc.Apiodkerp.Models.Droit;
-import com.odc.Apiodkerp.Models.Historique;
-import com.odc.Apiodkerp.Models.Tache;
-import com.odc.Apiodkerp.Models.Utilisateur;
+import com.odc.Apiodkerp.Models.*;
 import com.odc.Apiodkerp.Service.*;
 import com.odc.Apiodkerp.ServiceImplementation.EmailDetailsInterf;
 import io.swagger.annotations.Api;
@@ -15,7 +12,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 
 @RestController
@@ -291,4 +290,64 @@ public class TacheController {
 
     }
 
+    //:::::::::::::::::::: Tache en fonctionnde l'activite ::::::::::::::::
+
+    @ApiOperation(value = "Tache en fonctionnde l'activite")
+    @PostMapping("/AfficherToutesTaches/{idactivite}")
+    public ResponseEntity<Object> TacheEnFonctionActivite(@PathVariable long idactivite,
+            @RequestParam(value = "user") String userVenant) {
+        try {
+
+            Utilisateur utilisateur = new JsonMapper().readValue(userVenant, Utilisateur.class);
+            // Historique
+            Utilisateur user = utilisateurService.trouverParLoginAndPass(utilisateur.getLogin(),
+                    utilisateur.getPassword());
+            Activite act   = activiteService.GetById(idactivite);
+
+List<Tache> tache = tacheService.getAll();
+            Droit Du = droitService.GetLibelle("Create Utilisateur");
+            List<Tache> tacheretout = new ArrayList<>();
+
+
+            if (user != null) {
+                if (user.getRole().getDroits().contains(Du)) {
+
+                    for (Tache t : tache) {
+                        if (t.getActivite() == act) {
+                            tacheretout.add(t);
+                        }}
+                    try {
+
+                        Historique historique = new Historique();
+                        Date datehisto = new Date();
+                        historique.setDatehistorique(datehisto);
+                        historique.setDescription("" + user.getPrenom() + " " + user.getNom()
+                                + " a affiche toutes les taches en fonctiond e l'activite  ");
+                        historiqueService.Create(historique);
+                        return ResponseMessage.generateResponse("iciiii", HttpStatus.OK, tacheretout);
+
+                        //
+                    } catch (Exception e) {
+                        // TODO: handle exception
+                        return ResponseMessage.generateResponse("iciiii", HttpStatus.OK, e.getMessage());
+
+                    }
+
+                   // return ResponseMessage.generateResponse("ok", HttpStatus.OK, null);
+                }
+
+                else {
+                    return ResponseMessage.generateResponse("error", HttpStatus.OK, "Non autorisé");
+
+                }
+            } else {
+                return ResponseMessage.generateResponse("error", HttpStatus.OK, "Cet utilisateur n'existe pas !");
+
+            }
+        } catch (Exception e) {
+            // TODO: handle exception
+            return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
+        }
+
+    }
 }
