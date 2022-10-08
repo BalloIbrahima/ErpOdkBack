@@ -19,4 +19,6 @@ public interface EntiteService {
     Entite GetById(long id);
 
     Entite GetByLibelle(String libelle);
+
+    String DeleteEntiteById(long id);
 }
