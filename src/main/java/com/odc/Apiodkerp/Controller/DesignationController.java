@@ -252,4 +252,49 @@ public class DesignationController {
 
         }
     }
-}
+
+
+    // :::::::::::::::::::::::::Toutes les  Designations ::::::::::::::::::::::::::
+
+
+
+    @ApiOperation(value = "Toutes les  Designations ")
+    @PostMapping("/Designation/GetAll")
+    public ResponseEntity<Object> TouteslesDesignations(@RequestParam(value = "user") String userVenant) {
+        try {
+
+            // Histroique
+            Utilisateur utilisateur = new JsonMapper().readValue(userVenant, Utilisateur.class);
+
+            Utilisateur user = utilisateurService.trouverParLoginAndPass(utilisateur.getLogin(),
+                    utilisateur.getPassword());
+
+            Droit Gdesignation = droitService.GetLibelle("Read Designation");
+
+            if (user.getRole().getDroits().contains(Gdesignation)) {
+                try {
+                    Historique historique = new Historique();
+                    Date datehisto = new Date();
+                    historique.setDatehistorique(datehisto);
+                    historique.setDescription(
+                            "" + user.getPrenom() + " " + user.getNom() + " a affiche Toutes les designations ");
+                    historiqueService.Create(historique);
+
+                    return ResponseMessage.generateResponse("ok", HttpStatus.OK,
+                            designationService.GetAll());
+                } catch (Exception e) {
+                    // TODO: handle exception
+                    return ResponseMessage.generateResponse("iciiii", HttpStatus.OK, e.getMessage());
+
+                }
+
+            } else {
+                return ResponseMessage.generateResponse("error", HttpStatus.OK, "Non autorise");
+            }
+
+        } catch (Exception e) {
+            // TODO: handle exception
+            return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
+
+        }
+    }}
