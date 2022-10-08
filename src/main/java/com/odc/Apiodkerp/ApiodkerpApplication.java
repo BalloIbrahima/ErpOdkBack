@@ -23,10 +23,12 @@ import com.odc.Apiodkerp.Service.StatusService;
 import com.odc.Apiodkerp.Service.TypeActiviteService;
 import com.odc.Apiodkerp.Service.UtilisateurService;
 import org.springframework.context.annotation.Bean;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 
+@EnableScheduling
 @SpringBootApplication
 public class ApiodkerpApplication {
 	@Bean
@@ -571,7 +573,7 @@ public class ApiodkerpApplication {
 		encours.setLibelle("ENCOUR");
 
 		Statut terminee = new Statut();
-		encours.setId(2L);
+		terminee.setId(2L);
 		terminee.setLibelle("TERMINE");
 
 		statusService.creer(encours);

@@ -3,8 +3,10 @@ package com.odc.Apiodkerp.ServiceImplementation;
 import com.odc.Apiodkerp.Enum.Genre;
 import com.odc.Apiodkerp.Models.AouP;
 import com.odc.Apiodkerp.Models.Entite;
+import com.odc.Apiodkerp.Models.TypeActivite;
 import com.odc.Apiodkerp.Repository.ActiviteRepository;
 import com.odc.Apiodkerp.Repository.AouPReposy;
+import com.odc.Apiodkerp.Repository.TypeActiviteRepository;
 import com.odc.Apiodkerp.Service.AouPService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,8 +23,18 @@ public class AouPServImpleme implements AouPService {
     @Autowired
     AouPReposy aouprepos;
 
+    @Autowired
+    TypeActiviteRepository typeActiviteRepository;
+
     @Override
     public AouP Create(AouP aoup) {
+        TypeActivite talk=typeActiviteRepository.findByLibelle("Talk");
+        TypeActivite Evenement=typeActiviteRepository.findByLibelle("Evenement");
+
+        if(aoup.getActivite().getTypeActivite().equals(talk) || aoup.getActivite().getTypeActivite().equals(Evenement)){
+            // Date debut=
+            // Date fin=
+        }
         return aouprepos.save(aoup);
     }
 
