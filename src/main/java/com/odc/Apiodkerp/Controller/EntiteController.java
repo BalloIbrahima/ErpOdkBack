@@ -200,17 +200,17 @@ public class EntiteController {
 
     @ApiOperation(value = "Supprimer un entite")
     @PostMapping("/deleteById/entite/{id}")
-    public ResponseEntity<Object> DeleteEntiteById(@PathVariable long id, @RequestParam(value = "user") String userVenant) {
-        try {
+    public String DeleteEntiteById(@PathVariable("id") Long id) {
+        /*try {
             Utilisateur utilisateur = new JsonMapper().readValue(userVenant, Utilisateur.class);
             Utilisateur user = utilisateurService.trouverParLoginAndPass(utilisateur.getLogin(),
                     utilisateur.getPassword());
             Droit deleterole = droitService.GetLibelle("Delete Entite");
 
             if (user.getRole().getDroits().contains(deleterole)) {
-                /*entiteService.Delete(id);*/
-                return ResponseMessage.generateResponse("ok", HttpStatus.OK,  entiteService.DeleteEntiteById(id));
-            } else {
+                *//*entiteService.Delete(id);*/
+                return  entiteService.DeleteEntiteById(id);
+            /*} else {
                 return ResponseMessage.generateResponse("error", HttpStatus.OK, "non autorise");
             }
 
@@ -218,7 +218,7 @@ public class EntiteController {
             // TODO: handle exception
             return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
         }
-
+*/
     }
 
 

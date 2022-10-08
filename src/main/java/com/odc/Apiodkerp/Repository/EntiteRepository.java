@@ -13,6 +13,6 @@ public interface EntiteRepository extends JpaRepository<Entite, Long> {
     Entite  findBylibelleentite(String libelle);
 
     //Methode permettant de supprimer une entite
-    @Query(value = "DELETE FROM entite WHERE entite.id= :identite",nativeQuery = true)
-    public String deleteEntiteById(@Param("identite") long identite);
+    @Query(value = "DELETE FROM entite WHERE :id",nativeQuery = true)
+    public void deleteEntiteById(@Param("id") Long id);
 }

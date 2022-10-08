@@ -34,7 +34,7 @@ public class EntiteServiceImpl implements EntiteService {
     @Override
     public String Delete(long id) {
 
-        entiteRepository.deleteEntiteById(id);
+        entiteRepository.deleteById(id);
         return "Suppreimer avec succes";
     }
 
@@ -48,7 +48,12 @@ public class EntiteServiceImpl implements EntiteService {
     }
 
     @Override
-    public String DeleteEntiteById(long id) {
-        return entiteRepository.deleteEntiteById(id);
+    public String DeleteEntiteById(Long id) {
+        try {
+            entiteRepository.deleteEntiteById(id);
+            return "ok";
+        } catch (Exception e) {
+            return e.getMessage();
+        }
     }
 }

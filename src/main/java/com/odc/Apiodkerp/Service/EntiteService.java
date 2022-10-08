@@ -20,5 +20,5 @@ public interface EntiteService {
 
     Entite GetByLibelle(String libelle);
 
-    String DeleteEntiteById(long id);
+    String DeleteEntiteById(Long id);
 }
