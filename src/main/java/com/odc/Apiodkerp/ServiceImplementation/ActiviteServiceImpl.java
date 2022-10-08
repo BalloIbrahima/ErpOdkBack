@@ -107,10 +107,14 @@ public class ActiviteServiceImpl implements ActiviteService {
         Date today = new Date();
 
         for (Activite activite : all) {
-
-            if (today.before(activite.getDateDebut())) {
-                avenirs.add(activite);
+            try {
+                if (today.before(activite.getDateDebut())) {
+                    avenirs.add(activite);
+                }
+            } catch (Exception e) {
+                // TODO: handle exception
             }
+            
 
         }
 
@@ -129,10 +133,15 @@ public class ActiviteServiceImpl implements ActiviteService {
         try {
             for (Activite activite : all) {
 
-                if (today.after(activite.getDateDebut()) && today.before(activite.getDateFin())) {
-                    encour.add(activite);
+                try {
+                    if (today.after(activite.getDateDebut()) && today.before(activite.getDateFin())) {
+                        encour.add(activite);
+                    }
+    
+                } catch (Exception e) {
+                    // TODO: handle exception
                 }
-
+                
             }
 
         } catch (Exception e) {
