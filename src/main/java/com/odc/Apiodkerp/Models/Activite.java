@@ -32,7 +32,7 @@ public class Activite {
     private String description;
     private String image;
 
-    @JsonIgnore
+    //@JsonIgnore
     @ManyToMany(mappedBy = "activitesFormateurs")
     List<Utilisateur> utilisateurs = new ArrayList<>();
 
@@ -82,5 +82,7 @@ public class Activite {
     @JsonIgnore
     @OneToMany(mappedBy = "activite", cascade = CascadeType.ALL)
     List<AouP> aoup = new ArrayList<>();
+
+
 
 }

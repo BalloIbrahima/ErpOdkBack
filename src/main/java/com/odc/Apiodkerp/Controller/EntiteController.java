@@ -87,6 +87,7 @@ public class EntiteController {
 
             entite = new JsonMapper().readValue(enti, Entite.class);
             if (file != null) {
+                System.out.println("ggggg");
                 entite.setImage(SaveImage.save("activite", file, entite.getLibelleentite()));
             }
             Utilisateur utilisateur = new JsonMapper().readValue(userVenant, Utilisateur.class);
@@ -100,6 +101,7 @@ public class EntiteController {
             Droit createrole = droitService.GetLibelle("Create Entite");
 
             if (user.getRole().getDroits().contains(createrole)) {
+
                 for (Entite en : entit) {
                     if (entite.getGerant() == en.getGerant()) {
                         IsGerant=true;
@@ -301,8 +303,7 @@ public class EntiteController {
                     return ResponseMessage.generateResponse("ok", HttpStatus.OK, utilisateurService.TotalEntite());
 
                 } else {
-                    return ResponseMessage.generateResponse("error", HttpStatus.OK, "Non autorisé");
-
+                    return ResponseMessage.generateResponse("error", HttpStatus.OK, "Non autorise");
                 }
             } else {
                 return ResponseMessage.generateResponse("error", HttpStatus.OK, "Cet utilisateur n'existe pas !");
