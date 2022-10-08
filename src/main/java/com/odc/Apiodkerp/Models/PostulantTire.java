@@ -24,9 +24,8 @@ public class PostulantTire {
     @ManyToOne
     Postulant postulant;
 
+    @JsonIgnore
     @ManyToOne
     Tirage tirage;
-
-
 
 }

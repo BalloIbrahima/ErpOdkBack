@@ -408,7 +408,8 @@ public class ResponsableController {
                 Tirage tirage = new Tirage();
                 tirage.setLibelle(libelleTirage);
                 tirage.setListepostulant(listePostulant);
-                // tirage.setActivite(activite);
+                
+                tirage.setActivite(activite);
                 tirage.setValider(false);
                 tirage.setUtilisateur(utilisateur);
 
@@ -419,7 +420,7 @@ public class ResponsableController {
                 System.out.println(listePostulant.getPostulants());
 
                 if (nombre <= listePostulant.getPostulants().size()) {
-                    List<PostulantTire> postulanttires = tirageService.creer(tirage, listePostulant.getPostulants(),
+                    Tirage postulanttires = tirageService.creer(tirage, listePostulant.getPostulants(),
                             nombre);
 
                     if (utilisateur != null) {
@@ -466,6 +467,67 @@ public class ResponsableController {
         }
 
     }
+
+    // la methode pour retourner l'ensemble des postulants tires par id du tirage
+    @ApiOperation(value = "la methode pour retourner l'ensemble des postulants tires par id du tirage.")
+    @PostMapping("/tirage/postulants/{idTirage}")
+    public ResponseEntity<Object> DoTirage(@PathVariable("idTirage") Long idTirage,
+            @RequestParam(value = "user") String userVenant) {
+
+        try {
+            Tirage exist = tirageService.getById(idTirage);
+            if (exist != null) {
+                Droit ReadTirage = droitService.GetLibelle("Read Tirage");
+
+                Utilisateur utilisateurs = new JsonMapper().readValue(userVenant, Utilisateur.class);
+
+                Utilisateur utilisateur = utilisateurService.trouverParLoginAndPass(utilisateurs.getLogin(),
+                        utilisateurs.getPassword());
+
+              
+
+
+                if (utilisateur != null) {
+                    if (utilisateur.getRole().getDroits().contains(ReadTirage)) {
+                        try {
+
+                            //
+                            Historique historique = new Historique();
+                            historique.setDatehistorique(new Date());
+                            historique.setDescription(utilisateur.getPrenom() + " " + utilisateur.getNom()
+                                    + " a afficher l'ensemble des postulants tires du tirage."+idTirage);
+                            historiqueService.Create(historique);
+
+                            //
+                            return ResponseMessage.generateResponse("ok", HttpStatus.OK, exist.getPostulanttires());
+
+                        } catch (Exception e) {
+                            // TODO: handle exception
+                            return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
+
+                        }
+                    } else {
+                        return ResponseMessage.generateResponse("error", HttpStatus.OK, "Non autorise !");
+
+                    }
+                } else {
+                    return ResponseMessage.generateResponse("error", HttpStatus.OK,
+                            "Cet utilisateur n'existe pas !");
+
+                }
+
+               
+            } else {
+                return ResponseMessage.generateResponse("error", HttpStatus.OK, "Ce tirage n'existe pas !");
+            }
+        } catch (Exception e) {
+            // TODO: handle exception
+            return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
+
+        }
+
+    }
+
 
     // ---------------------------------Postulant
     // Tire---------------------------------------//

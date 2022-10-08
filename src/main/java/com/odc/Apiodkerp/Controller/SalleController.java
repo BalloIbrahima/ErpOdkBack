@@ -416,10 +416,22 @@ public class SalleController {
             if (users != null) {
                 if (users.getRole().getDroits().contains(RSalle)) {
                     for (Activite act : activites) {
-                        if (act.getDateDebut().after(date) && act.getDateFin().after(date)) {
-                            // Historique
+                        try {
+                            if (act.getDateDebut().after(date) && act.getDateFin().after(date)) {
+                                // Historique
+    
+                                salle.add(act.getSalle());
+                            }
+                        } catch (Exception e) {
+                            // TODO: handle exception
+                        }
+                        
+                    }
 
-                            salle.add(act.getSalle());
+                    List<Salle> salles = salleService.getAll();
+                    for (Salle s : salles) {
+                        if (s.getActivite().size() == 0) {
+                            salle.add(s);
                         }
                     }
 
@@ -469,23 +481,22 @@ public class SalleController {
             if (users != null) {
                 if (users.getRole().getDroits().contains(RSalle)) {
                     for (Activite act : acts) {
-                        if (act.getDateDebut().after(today) && act.getDateFin().before(today)
-                                || act.getDateDebut().before(today) && act.getDateFin().after(today)) {
+                        try {
+                            if (act.getDateDebut().after(today) && act.getDateFin().before(today)
+                                    || act.getDateDebut().before(today) && act.getDateFin().after(today)) {
 
-                            salle.add(act.getSalle());
-                            // Historique
+                                salle.add(act.getSalle());
+                                // Historique
 
-                            salle.add(act.getSalle());
+                                salle.add(act.getSalle());
+                            }
+                        } catch (Exception e) {
+                            // TODO: handle exception
                         }
+                       
                     }
 
-                    List<Salle> salles = salleService.getAll();
-                    for (Salle s : salles) {
-                        if (s.getActivite().size() == 0) {
-                            salle.add(s);
-                        }
-                    }
-
+                    
                     try {
                         Historique historique = new Historique();
                         Date datehisto = new Date();
