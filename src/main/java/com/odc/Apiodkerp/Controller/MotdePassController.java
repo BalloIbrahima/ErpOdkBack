@@ -1,8 +1,10 @@
 package com.odc.Apiodkerp.Controller;
+
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.odc.Apiodkerp.Configuration.ResponseMessage;
 import com.odc.Apiodkerp.Models.EmailDetails;
 import com.odc.Apiodkerp.Models.ForgetPass;
+import com.odc.Apiodkerp.Models.Historique;
 import com.odc.Apiodkerp.Models.Utilisateur;
 import com.odc.Apiodkerp.Service.ActiviteService;
 import com.odc.Apiodkerp.Service.AouPService;
@@ -33,6 +35,8 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.web.bind.annotation.*;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -57,7 +61,7 @@ public class MotdePassController {
 
     @Autowired
     private DroitService droitService;
-    
+
     @Autowired
     private RoleService roleService;
     @Autowired
@@ -105,62 +109,138 @@ public class MotdePassController {
     @Autowired
     JavaMailSender javaMailSender;
 
+    @Autowired
+    private EmailService emailService;
 
-     /// ::::::::::::::::::::::::::Liste par id
-     @ApiOperation(value = "Send Mail")
-     @PostMapping("/forgetpassword")
-     public ResponseEntity<Object> SendEmail(@RequestParam(value = "user") String userVenant) {
-         try {
- 
-             Utilisateur utilisateur = new JsonMapper().readValue(userVenant, Utilisateur.class);
- 
-             Utilisateur user = utilisateurService.getByEmail(utilisateur.getEmail());
- 
-             if(user !=null){
-                 String lien="";
-                 for(int i=0; i<20;i++){
-                     Random random = new Random();
- 
-                     char randomizedCharacter = (char) (random.nextInt(26) + 'a');
-                     lien=lien+""+randomizedCharacter;
-                 }
-                 
-                 ForgetPass forget=new ForgetPass();
+    /// ::::::::::::::::::::::::::Liste par id
+    @ApiOperation(value = "Send Mail")
+    @PostMapping("/forgetpassword")
+    public ResponseEntity<Object> SendEmail(@RequestParam(value = "user") String userVenant) {
+        try {
 
-                 EmailDetails detail=new EmailDetails();
-                 detail.setRecipient(user.getEmail());
-                 detail.setMsgBody("Vous avez demandez une reinitialisation de mot de passe ! \n Veuillez clicquez sur le lien suivant :\nhttp://localhost:8100/forgotpassword/"+lien);
-                 email.sendSimpleMail(detail);
-                    
-                 Date date = new Date();
-                 forget.setCode(lien);
-                 forget.setUser(user);
-                 forget.setDate(date);
-                 forgetpass.Create(forget);
+            Utilisateur utilisateur = new JsonMapper().readValue(userVenant, Utilisateur.class);
 
+            Utilisateur user = utilisateurService.getByEmail(utilisateur.getEmail());
 
-                 return ResponseMessage.generateResponse("ok", HttpStatus.OK, "Email envoye !");
+            if (user != null) {
+                String lien = "";
+                for (int i = 0; i < 20; i++) {
+                    Random random = new Random();
 
-             }else{
-                 return ResponseMessage.generateResponse("error", HttpStatus.OK, "Cet utilisateur n'existe pas !");
- 
-             }
-             
-         } catch (Exception e) {
-             // TODO: handle exception
-             return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
- 
-         }
-     }
+                    char randomizedCharacter = (char) (random.nextInt(26) + 'a');
+                    lien = lien + "" + randomizedCharacter;
+                }
 
+                try {
+                    ForgetPass forget = new ForgetPass();
 
+                    System.out.println(utilisateur.getEmail());
+                    System.out.println(user.getEmail());
+                    EmailDetails detail = new EmailDetails();
+                    detail.setRecipient(user.getEmail());
+                    detail.setMsgBody(
+                            "Vous avez demandez une reinitialisation de mot de passe ! \n Veuillez clicquez sur le lien suivant :\nhttp://localhost:8100/forgotpassword/"
+                                    + lien);
+                    System.out.println(emailService.sendSimpleMail(detail));
+
+                    Date date = new Date();
+                    forget.setCode(lien);
+                    forget.setUser(user);
+                    forget.setDate(date);
+                    forgetpass.Create(forget);
+
+                    return ResponseMessage.generateResponse("ok", HttpStatus.OK, "Email envoye !");
+                } catch (Exception e) {
+                    // TODO: handle exception
+                    return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
+
+                }
+
+            } else {
+                return ResponseMessage.generateResponse("errorUser", HttpStatus.OK, "Cet utilisateur n'existe pas !");
+
+            }
+
+        } catch (Exception e) {
+            // TODO: handle exception
+            return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
+
+        }
+    }
+
+    /// ::::::::::::::::::::::::::Liste par id
+    @ApiOperation(value = "Send Mail")
+    @PostMapping("/change/password/{code}")
+    public ResponseEntity<Object> ChangePassword(@RequestParam(value = "user") String userVenant,
+            @PathVariable("code") String code) {
+        try {
+
+            Utilisateur utilisateur = new JsonMapper().readValue(userVenant, Utilisateur.class);
+
+            Utilisateur user = utilisateurService.getByEmail(utilisateur.getEmail());
+
+            if (user != null) {
+                ForgetPass forget = forgetpass.Recuperer(code);
+                if (forget != null) {
+                    if (forget.getUser() == user) {
+
+                        DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+
+                        Date today = new Date();
+
+                        Date todayWithZeroTime = formatter.parse(formatter.format(today));
+
+                        Date forgetDate = formatter.parse(formatter.format(forget.getDate()));
+
+                        System.out.println("date auj" + todayWithZeroTime);
+                        System.out.println("date oub" + forgetDate);
+
+                        if (forgetDate.equals(todayWithZeroTime)) {
+
+                            ///
+                            Historique historique = new Historique();
+                            historique.setDatehistorique(new Date());
+                            historique.setDescription(user.getPrenom() + " " + user.getNom()
+                                    + " a modifie son mot de passe.");
+                            historiqueService.Create(historique);
+
+                            user.setPassword(utilisateur.getPassword());
+                            return ResponseMessage.generateResponse("ok", HttpStatus.OK,
+                                    utilisateurService.update(user));
+
+                        } else {
+                            return ResponseMessage.generateResponse("error", HttpStatus.OK, "Code expiré !");
+
+                        }
+
+                    } else {
+                        return ResponseMessage.generateResponse("error", HttpStatus.OK, "Tentative d'usurpation !!");
+
+                    }
+
+                } else {
+                    return ResponseMessage.generateResponse("error", HttpStatus.OK, "Erreur de code!");
+
+                }
+
+            } else {
+                return ResponseMessage.generateResponse("error", HttpStatus.OK, "Cet utilisateur n'existe pas !");
+
+            }
+
+        } catch (Exception e) {
+            // TODO: handle exception
+            return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
+
+        }
+    }
 
     @ApiOperation(value = "Envoyer email")
     @PostMapping("/sendMail1")
-    public ResponseEntity<Object> sendEmail(@PathVariable String mail){
+    public ResponseEntity<Object> sendEmail(@PathVariable String mail) {
 
         SimpleMailMessage sm = new SimpleMailMessage();
-        sm.setFrom("abassemaiga403@gmail.com");//input the sender email Id or read it from properties file
+        sm.setFrom("abassemaiga403@gmail.com");// input the sender email Id or read it from properties file
         sm.setTo(mail);
         sm.setSubject("Welcome to Java SpringBoot Application");
         sm.setText("Hello \n Welcome to the Java Springboot Mail Example.");
@@ -169,27 +249,20 @@ public class MotdePassController {
         return generateResponse("Email Sent to the mail ", HttpStatus.OK, mail);
     }
 
-    public ResponseEntity<Object> generateResponse(String msg, HttpStatus st , Object response){
+    public ResponseEntity<Object> generateResponse(String msg, HttpStatus st, Object response) {
         Map<String, Object> mp = new HashMap<String, Object>();
 
         mp.put("message", msg);
         mp.put("status", st.value());
-        mp.put("data",response);
+        mp.put("data", response);
 
-        return  new ResponseEntity<Object>(mp,st);
+        return new ResponseEntity<Object>(mp, st);
     }
-
-
-
-    @Autowired private EmailService emailService;
 
     // Sending a simple Email
     @PostMapping("/sendMailsansAt")
-    public String
-    sendMail(@RequestBody EmailDetails details)
-    {
-        String status
-                = emailService.sendSimpleMail(details);
+    public String sendMail(@RequestBody EmailDetails details) {
+        String status = emailService.sendSimpleMail(details);
 
         return status;
     }
@@ -197,24 +270,10 @@ public class MotdePassController {
     // Sending email with attachment
     @PostMapping("/sendMailWithAttachment")
     public String sendMailWithAttachment(
-            @RequestBody EmailDetails details)
-    {
-        String status
-                = emailService.sendMailWithAttachment(details);
+            @RequestBody EmailDetails details) {
+        String status = emailService.sendMailWithAttachment(details);
 
         return status;
     }
-
-
-
-
-
-
-
-
-
-
-
-
 
 }
