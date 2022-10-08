@@ -1,13 +1,16 @@
 package com.odc.Apiodkerp.ServiceImplementation;
 
 import com.odc.Apiodkerp.Models.Activite;
+import com.odc.Apiodkerp.Models.Entite;
 import com.odc.Apiodkerp.Models.Salle;
 
 import com.odc.Apiodkerp.Models.Etat;
 
 import com.odc.Apiodkerp.Repository.ActiviteRepository;
+import com.odc.Apiodkerp.Repository.EntiteRepository;
 import com.odc.Apiodkerp.Repository.SalleRepository;
 import com.odc.Apiodkerp.Service.ActiviteService;
+import com.odc.Apiodkerp.Service.EntiteService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,6 +26,9 @@ public class ActiviteServiceImpl implements ActiviteService {
 
     @Autowired
     ActiviteRepository activiteRepository;
+
+    @Autowired
+    EntiteRepository entiteRepository;
 
     @Override
     public Activite Create(Activite activite) {
@@ -174,7 +180,23 @@ public class ActiviteServiceImpl implements ActiviteService {
 
     @Override
     public List<Activite> ActiviteEntiteid(long identite) {
-        return  activiteRepository.actEntite(identite);
+
+        Entite entite=entiteRepository.findById(identite).get();
+
+        List<Activite> AllActivity=activiteRepository.findAll();
+        List<Activite> activiteAretourner=new ArrayList<>();
+        for(Activite a:AllActivity){
+            try {
+                if(a.getCreateur().getMonEntite().equals(entite)){
+                    activiteAretourner.add(a);
+
+                }
+            } catch (Exception e) {
+                // TODO: handle exception
+            }
+        }
+        return activiteAretourner;
+        //return  activiteRepository.actEntite(identite);
     }
 
 }
