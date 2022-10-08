@@ -27,15 +27,27 @@ public class EntiteServiceImpl implements EntiteService {
     @Override
     public Entite Update(long id, Entite entite) {
         // entite.setId(id);
-        Entite ent = entiteRepository.findById(id).orElse(null);
-        return entiteRepository.save(ent);
+        //Entite ent = entiteRepository.findById(id).orElse(null);
+       // return entiteRepository.save(ent);
+
+        return entiteRepository.findById(id)
+                .map(entite1 -> {
+                    entite1.setDescription(entite1.getDescription());
+                    entite1.setLibelleentite(entite1.getLibelleentite());
+                    entite1.setImage(entite1.getImage());
+                    entite1.setGerant(entite1.getGerant());
+                    entite1.setCreateur(entite1.getCreateur());
+
+                    return entiteRepository.save(entite1);
+                }).orElseThrow(() -> new RuntimeException("entite non trouvéé"));
+
     }
 
     @Override
-    public String Delete(long id) {
-
-        entiteRepository.deleteById(id);
-        return "Suppreimer avec succes";
+    public String Delete(Entite entite) {
+        System.out.println(entite.getId());
+        entiteRepository.delete(entite);
+        return "Supprimer avec succes";
     }
 
     @Override
@@ -45,15 +57,5 @@ public class EntiteServiceImpl implements EntiteService {
 
     public Entite GetByLibelle(String libelle) {
         return entiteRepository.findBylibelleentite(libelle);
-    }
-
-    @Override
-    public String DeleteEntiteById(Long id) {
-        try {
-            entiteRepository.deleteEntiteById(id);
-            return "ok";
-        } catch (Exception e) {
-            return e.getMessage();
-        }
     }
 }

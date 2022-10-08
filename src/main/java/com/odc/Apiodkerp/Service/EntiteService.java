@@ -14,7 +14,7 @@ public interface EntiteService {
 
     Entite Update(long id,Entite entite);
 
-    String Delete(long id);
+    String Delete(Entite entite);
 
     Entite GetById(long id);
 

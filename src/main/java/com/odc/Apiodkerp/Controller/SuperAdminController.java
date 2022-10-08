@@ -82,9 +82,6 @@ public class SuperAdminController {
     @Autowired
     private EmailDetailsInterf email;
 
-    @Autowired
-    private IntervenantExterneService intervenantExterneService;
-
     // ---------------------------CRUD
     // USER-------------------------------------------------------------->
     @ApiOperation(value = "Creer un utilisateur.")
@@ -1191,7 +1188,7 @@ public class SuperAdminController {
             }
 
         } catch (Exception e) {
-            // TODO: handle exception
+            // TODO: handle exceptroleion
             return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
 
         }
@@ -1758,6 +1755,97 @@ public class SuperAdminController {
 
     }
 
+    // ::::::::::::::Modifier Role ::::::::::::::::::::::::::::::::::::::::::::::::::
+
+    @ApiOperation(value = "Modifier un role.")
+    @PostMapping("/update/role/{idrole}")
+    public ResponseEntity<Object> UpdateRole(@PathVariable long idrole,@RequestParam(value = "role") String role,
+                                             @RequestParam(value = "user") String userVenant) {
+        try {
+
+            Role role1 = new JsonMapper().readValue(role, Role.class);
+
+            Utilisateur utilisateur = new JsonMapper().readValue(userVenant, Utilisateur.class);
+
+            Utilisateur user = utilisateurService.trouverParLoginAndPass(utilisateur.getLogin(),
+                    utilisateur.getPassword());
+
+            Droit createrole = droitService.GetLibelle("Update Role");
+
+            if (user.getRole().getDroits().contains(createrole)) {
+                try {
+                    Historique historique = new Historique();
+                    Date datehisto = new Date();
+                    historique.setDatehistorique(datehisto);
+                    historique
+                            .setDescription(
+                                    "" + user.getPrenom() + " " + user.getNom() + " a modifier  le  role "+role1.getLibellerole());
+                    historiqueService.Create(historique);
+                    Role NewEntite = roleService.update(role1,idrole);
+                    return ResponseMessage.generateResponse("ok", HttpStatus.OK, NewEntite);
+                } catch (Exception e) {
+                    // TODO: handle exception
+                    return ResponseMessage.generateResponse("iciiii", HttpStatus.OK, e.getMessage());
+
+                }
+
+            } else {
+                return ResponseMessage.generateResponse("error", HttpStatus.OK, "non autorise");
+            }
+
+        } catch (Exception e) {
+            // TODO: handle exception
+            return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
+        }
+
+    }
+
+    // ::::::::::::::::::::::::::::::::Supprimer role ::::::::::::::::::::::::::::::::::
+    // ::::::::::::::Modifier Role ::::::::::::::::::::::::::::::::::::::::::::::::::
+
+    @ApiOperation(value = "Supprimer un role.")
+    @PostMapping("/Delete/role/{idrole}")
+    public ResponseEntity<Object> DeleteRole(@PathVariable long idrole,
+                                             @RequestParam(value = "user") String userVenant) {
+        try {
+
+
+            Utilisateur utilisateur = new JsonMapper().readValue(userVenant, Utilisateur.class);
+
+            Utilisateur user = utilisateurService.trouverParLoginAndPass(utilisateur.getLogin(),
+                    utilisateur.getPassword());
+
+            Droit Deleterole = droitService.GetLibelle("Delete Role");
+
+            if (user.getRole().getDroits().contains(Deleterole)) {
+                try {
+                    Historique historique = new Historique();
+                    Date datehisto = new Date();
+                    historique.setDatehistorique(datehisto);
+                    historique
+                            .setDescription(
+                                    "" + user.getPrenom() + " " + user.getNom() + " a Supprimer  un  role ");
+                    historiqueService.Create(historique);
+                    Role NewEntite = roleService.delete(idrole);
+                    return ResponseMessage.generateResponse("ok", HttpStatus.OK, NewEntite);
+                } catch (Exception e) {
+                    // TODO: handle exception
+                    return ResponseMessage.generateResponse("iciiii", HttpStatus.OK, e.getMessage());
+
+                }
+
+            } else {
+                return ResponseMessage.generateResponse("error", HttpStatus.OK, "non autorise");
+            }
+
+        } catch (Exception e) {
+            // TODO: handle exception
+            return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
+        }
+
+    }
+
+
     // ::::::::::::::::::::::::Toutes les tirages :::::::::::::::::::::::::::::::
     @ApiOperation(value = "Toutes les tirages")
     @PostMapping("/TouteslesTirages")
@@ -2076,176 +2164,54 @@ public class SuperAdminController {
         }
     }
 
-    
-    // ---------------------------CRUD
-    // INTERVENANT
-    // EXTERNE-------------------------------------------------------------->
-    @ApiOperation(value = "Creer un intervenant interne.")
-    @PostMapping("/create/intervenant")
-    public ResponseEntity<Object> createIntervenant(@RequestParam(value = "data") String data,
-            @RequestParam(value = "user") String userVenant) {
+
+    //::::::::::::::::::PERSONNEL PAR ENTITE::::::::::::::::
+    @ApiOperation(value = "PERSONNEL PAR ENTITE")
+    @PostMapping("/personnelEntite/{identite}")
+    public ResponseEntity<Object> PersonnelEntite(@PathVariable("identite") Long identite,
+                                             @RequestParam(value = "user") String userVenant) {
         try {
 
-            Utilisateur utilisateu = new JsonMapper().readValue(userVenant, Utilisateur.class);
 
-            IntervenantExterne utilisateur = new JsonMapper().readValue(data, IntervenantExterne.class);
+            Entite entite = entiteService.GetById(identite);
+            Utilisateur utilisateur = new JsonMapper().readValue(userVenant, Utilisateur.class);
 
-            // Role role = RoleService.GetByLibelle("USER");
+            Utilisateur user = utilisateurService.trouverParLoginAndPass(utilisateur.getLogin(),
+                    utilisateur.getPassword());
 
-            Utilisateur users = utilisateurService.trouverParLoginAndPass(utilisateu.getLogin(),
-                    utilisateu.getPassword());
-            Droit CUser = droitService.GetLibelle("Create Intervenant");
-
-            if (users != null) {
-                if (users.getRole().getDroits().contains(CUser)) {
-
-                    if (intervenantExterneService.getByEmail(utilisateur.getEmail()) == null) {
-
-                        try {
-                            Historique historique = new Historique();
-                            Date datehisto = new Date();
-                            historique.setDatehistorique(datehisto);
-                            historique.setDescription(users.getPrenom() + " " + users.getNom()
-                                    + " a cree un personnel externe du nom de " + utilisateur.getNom());
-
-                            historiqueService.Create(historique);
-
-                            IntervenantExterne NewUser = intervenantExterneService.creer(utilisateur);
-                            // System.out.println(NewUser.getLogin());
-                            return ResponseMessage.generateResponse("ok", HttpStatus.OK, NewUser);
-                        } catch (Exception e) {
-                            // TODO: handle exception
-                            return ResponseMessage.generateResponse("ijjciiii", HttpStatus.OK, e.getMessage());
-
-                        }
-
-                    } else {
-                        return ResponseMessage.generateResponse("error", HttpStatus.OK, "Adresse mail existante");
-
-                    }
-
-                } else {
-                    return ResponseMessage.generateResponse("error", HttpStatus.OK, "Non autorisé");
+        List<Utilisateur> us = utilisateurService.getAll();
+            List<Utilisateur> aRetourner = new ArrayList<>();
+            for (Utilisateur u: us) {
+                if (u.getMonEntite() == entite.getUtilisateurEntite()) {
+                    aRetourner.add(u);
 
                 }
+            }
+            Droit REntite = droitService.GetLibelle("Read ListePostulant");
+
+            if (user.getRole().getDroits().contains(REntite)) {
+
+                Historique historique = new Historique();
+                Date datehisto = new Date();
+                historique.setDatehistorique(datehisto);
+                historique
+                        .setDescription(
+                                "" + user.getPrenom() + " " + user.getNom() + " a recuper les personnels  de l'entite  " + entite.getLibelleentite());
+                historiqueService.Create(historique);
+
+                return ResponseMessage.generateResponse("ok", HttpStatus.OK,
+                        aRetourner);
             } else {
-                return ResponseMessage.generateResponse("error", HttpStatus.OK, "Cet utilisateur n'existe pas !");
+                return ResponseMessage.generateResponse("error", HttpStatus.OK, "Non autorisé");
 
             }
+
         } catch (Exception e) {
             // TODO: handle exception
             return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
+
         }
     }
-
-
-    @ApiOperation(value = "Ensemble des intervenants.")
-    @PostMapping("/intervenant/all")
-    public ResponseEntity<Object> createIntervenant(@RequestParam(value = "user") String userVenant) {
-        try {
-
-            Utilisateur utilisateu = new JsonMapper().readValue(userVenant, Utilisateur.class);
-
-            // Role role = RoleService.GetByLibelle("USER");
-
-            Utilisateur users = utilisateurService.trouverParLoginAndPass(utilisateu.getLogin(),
-                    utilisateu.getPassword());
-            Droit CUser = droitService.GetLibelle("Read Intervenant");
-
-            if (users != null) {
-                if (users.getRole().getDroits().contains(CUser)) {
-
-
-                    try {
-                        Historique historique = new Historique();
-                        Date datehisto = new Date();
-                        historique.setDatehistorique(datehisto);
-                        historique.setDescription(users.getPrenom() + " " + users.getNom()
-                                + " a cree recuperer la liste des intervenants externes.");
-
-                        historiqueService.Create(historique);
-
-                        //IntervenantExterne NewUser = intervenantExterneService.creer(users);
-                        // System.out.println(NewUser.getLogin());
-                        return ResponseMessage.generateResponse("ok", HttpStatus.OK, intervenantExterneService.getAll());
-                    } catch (Exception e) {
-                        // TODO: handle exception
-                        return ResponseMessage.generateResponse("ijjciiii", HttpStatus.OK, e.getMessage());
-
-                    }
-
-                   
-
-                } else {
-                    return ResponseMessage.generateResponse("error", HttpStatus.OK, "Non autorisé");
-
-                }
-            } else {
-                return ResponseMessage.generateResponse("error", HttpStatus.OK, "Cet utilisateur n'existe pas !");
-
-            }
-        } catch (Exception e) {
-            // TODO: handle exception
-            return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
-        }
-    }
-
-
-    @ApiOperation(value = "Participant par activite.")
-    @PostMapping("/participants/{idActivite}")
-    public ResponseEntity<Object> ParticipantActivite(@RequestParam(value = "user") String userVenant,@PathVariable("idActivite") Long idActivite) {
-        try {
-
-            Utilisateur utilisateu = new JsonMapper().readValue(userVenant, Utilisateur.class);
-
-            // Role role = RoleService.GetByLibelle("USER");
-
-            Utilisateur users = utilisateurService.trouverParLoginAndPass(utilisateu.getLogin(),
-                    utilisateu.getPassword());
-            Droit CAoup= droitService.GetLibelle("Read AouP");
-
-            if (users != null) {
-                if (users.getRole().getDroits().contains(CAoup)) {
-
-
-                    try {
-
-                        Activite activite=activiteService.GetById(idActivite);
-                        Historique historique = new Historique();
-                        Date datehisto = new Date();
-                        historique.setDatehistorique(datehisto);
-                        historique.setDescription(users.getPrenom() + " " + users.getNom()
-                                + " a cree recuperer la liste des participants de lactivite "+idActivite);
-
-                        historiqueService.Create(historique);
-
-                        //IntervenantExterne NewUser = intervenantExterneService.creer(users);
-                        // System.out.println(NewUser.getLogin());
-                        return ResponseMessage.generateResponse("ok", HttpStatus.OK, activite.getAoup());
-                    } catch (Exception e) {
-                        // TODO: handle exception
-                        return ResponseMessage.generateResponse("ijjciiii", HttpStatus.OK, e.getMessage());
-
-                    }
-
-                   
-
-                } else {
-                    return ResponseMessage.generateResponse("error", HttpStatus.OK, "Non autorisé");
-
-                }
-            } else {
-                return ResponseMessage.generateResponse("error", HttpStatus.OK, "Cet utilisateur n'existe pas !");
-
-            }
-        } catch (Exception e) {
-            // TODO: handle exception
-            return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
-        }
-    }
-
-    // INTERVENANT
-    // EXTERNE-------------------------------------------------------------->
 
     // l'ensemble des listes tirer lors de tirage pour kadi
     /*
