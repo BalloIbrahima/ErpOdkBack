@@ -875,7 +875,7 @@ public class SuperAdminController {
                         Date datehisto = new Date();
                         historique.setDatehistorique(datehisto);
                         historique.setDescription(
-                                "" + users.getPrenom() + " " + users.getNom() + " a affiche les activités par entite ");
+                                "" + users.getPrenom() + " " + users.getNom() + " a affiche les activites par entite ");
                         historiqueService.Create(historique);
                         return ResponseMessage.generateResponse("ok", HttpStatus.OK,
                                 activiteService.ActiviteEntiteid(identite));
@@ -1954,20 +1954,27 @@ public class SuperAdminController {
             Utilisateur user = utilisateurService.trouverParLoginAndPass(utilisateur.getLogin(),
                     utilisateur.getPassword());
 
-            Entite entite = entiteService.GetById(identite);
+            // Entite entite = entiteService.GetById(identite);
 
-            List<Activite> activites = activiteService.FindAllAct();
+            List<Activite> activites = activiteService.ActiviteEntiteid(identite);
 
-            Droit REntite = droitService.GetLibelle("Read Utilisateur");
+            Droit RAouP = droitService.GetLibelle("Read AouP");
 
-            List<Activite> ActiviteEntite = new ArrayList<>();
+            // List<Activite> ActiviteEntite = new ArrayList<>();
 
-            if (user.getRole().getDroits().contains(REntite)) {
+            List<AouP> apprenants=new ArrayList<>();
+
+            if (user.getRole().getDroits().contains(RAouP)) {
 
                 for (Activite a : activites) {
-                    if (a.getCreateur().getGererEntite() == entite) {
-                        ActiviteEntite.add(a);
+
+                    try {
+                        apprenants.addAll(a.getAoup());
+
+                    } catch (Exception e) {
+                        // TODO: handle exception
                     }
+                    
                 }
 
                 Historique historique = new Historique();
@@ -1979,11 +1986,11 @@ public class SuperAdminController {
                                         + " a afficher les participant par entite ");
                 historiqueService.Create(historique);
 
-                List<AouP> apprenants = new ArrayList<>();
+                // List<AouP> apprenants = new ArrayList<>();
 
-                for (Activite a : ActiviteEntite) {
-                    apprenants.addAll(a.getAoup());
-                }
+                // for (Activite a : ActiviteEntite) {
+                //     apprenants.addAll(a.getAoup());
+                // }
 
                 return ResponseMessage.generateResponse("ok", HttpStatus.OK,
                         apprenants);
@@ -2222,6 +2229,72 @@ public class SuperAdminController {
                         //IntervenantExterne NewUser = intervenantExterneService.creer(users);
                         // System.out.println(NewUser.getLogin());
                         return ResponseMessage.generateResponse("ok", HttpStatus.OK, activite.getAoup());
+                    } catch (Exception e) {
+                        // TODO: handle exception
+                        return ResponseMessage.generateResponse("ijjciiii", HttpStatus.OK, e.getMessage());
+
+                    }
+
+                   
+
+                } else {
+                    return ResponseMessage.generateResponse("error", HttpStatus.OK, "Non autorisé");
+
+                }
+            } else {
+                return ResponseMessage.generateResponse("error", HttpStatus.OK, "Cet utilisateur n'existe pas !");
+
+            }
+        } catch (Exception e) {
+            // TODO: handle exception
+            return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
+        }
+    }
+
+
+
+    @ApiOperation(value = "Activites sans participants.")
+    @PostMapping("/activitesansparticipants")
+    public ResponseEntity<Object> ListeSansParticipant(@RequestParam(value = "user") String userVenant) {
+        try {
+
+            Utilisateur utilisateu = new JsonMapper().readValue(userVenant, Utilisateur.class);
+
+            // Role role = RoleService.GetByLibelle("USER");
+
+            Utilisateur users = utilisateurService.trouverParLoginAndPass(utilisateu.getLogin(),
+                    utilisateu.getPassword());
+            Droit CAoup= droitService.GetLibelle("Read AouP");
+
+            if (users != null) {
+                if (users.getRole().getDroits().contains(CAoup)) {
+
+
+                    try {
+
+                        Historique historique = new Historique();
+                        Date datehisto = new Date();
+                        historique.setDatehistorique(datehisto);
+                        historique.setDescription(users.getPrenom() + " " + users.getNom()
+                                + " a cree recuperer les listes sans participants");
+
+                        historiqueService.Create(historique);
+
+                        List<Activite> allACtivite=activiteService.GetAll();
+                        List<Activite> listeAretourner=new ArrayList<>();
+                        for(Activite a:allACtivite){
+                            try {
+                                if(a.getAoup().size()==0){
+                                    listeAretourner.add(a);
+                                }
+                            } catch (Exception e) {
+                                // TODO: handle exception
+                            }
+                        }
+
+                        //IntervenantExterne NewUser = intervenantExterneService.creer(users);
+                        // System.out.println(NewUser.getLogin());
+                        return ResponseMessage.generateResponse("ok", HttpStatus.OK, listeAretourner);
                     } catch (Exception e) {
                         // TODO: handle exception
                         return ResponseMessage.generateResponse("ijjciiii", HttpStatus.OK, e.getMessage());

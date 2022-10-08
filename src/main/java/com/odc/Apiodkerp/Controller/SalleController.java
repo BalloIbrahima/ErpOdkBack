@@ -375,7 +375,7 @@ public class SalleController {
                 if (users.getRole().getDroits().contains(RSalle)) {
                     for (Activite act : activites) {
                         try {
-                            if (act.getDateDebut().after(date) && act.getDateFin().after(date)) {
+                            if (act.getDateDebut().after(date) && act.getDateFin().after(date) && act.getSalle()!=null) {
                                 // Historique
     
                                 salle.add(act.getSalle());
@@ -441,9 +441,9 @@ public class SalleController {
                     for (Activite act : acts) {
                         try {
                             if (act.getDateDebut().after(today) && act.getDateFin().before(today)
-                                    || act.getDateDebut().before(today) && act.getDateFin().after(today)) {
+                                    || act.getDateDebut().before(today) && act.getDateFin().after(today) && act.getSalle()!=null) {
 
-                                salle.add(act.getSalle());
+                                //salle.add(act.getSalle());
                                 // Historique
 
                                 salle.add(act.getSalle());
