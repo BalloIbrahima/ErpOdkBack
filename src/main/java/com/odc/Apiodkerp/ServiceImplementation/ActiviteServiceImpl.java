@@ -168,4 +168,9 @@ public class ActiviteServiceImpl implements ActiviteService {
         return  activiteRepository.actEntite(identite);
     }
 
+    @Override
+    public Object findFiltre(String nomactivite, String typeactivite, String entite, String dtdebut, String dtfin) {
+        return activiteRepository.getFiltre(nomactivite, typeactivite, entite, dtdebut, dtfin);
+    }
+
 }

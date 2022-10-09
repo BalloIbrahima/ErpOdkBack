@@ -1,10 +1,12 @@
 package com.odc.Apiodkerp.Controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.odc.Apiodkerp.Models.*;
 
 import java.util.Date;
 
+import com.sun.deploy.net.HttpResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -400,6 +402,40 @@ public class UtilisateurController {
 
         } catch (Exception e) {
             // TODO: handle exception
+            return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
+        }
+    }
+
+    //Filtre de l'ensemble des activités
+    @ApiOperation(value = "Controller qui filtre les activités par nom, types, entite, date début et date fin")
+    @PostMapping("/activite/{nomactivite}/{typeactivite}/{entite}/{dtdebut}/{dtfin}")
+    public ResponseEntity<Object> filtrerActivite(
+            @RequestParam(value = "user") String usercourant,
+            @PathVariable String nomactivite,
+            @PathVariable String typeactivite,
+            @PathVariable String entite,
+            @PathVariable String dtdebut,
+            @PathVariable String dtfin) {
+        try {
+            Utilisateur monutilisateur = new JsonMapper().readValue(usercourant,Utilisateur.class);
+            Utilisateur thisuser = utilisateurService.trouverParLoginAndPass(monutilisateur.getLogin(),monutilisateur.getPassword());
+            Droit readActivite = droitService.GetLibelle("Read Activite");
+            if (thisuser != null) {
+                if (thisuser.getRole().getDroits().contains(readActivite)) {
+                    Historique historique = new Historique();
+                    Date datehisto = new Date();
+                    historique.setDatehistorique(datehisto);
+                    historique.setDescription(
+                            thisuser.getPrenom() + " " + thisuser.getNom() + " a filtré les activités"
+                    );
+                    historiqueService.Create(historique);
+                    return ResponseMessage.generateResponse("ok", HttpStatus.OK, activiteService.findFiltre(nomactivite, typeactivite, entite, dtdebut, dtfin));
+                } else return ResponseMessage.generateResponse("error", HttpStatus.OK, "Vous n'êtes pas autorisé !");
+
+            } else return ResponseMessage.generateResponse("error", HttpStatus.OK, "Cet utilisateur n'existe pas !");
+        } catch (JsonMappingException e) {
+            return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
+        } catch (JsonProcessingException e) {
             return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
         }
     }

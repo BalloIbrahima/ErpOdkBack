@@ -104,7 +104,7 @@ public class ExcelImport {
                                 case 2:
 
                                     String g= formatter.formatCellValue(colonneCourante);
-                                    if(g=="M" || g=="Masculin" || g=="MASCULIN"){
+                                    if(g=="M" | g=="Masculin" | g=="MASCULIN"){
                                         postulant.setGenre(Genre.Masculin);
                                     }else{
                                         postulant.setGenre(Genre.Feminin);
