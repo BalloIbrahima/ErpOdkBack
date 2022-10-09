@@ -1,4 +1,5 @@
 package com.odc.Apiodkerp.Models;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -10,20 +11,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
+@Table(name = "Apprenant_Participant")
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
 public class AouP {
+    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
-    private  boolean tirage;
+    private boolean tirage;
 
     @ManyToOne
     @JoinColumn(name = "idactivite")
     private Activite activite;
-
 
     @ManyToOne
     @JoinColumn(name = "idpostulant")

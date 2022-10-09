@@ -27,7 +27,7 @@ public class Notification {
     private  Date datenotif;
 
 
-
+    @OneToOne
     @JoinColumn(name = "idactivite", referencedColumnName = "id")
     private  Activite activite;
 

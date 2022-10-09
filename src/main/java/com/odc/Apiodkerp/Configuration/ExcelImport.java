@@ -103,8 +103,10 @@ public class ExcelImport {
                                 // deuxième colonne contenant le prenom
                                 case 2:
 
-                                    String g= formatter.formatCellValue(colonneCourante);
-                                    if(g=="M" || g=="Masculin" || g=="MASCULIN"){
+                                    // String g= formatter.formatCellValue(colonneCourante);
+                                    String g= colonneCourante.getStringCellValue();
+                                    System.out.println(g);
+                                    if(g.equals("M") || g.equals("Masculin") || g.equals("MASCULIN")|| g.equals("masculin")){
                                         postulant.setGenre(Genre.Masculin);
                                     }else{
                                         postulant.setGenre(Genre.Feminin);
@@ -118,11 +120,12 @@ public class ExcelImport {
                                   /*  = new SimpleDateFormat("dd/MM/yyyy").parse(formatter.formatCellValue(colonneCourante));
                                     DateTimeFormatter  a= DateTimeFormatter.ofPattern("dd/MM/yyyy");
                                     LocalDate fet = LocalDate.parse(formatter.formatCellValue(colonneCourante),a);*/
-                                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                                    SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
                                     Date d=null;
                                     try {
-                                        d= sdf.parse(colonneCourante.getStringCellValue());
-                                    } catch (ParseException e) {
+                                        //d= sdf.parse(colonneCourante.getStringCellValue());
+                                        d = colonneCourante.getDateCellValue();
+                                    } catch (IllegalStateException e) {
                                         // TODO Auto-generated catch block
                                         d=null;
                                         e.printStackTrace();
@@ -135,6 +138,7 @@ public class ExcelImport {
                                     //Date dateStr = formater.parse(formatter.formatCellValue(colonneCourante));
                                     //String date = new SimpleDateFormat("yyyy-MM-dd")
                                         //    .format(new Date(formatter.formatCellValue(colonneCourante)));
+
                                     postulant.setDateNaissance(d);
 
 

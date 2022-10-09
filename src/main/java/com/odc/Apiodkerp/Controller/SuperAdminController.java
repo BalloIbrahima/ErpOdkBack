@@ -1,8 +1,9 @@
 package com.odc.Apiodkerp.Controller;
 
 import com.odc.Apiodkerp.Models.*;
-import com.odc.Apiodkerp.Repository.HistoriqueRepo;
 import com.odc.Apiodkerp.Service.*;
+import com.odc.Apiodkerp.ServiceImplementation.EmailDetailsInterf;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +20,7 @@ import io.swagger.annotations.ApiOperation;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Random;
 
 @RestController
 @RequestMapping("/admin")
@@ -77,6 +79,12 @@ public class SuperAdminController {
     @Autowired
     private TypeActiviteService typeActiviteService;
 
+    @Autowired
+    private EmailDetailsInterf email;
+
+    @Autowired
+    private IntervenantExterneService intervenantExterneService;
+
     // ---------------------------CRUD
     // USER-------------------------------------------------------------->
     @ApiOperation(value = "Creer un utilisateur.")
@@ -123,7 +131,7 @@ public class SuperAdminController {
                             Date datehisto = new Date();
                             historique.setDatehistorique(datehisto);
                             historique.setDescription("" + users.getPrenom() + " " + users.getNom()
-                                    + " a crée un utilisateur du nom de " + utilisateur.getNom());
+                                    + " a cree un utilisateur du nom de " + utilisateur.getNom());
                             historiqueService.Create(historique);
 
                             Utilisateur NewUser = utilisateurService.creer(utilisateur);
@@ -183,7 +191,7 @@ public class SuperAdminController {
                         historique.setDatehistorique(datehisto);
                         historique.setDescription(
                                 "" + users.getPrenom() + " " + users.getNom()
-                                        + " a modifier un utilisateur du nom de ");
+                                        + " a modifie un utilisateur du nom de ");
                         historiqueService.Create(historique);
                     } catch (Exception e) {
                         // TODO: handle exception
@@ -233,7 +241,7 @@ public class SuperAdminController {
                         Date datehisto = new Date();
                         historique.setDatehistorique(datehisto);
                         historique.setDescription("" + user.getPrenom() + " " + user.getNom()
-                                + " a supprimé un utilisateur du nom de " + utilisateurService.getById(id));
+                                + " a supprime un utilisateur du nom de " + utilisateurService.getById(id));
                         historiqueService.Create(historique);
                         utilisateurService.delete(id);
 
@@ -279,7 +287,7 @@ public class SuperAdminController {
                         Historique historique = new Historique();
                         Date datehisto = new Date();
                         historique.setDatehistorique(datehisto);
-                        historique.setDescription("" + user.getPrenom() + "a affiché tous les utilisateurs");
+                        historique.setDescription("" + user.getPrenom() + "a affiche tous les utilisateurs");
                         historiqueService.Create(historique);
 
                         System.out.println(historique.getDescription());
@@ -514,7 +522,7 @@ public class SuperAdminController {
                     Date datehisto = new Date();
                     historique.setDatehistorique(datehisto);
                     historique.setDescription(
-                            "" + user.getPrenom() + " " + user.getNom() + " a affiché tous les responsables");
+                            "" + user.getPrenom() + " " + user.getNom() + " a affiche tous les responsables");
                     historiqueService.Create(historique);
                 } catch (Exception e) {
                     // TODO: handle exception
@@ -555,7 +563,7 @@ public class SuperAdminController {
                     Date datehisto = new Date();
                     historique.setDatehistorique(datehisto);
                     historique.setDescription(
-                            "" + admin.getPrenom() + " " + admin.getNom() + " a affiché le responsable du nom de "
+                            "" + admin.getPrenom() + " " + admin.getNom() + " a affiche le responsable du nom de "
                                     + idResponsable.getNom() + " " + idResponsable.getPrenom());
                     historiqueService.Create(historique);
                 } catch (Exception e) {
@@ -682,7 +690,7 @@ public class SuperAdminController {
                     Date datehisto = new Date();
                     historique.setDatehistorique(datehisto);
                     historique.setDescription(
-                            "" + users.getPrenom() + " " + users.getNom() + " a affiché tous les postulants ");
+                            "" + users.getPrenom() + " " + users.getNom() + " a affiche tous les postulants ");
                     historiqueService.Create(historique);
 
                     return ResponseMessage.generateResponse("ok", HttpStatus.OK, utilisateurService.TotalPersonnel());
@@ -732,12 +740,14 @@ public class SuperAdminController {
                         historique.setDescription(
                                 "" + users.getPrenom() + " " + users.getNom() + " a affiche les activites a venir");
                         historiqueService.Create(historique);
+
+                        return ResponseMessage.generateResponse("ok", HttpStatus.OK, activiteService.Avenir());
+
                     } catch (Exception e) {
                         // TODO: handle exception
                         return ResponseMessage.generateResponse("iciiii", HttpStatus.OK, e.getMessage());
 
                     }
-                    return ResponseMessage.generateResponse("error", HttpStatus.OK, activiteService.Avenir());
 
                 } else {
                     return ResponseMessage.generateResponse("error", HttpStatus.OK, "Non autorisé");
@@ -778,7 +788,7 @@ public class SuperAdminController {
                                 "" + users.getPrenom() + " " + users.getNom() + " a affiche les activites en cour ");
                         historiqueService.Create(historique);
 
-                        return ResponseMessage.generateResponse("error", HttpStatus.OK, activiteService.Encour());
+                        return ResponseMessage.generateResponse("ok", HttpStatus.OK, activiteService.Encour());
                     } catch (Exception e) {
                         // TODO: handle exception
                         return ResponseMessage.generateResponse("iciiii", HttpStatus.OK, e.getMessage());
@@ -786,7 +796,7 @@ public class SuperAdminController {
                     }
 
                 } else {
-                    return ResponseMessage.generateResponse("error", HttpStatus.OK, "Non autorisé");
+                    return ResponseMessage.generateResponse("error", HttpStatus.OK, "Non autorise");
 
                 }
             } else {
@@ -820,10 +830,10 @@ public class SuperAdminController {
                         Date datehisto = new Date();
                         historique.setDatehistorique(datehisto);
                         historique.setDescription(
-                                "" + users.getPrenom() + " " + users.getNom() + " a affiché les activités terminée ");
+                                "" + users.getPrenom() + " " + users.getNom() + " a affiche les activites terminees ");
                         historiqueService.Create(historique);
 
-                        return ResponseMessage.generateResponse("error", HttpStatus.OK, activiteService.Termine());
+                        return ResponseMessage.generateResponse("ok", HttpStatus.OK, activiteService.Termine());
                     } catch (Exception e) {
                         // TODO: handle exception
                         return ResponseMessage.generateResponse("iciiii", HttpStatus.OK, e.getMessage());
@@ -831,7 +841,7 @@ public class SuperAdminController {
                     }
 
                 } else {
-                    return ResponseMessage.generateResponse("error", HttpStatus.OK, "Non autorisé");
+                    return ResponseMessage.generateResponse("error", HttpStatus.OK, "Non autorise");
 
                 }
             } else {
@@ -855,7 +865,7 @@ public class SuperAdminController {
             Utilisateur utilisateur = new JsonMapper().readValue(userVenant, Utilisateur.class);
             Utilisateur users = utilisateurService.trouverParLoginAndPass(utilisateur.getLogin(),
                     utilisateur.getPassword());
-            Droit Ractivite = droitService.GetLibelle("Read Actvite");
+            Droit Ractivite = droitService.GetLibelle("Read Activite");
 
             if (users != null) {
                 if (users.getRole().getDroits().contains(Ractivite)) {
@@ -865,9 +875,9 @@ public class SuperAdminController {
                         Date datehisto = new Date();
                         historique.setDatehistorique(datehisto);
                         historique.setDescription(
-                                "" + users.getPrenom() + " " + users.getNom() + " a affiché les activités par entite ");
+                                "" + users.getPrenom() + " " + users.getNom() + " a affiche les activites par entite ");
                         historiqueService.Create(historique);
-                        return ResponseMessage.generateResponse("error", HttpStatus.OK,
+                        return ResponseMessage.generateResponse("ok", HttpStatus.OK,
                                 activiteService.ActiviteEntiteid(identite));
 
                     } catch (Exception e) {
@@ -879,7 +889,7 @@ public class SuperAdminController {
                 }
 
                 else {
-                    return ResponseMessage.generateResponse("error", HttpStatus.OK, "Non autorisé");
+                    return ResponseMessage.generateResponse("error", HttpStatus.OK, "Non autorise");
 
                 }
             } else {
@@ -916,7 +926,8 @@ public class SuperAdminController {
             if (activite.getDateDebut().after(date1) && activite.getDateDebut().before(date2)
                     && activite.getDateFin().before(date2)) {
 
-                if (tirage.getActivite().getId() == activite.getId() && pt.getTirage().getId() == tirage.getId()) {
+                if (tirage.getListepostulant().getActivite().getId() == activite.getId()
+                        && pt.getTirage().getId() == tirage.getId()) {
 
                     // :::::::::::::::::::::::::::::Histroque::::::::::::::::::::::::::::::::::
 
@@ -934,7 +945,7 @@ public class SuperAdminController {
                                 Date datehisto = new Date();
                                 historique.setDatehistorique(datehisto);
                                 historique.setDescription("" + users.getPrenom() + " " + users.getNom()
-                                        + " a affiché des postulant de l'activite " + activite.getNom());
+                                        + " a affiche des postulant de l'activite " + activite.getNom());
                                 historiqueService.Create(historique);
                             } catch (Exception e) {
                                 // TODO: handle exception
@@ -944,7 +955,7 @@ public class SuperAdminController {
                             return ResponseMessage.generateResponse("error", HttpStatus.OK,
                                     postulantTrieService.getAll());
                         } else {
-                            return ResponseMessage.generateResponse("error", HttpStatus.OK, "Non autorisé");
+                            return ResponseMessage.generateResponse("error", HttpStatus.OK, "Non autorise");
 
                         }
                     } else {
@@ -1004,7 +1015,7 @@ public class SuperAdminController {
 
                     }
                 } else {
-                    return ResponseMessage.generateResponse("error", HttpStatus.OK, "Non autorisé");
+                    return ResponseMessage.generateResponse("error", HttpStatus.OK, "Non autorise");
 
                 }
             } else {
@@ -1043,7 +1054,7 @@ public class SuperAdminController {
                     if (dateTodate.after(act.getDateDebut()) && dateTodate.before(act.getDateFin())) {
                         return ResponseMessage.generateResponse("En cours", HttpStatus.OK, "L'activité est en cours");
                     } else if (dateTodate.after(act.getDateFin())) {
-                        return ResponseMessage.generateResponse("Terminé", HttpStatus.OK, "L'activité est terminée");
+                        return ResponseMessage.generateResponse("Termine", HttpStatus.OK, "L'activité est terminée");
                     } else if (dateTodate.before(act.getDateDebut())) {
                         return ResponseMessage.generateResponse("A Venir", HttpStatus.OK, "L'activité est à Venir");
                     } else {
@@ -1090,7 +1101,7 @@ public class SuperAdminController {
                             utilisateurService.RecupererUserParEtat(true));
 
                 } else {
-                    return ResponseMessage.generateResponse("error", HttpStatus.OK, "Non autorisé");
+                    return ResponseMessage.generateResponse("error", HttpStatus.OK, "Non autorise");
                 }
 
             } catch (Exception e) {
@@ -1132,7 +1143,7 @@ public class SuperAdminController {
                             utilisateurService.getAll());
 
                 } else {
-                    return ResponseMessage.generateResponse("error", HttpStatus.OK, "Non autorisé");
+                    return ResponseMessage.generateResponse("error", HttpStatus.OK, "Non autorise");
                 }
 
             } catch (Exception e) {
@@ -1176,11 +1187,11 @@ public class SuperAdminController {
                 return ResponseMessage.generateResponse("ok", HttpStatus.OK,
                         utilisateurService.RecupererUserParEtat(false));
             } else {
-                return ResponseMessage.generateResponse("error", HttpStatus.OK, "Non autorisé");
+                return ResponseMessage.generateResponse("error", HttpStatus.OK, "Non autorise");
             }
 
         } catch (Exception e) {
-            // TODO: handle exception
+            // TODO: handle exceptroleion
             return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
 
         }
@@ -1215,7 +1226,7 @@ public class SuperAdminController {
                 return ResponseMessage.generateResponse("ok", HttpStatus.OK, salleService.ParEtat(true));
 
             } else {
-                return ResponseMessage.generateResponse("error", HttpStatus.OK, "Non autorisé");
+                return ResponseMessage.generateResponse("error", HttpStatus.OK, "Non autorise");
             }
 
         } catch (Exception e) {
@@ -1250,7 +1261,7 @@ public class SuperAdminController {
                     historique.setDatehistorique(datehisto);
                     historique.setDescription(
                             "" + user.getPrenom() + " " + user.getNom()
-                                    + " a enregistré des apprenants ou participants");
+                                    + " a enregistre des apprenants ou participants");
                     historiqueService.Create(historique);
 
                     Activite ac = activiteService.GetById(idActivite);
@@ -1302,7 +1313,7 @@ public class SuperAdminController {
                     Date datehisto = new Date();
                     historique.setDatehistorique(datehisto);
                     historique.setDescription("" + user.getPrenom() + " " + user.getNom()
-                            + " a modifié l' apprenants ou le participant sur l'activite " + aouP.getActivite());
+                            + " a modifie l apprenants ou le participant sur lactivite " + aouP.getActivite());
                     historiqueService.Create(historique);
 
                     return ResponseMessage.generateResponse("ok", HttpStatus.OK,
@@ -1314,7 +1325,7 @@ public class SuperAdminController {
                 }
 
             } else {
-                return ResponseMessage.generateResponse("error", HttpStatus.OK, "Non autorisé");
+                return ResponseMessage.generateResponse("error", HttpStatus.OK, "Non autorise");
             }
 
         } catch (Exception e) {
@@ -1345,7 +1356,7 @@ public class SuperAdminController {
                     Date datehisto = new Date();
                     historique.setDatehistorique(datehisto);
                     historique.setDescription("" + user.getPrenom() + " " + user.getNom()
-                            + " a supprimé l' apprenants ou le participant sur l'activite " + aouP.getActivite());
+                            + " a supprime l apprenants ou le participant sur lactivite " + aouP.getActivite());
                     historiqueService.Create(historique);
 
                     return ResponseMessage.generateResponse("ok", HttpStatus.OK,
@@ -1389,7 +1400,7 @@ public class SuperAdminController {
                     Date datehisto = new Date();
                     historique.setDatehistorique(datehisto);
                     historique.setDescription(
-                            "" + user.getPrenom() + " " + user.getNom() + " a affiché un apprenant ou un participant ");
+                            "" + user.getPrenom() + " " + user.getNom() + " a affiche un apprenant ou un participant ");
                     historiqueService.Create(historique);
                 } catch (Exception e) {
                     // TODO: handle exception
@@ -1430,7 +1441,7 @@ public class SuperAdminController {
                     Date datehisto = new Date();
                     historique.setDatehistorique(datehisto);
                     historique.setDescription(
-                            "" + user.getPrenom() + " " + user.getNom() + " a ajouté le droit " + drt.getLibelle());
+                            "" + user.getPrenom() + " " + user.getNom() + " a ajoute le droit " + drt.getLibelle());
                     historiqueService.Create(historique);
                     return ResponseMessage.generateResponse("ok", HttpStatus.OK,
                             droitService.Create(drt));
@@ -1470,7 +1481,7 @@ public class SuperAdminController {
                 Date datehisto = new Date();
                 historique.setDatehistorique(datehisto);
                 historique.setDescription(
-                        "" + user.getPrenom() + " " + user.getNom() + " a modifié le droit " + drt.getLibelle());
+                        "" + user.getPrenom() + " " + user.getNom() + " a modifie le droit " + drt.getLibelle());
                 historiqueService.Create(historique);
             } catch (Exception e) {
                 // TODO: handle exception
@@ -1503,7 +1514,7 @@ public class SuperAdminController {
                 Historique historique = new Historique();
                 Date datehisto = new Date();
                 historique.setDatehistorique(datehisto);
-                historique.setDescription("" + user.getPrenom() + " " + user.getNom() + " a supprimé un droit ");
+                historique.setDescription("" + user.getPrenom() + " " + user.getNom() + " a supprime un droit ");
                 historiqueService.Create(historique);
             } catch (Exception e) {
                 // TODO: handle exception
@@ -1537,7 +1548,7 @@ public class SuperAdminController {
                 Date datehisto = new Date();
                 historique.setDatehistorique(datehisto);
                 historique.setDescription(
-                        "" + user.getPrenom() + " " + user.getNom() + " a affiché le droit " + droit.getLibelle());
+                        "" + user.getPrenom() + " " + user.getNom() + " a affiche le droit " + droit.getLibelle());
                 historiqueService.Create(historique);
             } catch (Exception e) {
                 // TODO: handle exception
@@ -1571,7 +1582,7 @@ public class SuperAdminController {
                 Date datehisto = new Date();
                 historique.setDatehistorique(datehisto);
                 historique.setDescription(
-                        "" + user.getPrenom() + " " + user.getNom() + " a affiché tous les  droits ");
+                        "" + user.getPrenom() + " " + user.getNom() + " a affiche tous les  droits ");
                 historiqueService.Create(historique);
             } catch (Exception e) {
                 // TODO: handle exception
@@ -1605,7 +1616,7 @@ public class SuperAdminController {
                 Date datehisto = new Date();
                 historique.setDatehistorique(datehisto);
                 historique
-                        .setDescription("" + user.getPrenom() + " " + user.getNom() + " a affiché le droit " + libelle);
+                        .setDescription("" + user.getPrenom() + " " + user.getNom() + " a affiche le droit " + libelle);
                 historiqueService.Create(historique);
             } catch (Exception e) {
                 // TODO: handle exception
@@ -1695,7 +1706,7 @@ public class SuperAdminController {
                     historique.setDatehistorique(datehisto);
                     historique
                             .setDescription(
-                                    "" + user.getPrenom() + " " + user.getNom() + " a crée  une nouvelle role ");
+                                    "" + user.getPrenom() + " " + user.getNom() + " a cree  une nouvelle role ");
                     historiqueService.Create(historique);
                     Role NewEntite = roleService.create(role1);
                     return ResponseMessage.generateResponse("ok", HttpStatus.OK, NewEntite);
@@ -1727,6 +1738,13 @@ public class SuperAdminController {
             Droit getRole = droitService.GetLibelle("Read Role");
 
             if (user.getRole().getDroits().contains(getRole)) {
+                Historique historique = new Historique();
+                Date datehisto = new Date();
+                historique.setDatehistorique(datehisto);
+                historique
+                        .setDescription(
+                                "" + user.getPrenom() + " " + user.getNom() + " a affiche les roles ");
+                historiqueService.Create(historique);
                 List<Role> getAllRole = roleService.getAll();
                 return ResponseMessage.generateResponse("ok", HttpStatus.OK, getAllRole);
             } else {
@@ -1739,6 +1757,97 @@ public class SuperAdminController {
         }
 
     }
+
+    // ::::::::::::::Modifier Role ::::::::::::::::::::::::::::::::::::::::::::::::::
+
+    @ApiOperation(value = "Modifier un role.")
+    @PostMapping("/update/role/{idrole}")
+    public ResponseEntity<Object> UpdateRole(@PathVariable long idrole,@RequestParam(value = "role") String role,
+                                             @RequestParam(value = "user") String userVenant) {
+        try {
+
+            Role role1 = new JsonMapper().readValue(role, Role.class);
+
+            Utilisateur utilisateur = new JsonMapper().readValue(userVenant, Utilisateur.class);
+
+            Utilisateur user = utilisateurService.trouverParLoginAndPass(utilisateur.getLogin(),
+                    utilisateur.getPassword());
+
+            Droit createrole = droitService.GetLibelle("Update Role");
+
+            if (user.getRole().getDroits().contains(createrole)) {
+                try {
+                    Historique historique = new Historique();
+                    Date datehisto = new Date();
+                    historique.setDatehistorique(datehisto);
+                    historique
+                            .setDescription(
+                                    "" + user.getPrenom() + " " + user.getNom() + " a modifier  le  role "+role1.getLibellerole());
+                    historiqueService.Create(historique);
+                    Role NewEntite = roleService.update(role1,idrole);
+                    return ResponseMessage.generateResponse("ok", HttpStatus.OK, NewEntite);
+                } catch (Exception e) {
+                    // TODO: handle exception
+                    return ResponseMessage.generateResponse("iciiii", HttpStatus.OK, e.getMessage());
+
+                }
+
+            } else {
+                return ResponseMessage.generateResponse("error", HttpStatus.OK, "non autorise");
+            }
+
+        } catch (Exception e) {
+            // TODO: handle exception
+            return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
+        }
+
+    }
+
+    // ::::::::::::::::::::::::::::::::Supprimer role ::::::::::::::::::::::::::::::::::
+    // ::::::::::::::Modifier Role ::::::::::::::::::::::::::::::::::::::::::::::::::
+
+    @ApiOperation(value = "Supprimer un role.")
+    @PostMapping("/Delete/role/{idrole}")
+    public ResponseEntity<Object> DeleteRole(@PathVariable long idrole,
+                                             @RequestParam(value = "user") String userVenant) {
+        try {
+
+
+            Utilisateur utilisateur = new JsonMapper().readValue(userVenant, Utilisateur.class);
+
+            Utilisateur user = utilisateurService.trouverParLoginAndPass(utilisateur.getLogin(),
+                    utilisateur.getPassword());
+
+            Droit Deleterole = droitService.GetLibelle("Delete Role");
+
+            if (user.getRole().getDroits().contains(Deleterole)) {
+                try {
+                    Historique historique = new Historique();
+                    Date datehisto = new Date();
+                    historique.setDatehistorique(datehisto);
+                    historique
+                            .setDescription(
+                                    "" + user.getPrenom() + " " + user.getNom() + " a Supprimer  un  role ");
+                    historiqueService.Create(historique);
+                    Role NewEntite = roleService.delete(idrole);
+                    return ResponseMessage.generateResponse("ok", HttpStatus.OK, NewEntite);
+                } catch (Exception e) {
+                    // TODO: handle exception
+                    return ResponseMessage.generateResponse("iciiii", HttpStatus.OK, e.getMessage());
+
+                }
+
+            } else {
+                return ResponseMessage.generateResponse("error", HttpStatus.OK, "non autorise");
+            }
+
+        } catch (Exception e) {
+            // TODO: handle exception
+            return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
+        }
+
+    }
+
 
     // ::::::::::::::::::::::::Toutes les tirages :::::::::::::::::::::::::::::::
     @ApiOperation(value = "Toutes les tirages")
@@ -1754,6 +1863,14 @@ public class SuperAdminController {
             Droit ReadTirage = droitService.GetLibelle("Read Tirage");
 
             if (user.getRole().getDroits().contains(ReadTirage)) {
+
+                Historique historique = new Historique();
+                Date datehisto = new Date();
+                historique.setDatehistorique(datehisto);
+                historique
+                        .setDescription(
+                                "" + user.getPrenom() + " " + user.getNom() + " a afficher les tirages ");
+                historiqueService.Create(historique);
                 return ResponseMessage.generateResponse("ok", HttpStatus.OK,
                         tirageService.getAll());
             } else {
@@ -1795,6 +1912,14 @@ public class SuperAdminController {
                         ActiviteEntite.add(a);
                     }
                 }
+
+                Historique historique = new Historique();
+                Date datehisto = new Date();
+                historique.setDatehistorique(datehisto);
+                historique
+                        .setDescription(
+                                "" + user.getPrenom() + " " + user.getNom() + " a affiche les activites par entites ");
+                historiqueService.Create(historique);
 
                 return ResponseMessage.generateResponse("ok", HttpStatus.OK,
                         ActiviteEntite);
@@ -1838,6 +1963,14 @@ public class SuperAdminController {
                 // }
                 // }
 
+                Historique historique = new Historique();
+                Date datehisto = new Date();
+                historique.setDatehistorique(datehisto);
+                historique
+                        .setDescription(
+                                "" + user.getPrenom() + " " + user.getNom() + " a afficher les personnels par entite ");
+                historiqueService.Create(historique);
+
                 return ResponseMessage.generateResponse("ok", HttpStatus.OK,
                         entite.getUtilisateurEntite());
             } else {
@@ -1870,17 +2003,28 @@ public class SuperAdminController {
             if (user.getRole().getDroits().contains(RAoup)) {
                 for (AouP aou : aoup) {
                     if (aou.getActivite() == act.getAoup()) {
-                        return ResponseMessage.generateResponse("ok", HttpStatus.OK, listearetourner.add(aou));
+                        listearetourner.add(aou);
 
                     }
                     ;
                 }
 
+                Historique historique = new Historique();
+                Date datehisto = new Date();
+                historique.setDatehistorique(datehisto);
+                historique
+                        .setDescription(
+                                "" + user.getPrenom() + " " + user.getNom()
+                                        + " a afficher les participant une activite ");
+                historiqueService.Create(historique);
+
+                return ResponseMessage.generateResponse("ok", HttpStatus.OK, listearetourner);
+                // return ResponseMessage.generateResponse("error", HttpStatus.OK, "");
+
             } else {
                 return ResponseMessage.generateResponse("error", HttpStatus.OK, "Non autorisé");
 
             }
-            return ResponseMessage.generateResponse("error", HttpStatus.OK, "");
 
         } catch (Exception e) {
             // TODO: handle exception
@@ -1901,27 +2045,43 @@ public class SuperAdminController {
             Utilisateur user = utilisateurService.trouverParLoginAndPass(utilisateur.getLogin(),
                     utilisateur.getPassword());
 
-            Entite entite = entiteService.GetById(identite);
+            // Entite entite = entiteService.GetById(identite);
 
-            List<Activite> activites = activiteService.FindAllAct();
+            List<Activite> activites = activiteService.ActiviteEntiteid(identite);
 
-            Droit REntite = droitService.GetLibelle("Read Utilisateur");
+            Droit RAouP = droitService.GetLibelle("Read AouP");
 
-            List<Activite> ActiviteEntite = new ArrayList<>();
+            // List<Activite> ActiviteEntite = new ArrayList<>();
 
-            if (user.getRole().getDroits().contains(REntite)) {
+            List<AouP> apprenants=new ArrayList<>();
+
+            if (user.getRole().getDroits().contains(RAouP)) {
 
                 for (Activite a : activites) {
-                    if (a.getCreateur().getGererEntite() == entite) {
-                        ActiviteEntite.add(a);
+
+                    try {
+                        apprenants.addAll(a.getAoup());
+
+                    } catch (Exception e) {
+                        // TODO: handle exception
                     }
+                    
                 }
 
-                List<AouP> apprenants = new ArrayList<>();
+                Historique historique = new Historique();
+                Date datehisto = new Date();
+                historique.setDatehistorique(datehisto);
+                historique
+                        .setDescription(
+                                "" + user.getPrenom() + " " + user.getNom()
+                                        + " a afficher les participant par entite ");
+                historiqueService.Create(historique);
 
-                for (Activite a : ActiviteEntite) {
-                    apprenants.addAll(a.getAoup());
-                }
+                // List<AouP> apprenants = new ArrayList<>();
+
+                // for (Activite a : ActiviteEntite) {
+                //     apprenants.addAll(a.getAoup());
+                // }
 
                 return ResponseMessage.generateResponse("ok", HttpStatus.OK,
                         apprenants);
@@ -1951,6 +2111,14 @@ public class SuperAdminController {
             Droit RTirage = droitService.GetLibelle("Read Tirage");
 
             if (user.getRole().getDroits().contains(RTirage)) {
+
+                Historique historique = new Historique();
+                Date datehisto = new Date();
+                historique.setDatehistorique(datehisto);
+                historique
+                        .setDescription(
+                                "" + user.getPrenom() + " " + user.getNom() + " a afficher les tirages valides ");
+                historiqueService.Create(historique);
 
                 return ResponseMessage.generateResponse("ok", HttpStatus.OK,
                         tirageService.tiragesValides(true));
@@ -1984,6 +2152,14 @@ public class SuperAdminController {
 
             if (user.getRole().getDroits().contains(REntite)) {
 
+                Historique historique = new Historique();
+                Date datehisto = new Date();
+                historique.setDatehistorique(datehisto);
+                historique
+                        .setDescription(
+                                "" + user.getPrenom() + " " + user.getNom() + " a recuper une liste par  " + idliste);
+                historiqueService.Create(historique);
+
                 return ResponseMessage.generateResponse("ok", HttpStatus.OK,
                         list);
             } else {
@@ -1997,6 +2173,293 @@ public class SuperAdminController {
 
         }
     }
+
+
+    //::::::::::::::::::PERSONNEL PAR ENTITE::::::::::::::::
+    @ApiOperation(value = "PERSONNEL PAR ENTITE")
+    @PostMapping("/personnelEntite/{identite}")
+    public ResponseEntity<Object> PersonnelEntite(@PathVariable("identite") Long identite,
+                                             @RequestParam(value = "user") String userVenant) {
+        try {
+
+
+            Entite entite = entiteService.GetById(identite);
+            Utilisateur utilisateur = new JsonMapper().readValue(userVenant, Utilisateur.class);
+
+            Utilisateur user = utilisateurService.trouverParLoginAndPass(utilisateur.getLogin(),
+                    utilisateur.getPassword());
+
+        List<Utilisateur> us = utilisateurService.getAll();
+            List<Utilisateur> aRetourner = new ArrayList<>();
+            for (Utilisateur u: us) {
+                if (u.getMonEntite() == entite.getUtilisateurEntite()) {
+                    aRetourner.add(u);
+
+                }
+            }
+            Droit REntite = droitService.GetLibelle("Read ListePostulant");
+
+            if (user.getRole().getDroits().contains(REntite)) {
+
+                Historique historique = new Historique();
+                Date datehisto = new Date();
+                historique.setDatehistorique(datehisto);
+                historique
+                        .setDescription(
+                                "" + user.getPrenom() + " " + user.getNom() + " a recuper les personnels  de l'entite  " + entite.getLibelleentite());
+                historiqueService.Create(historique);
+
+                return ResponseMessage.generateResponse("ok", HttpStatus.OK,
+                        aRetourner);
+            } else {
+                return ResponseMessage.generateResponse("error", HttpStatus.OK, "Non autorisé");
+
+            }
+
+        } catch (Exception e) {
+            // TODO: handle exception
+            return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
+
+        }
+    }
+
+
+    
+    // ---------------------------CRUD
+    // INTERVENANT
+    // EXTERNE-------------------------------------------------------------->
+    @ApiOperation(value = "Creer un intervenant interne.")
+    @PostMapping("/create/intervenant")
+    public ResponseEntity<Object> createIntervenant(@RequestParam(value = "data") String data,
+            @RequestParam(value = "user") String userVenant) {
+        try {
+
+            Utilisateur utilisateu = new JsonMapper().readValue(userVenant, Utilisateur.class);
+
+            IntervenantExterne utilisateur = new JsonMapper().readValue(data, IntervenantExterne.class);
+
+            // Role role = RoleService.GetByLibelle("USER");
+
+            Utilisateur users = utilisateurService.trouverParLoginAndPass(utilisateu.getLogin(),
+                    utilisateu.getPassword());
+            Droit CUser = droitService.GetLibelle("Create Intervenant");
+
+            if (users != null) {
+                if (users.getRole().getDroits().contains(CUser)) {
+
+                    if (intervenantExterneService.getByEmail(utilisateur.getEmail()) == null) {
+
+                        try {
+                            Historique historique = new Historique();
+                            Date datehisto = new Date();
+                            historique.setDatehistorique(datehisto);
+                            historique.setDescription(users.getPrenom() + " " + users.getNom()
+                                    + " a cree un personnel externe du nom de " + utilisateur.getNom());
+
+                            historiqueService.Create(historique);
+
+                            IntervenantExterne NewUser = intervenantExterneService.creer(utilisateur);
+                            // System.out.println(NewUser.getLogin());
+                            return ResponseMessage.generateResponse("ok", HttpStatus.OK, NewUser);
+                        } catch (Exception e) {
+                            // TODO: handle exception
+                            return ResponseMessage.generateResponse("ijjciiii", HttpStatus.OK, e.getMessage());
+
+                        }
+
+                    } else {
+                        return ResponseMessage.generateResponse("error", HttpStatus.OK, "Adresse mail existante");
+
+                    }
+
+                } else {
+                    return ResponseMessage.generateResponse("error", HttpStatus.OK, "Non autorisé");
+
+                }
+            } else {
+                return ResponseMessage.generateResponse("error", HttpStatus.OK, "Cet utilisateur n'existe pas !");
+
+            }
+        } catch (Exception e) {
+            // TODO: handle exception
+            return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
+        }
+    }
+
+
+    @ApiOperation(value = "Ensemble des intervenants.")
+    @PostMapping("/intervenant/all")
+    public ResponseEntity<Object> createIntervenant(@RequestParam(value = "user") String userVenant) {
+        try {
+
+            Utilisateur utilisateu = new JsonMapper().readValue(userVenant, Utilisateur.class);
+
+            // Role role = RoleService.GetByLibelle("USER");
+
+            Utilisateur users = utilisateurService.trouverParLoginAndPass(utilisateu.getLogin(),
+                    utilisateu.getPassword());
+            Droit CUser = droitService.GetLibelle("Read Intervenant");
+
+            if (users != null) {
+                if (users.getRole().getDroits().contains(CUser)) {
+
+
+                    try {
+                        Historique historique = new Historique();
+                        Date datehisto = new Date();
+                        historique.setDatehistorique(datehisto);
+                        historique.setDescription(users.getPrenom() + " " + users.getNom()
+                                + " a cree recuperer la liste des intervenants externes.");
+
+                        historiqueService.Create(historique);
+
+                        //IntervenantExterne NewUser = intervenantExterneService.creer(users);
+                        // System.out.println(NewUser.getLogin());
+                        return ResponseMessage.generateResponse("ok", HttpStatus.OK, intervenantExterneService.getAll());
+                    } catch (Exception e) {
+                        // TODO: handle exception
+                        return ResponseMessage.generateResponse("ijjciiii", HttpStatus.OK, e.getMessage());
+
+                    }
+
+                   
+
+                } else {
+                    return ResponseMessage.generateResponse("error", HttpStatus.OK, "Non autorisé");
+
+                }
+            } else {
+                return ResponseMessage.generateResponse("error", HttpStatus.OK, "Cet utilisateur n'existe pas !");
+
+            }
+        } catch (Exception e) {
+            // TODO: handle exception
+            return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
+        }
+    }
+
+
+    @ApiOperation(value = "Participant par activite.")
+    @PostMapping("/participants/{idActivite}")
+    public ResponseEntity<Object> ParticipantActivite(@RequestParam(value = "user") String userVenant,@PathVariable("idActivite") Long idActivite) {
+        try {
+
+            Utilisateur utilisateu = new JsonMapper().readValue(userVenant, Utilisateur.class);
+
+            // Role role = RoleService.GetByLibelle("USER");
+
+            Utilisateur users = utilisateurService.trouverParLoginAndPass(utilisateu.getLogin(),
+                    utilisateu.getPassword());
+            Droit CAoup= droitService.GetLibelle("Read AouP");
+
+            if (users != null) {
+                if (users.getRole().getDroits().contains(CAoup)) {
+
+
+                    try {
+
+                        Activite activite=activiteService.GetById(idActivite);
+                        Historique historique = new Historique();
+                        Date datehisto = new Date();
+                        historique.setDatehistorique(datehisto);
+                        historique.setDescription(users.getPrenom() + " " + users.getNom()
+                                + " a cree recuperer la liste des participants de lactivite "+idActivite);
+
+                        historiqueService.Create(historique);
+
+                        //IntervenantExterne NewUser = intervenantExterneService.creer(users);
+                        // System.out.println(NewUser.getLogin());
+                        return ResponseMessage.generateResponse("ok", HttpStatus.OK, activite.getAoup());
+                    } catch (Exception e) {
+                        // TODO: handle exception
+                        return ResponseMessage.generateResponse("ijjciiii", HttpStatus.OK, e.getMessage());
+
+                    }
+
+                   
+
+                } else {
+                    return ResponseMessage.generateResponse("error", HttpStatus.OK, "Non autorisé");
+
+                }
+            } else {
+                return ResponseMessage.generateResponse("error", HttpStatus.OK, "Cet utilisateur n'existe pas !");
+
+            }
+        } catch (Exception e) {
+            // TODO: handle exception
+            return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
+        }
+    }
+
+
+
+    @ApiOperation(value = "Activites sans participants.")
+    @PostMapping("/activitesansparticipants")
+    public ResponseEntity<Object> ListeSansParticipant(@RequestParam(value = "user") String userVenant) {
+        try {
+
+            Utilisateur utilisateu = new JsonMapper().readValue(userVenant, Utilisateur.class);
+
+            // Role role = RoleService.GetByLibelle("USER");
+
+            Utilisateur users = utilisateurService.trouverParLoginAndPass(utilisateu.getLogin(),
+                    utilisateu.getPassword());
+            Droit CAoup= droitService.GetLibelle("Read AouP");
+
+            if (users != null) {
+                if (users.getRole().getDroits().contains(CAoup)) {
+
+
+                    try {
+
+                        Historique historique = new Historique();
+                        Date datehisto = new Date();
+                        historique.setDatehistorique(datehisto);
+                        historique.setDescription(users.getPrenom() + " " + users.getNom()
+                                + " a cree recuperer les listes sans participants");
+
+                        historiqueService.Create(historique);
+
+                        List<Activite> allACtivite=activiteService.GetAll();
+                        List<Activite> listeAretourner=new ArrayList<>();
+                        for(Activite a:allACtivite){
+                            try {
+                                if(a.getAoup().size()==0){
+                                    listeAretourner.add(a);
+                                }
+                            } catch (Exception e) {
+                                // TODO: handle exception
+                            }
+                        }
+
+                        //IntervenantExterne NewUser = intervenantExterneService.creer(users);
+                        // System.out.println(NewUser.getLogin());
+                        return ResponseMessage.generateResponse("ok", HttpStatus.OK, listeAretourner);
+                    } catch (Exception e) {
+                        // TODO: handle exception
+                        return ResponseMessage.generateResponse("ijjciiii", HttpStatus.OK, e.getMessage());
+
+                    }
+
+                   
+
+                } else {
+                    return ResponseMessage.generateResponse("error", HttpStatus.OK, "Non autorisé");
+
+                }
+            } else {
+                return ResponseMessage.generateResponse("error", HttpStatus.OK, "Cet utilisateur n'existe pas !");
+
+            }
+        } catch (Exception e) {
+            // TODO: handle exception
+            return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
+        }
+    }
+
+    // INTERVENANT
+    // EXTERNE-------------------------------------------------------------->
 
     // l'ensemble des listes tirer lors de tirage pour kadi
     /*
@@ -2031,4 +2494,7 @@ public class SuperAdminController {
      * }
      * }
      */
+
+    
+
 }

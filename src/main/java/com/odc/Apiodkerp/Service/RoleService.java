@@ -12,7 +12,7 @@ public interface RoleService {
     //Modifier role
     Role update(Role role,long id);
     //Effacer role
-    void delete(long id);
+    Role delete(long id);
     //Afficher Tous les Roles
     List<Role> getAll();
 

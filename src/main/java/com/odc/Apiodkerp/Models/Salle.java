@@ -20,6 +20,7 @@ public class Salle {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     private long nombreplace;
+    @Column(unique = true)
     private String libelle;
     private String etage;
     private Boolean disponibilite;
@@ -33,4 +34,8 @@ public class Salle {
     @ManyToOne
     @JoinColumn(name = "utilisateur")
     private Utilisateur utilisateur;
+
+    @JsonIgnore
+    @OneToMany(mappedBy="salle")
+    List<Tache> mestaches=new ArrayList<>();
 }
