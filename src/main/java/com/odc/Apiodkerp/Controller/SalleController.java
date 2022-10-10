@@ -199,46 +199,46 @@ public class SalleController {
         }
     }
 
-    @ApiOperation(value = "Lien pour suprimer une salle")
-    @PostMapping("/supprimersalle/{id}/")
-    public ResponseEntity<Object> supprimer(@PathVariable long id, @RequestParam(value = "user") String userVenant) {
-        try {
-            Utilisateur utilisateur = new JsonMapper().readValue(userVenant, Utilisateur.class);
+    // @ApiOperation(value = "Lien pour suprimer une salle")
+    // @PostMapping("/supprimersalle/{id}")
+    // public ResponseEntity<Object> supprimer(@PathVariable long id, @RequestParam(value = "user") String userVenant) {
+    //     try {
+    //         Utilisateur utilisateur = new JsonMapper().readValue(userVenant, Utilisateur.class);
 
-            Utilisateur user = utilisateurService.trouverParLoginAndPass(utilisateur.getLogin(),
-                    utilisateur.getPassword());
+    //         Utilisateur user = utilisateurService.trouverParLoginAndPass(utilisateur.getLogin(),
+    //                 utilisateur.getPassword());
 
-            Droit DSalle = droitService.GetLibelle("Delete Salle");
+    //         Droit DSalle = droitService.GetLibelle("Delete Salle");
 
-            if (user != null) {
-                if (user.getRole().getDroits().contains(DSalle)) {
+    //         if (user != null) {
+    //             if (user.getRole().getDroits().contains(DSalle)) {
 
-                    try {
-                        Historique historique = new Historique();
-                        Date datehisto = new Date();
-                        historique.setDatehistorique(datehisto);
-                        historique.setDescription(
-                                "" + user.getPrenom() + " " + user.getNom() + " a supprime une salle du nom de ");
-                        historiqueService.Create(historique);
-                    } catch (Exception e) {
-                        // TODO: handle exception
-                        return ResponseMessage.generateResponse("iciiii", HttpStatus.OK, e.getMessage());
+    //                 try {
+    //                     Historique historique = new Historique();
+    //                     Date datehisto = new Date();
+    //                     historique.setDatehistorique(datehisto);
+    //                     historique.setDescription(
+    //                             "" + user.getPrenom() + " " + user.getNom() + " a supprime une salle du nom de ");
+    //                     historiqueService.Create(historique);
+    //                 } catch (Exception e) {
+    //                     // TODO: handle exception
+    //                     return ResponseMessage.generateResponse("iciiii", HttpStatus.OK, e.getMessage());
 
-                    }
-                    salleService.delete(id);
-                    return ResponseMessage.generateResponse("ok", HttpStatus.OK, "Salle supprime avec succes !");
-                } else {
-                    return ResponseMessage.generateResponse("error", HttpStatus.OK, "Non autorise");
+    //                 }
+    //                 salleService.delete(id);
+    //                 return ResponseMessage.generateResponse("ok", HttpStatus.OK, "Salle supprime avec succes !");
+    //             } else {
+    //                 return ResponseMessage.generateResponse("error", HttpStatus.OK, "Non autorise");
 
-                }
-            } else {
-                return ResponseMessage.generateResponse("error", HttpStatus.OK, "Cet utilisateur n'existe pas !");
+    //             }
+    //         } else {
+    //             return ResponseMessage.generateResponse("error", HttpStatus.OK, "Cet utilisateur n'existe pas !");
 
-            }
-        } catch (Exception e) {
-            return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
-        }
-    }
+    //         }
+    //     } catch (Exception e) {
+    //         return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
+    //     }
+    // }
 
     @ApiOperation(value = "Lien pour lier une salle à une activite")
     @PostMapping("/attribuersalle/{idsalle}/{idactivite}")
@@ -374,10 +374,22 @@ public class SalleController {
             if (users != null) {
                 if (users.getRole().getDroits().contains(RSalle)) {
                     for (Activite act : activites) {
-                        if (act.getDateDebut().after(date) && act.getDateFin().after(date)) {
-                            // Historique
+                        try {
+                            if (act.getDateDebut().after(date) && act.getDateFin().after(date) && act.getSalle()!=null) {
+                                // Historique
+    
+                                salle.add(act.getSalle());
+                            }
+                        } catch (Exception e) {
+                            // TODO: handle exception
+                        }
+                        
+                    }
 
-                            salle.add(act.getSalle());
+                    List<Salle> salles = salleService.getAll();
+                    for (Salle s : salles) {
+                        if (s.getActivite().size() == 0) {
+                            salle.add(s);
                         }
                     }
 
@@ -427,23 +439,22 @@ public class SalleController {
             if (users != null) {
                 if (users.getRole().getDroits().contains(RSalle)) {
                     for (Activite act : acts) {
-                        if (act.getDateDebut().after(today) && act.getDateFin().before(today)
-                                || act.getDateDebut().before(today) && act.getDateFin().after(today)) {
+                        try {
+                            if (act.getDateDebut().after(today) && act.getDateFin().before(today)
+                                    || act.getDateDebut().before(today) && act.getDateFin().after(today) && act.getSalle()!=null) {
 
-                            salle.add(act.getSalle());
-                            // Historique
+                                //salle.add(act.getSalle());
+                                // Historique
 
-                            salle.add(act.getSalle());
+                                salle.add(act.getSalle());
+                            }
+                        } catch (Exception e) {
+                            // TODO: handle exception
                         }
+                       
                     }
 
-                    List<Salle> salles = salleService.getAll();
-                    for (Salle s : salles) {
-                        if (s.getActivite().size() == 0) {
-                            salle.add(s);
-                        }
-                    }
-
+                    
                     try {
                         Historique historique = new Historique();
                         Date datehisto = new Date();

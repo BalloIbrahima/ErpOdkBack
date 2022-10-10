@@ -7,4 +7,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface ForgetPassRepo extends JpaRepository<ForgetPass, Long> {
+
+    ForgetPass findByCode(String code);
 }

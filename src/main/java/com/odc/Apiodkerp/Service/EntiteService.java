@@ -14,9 +14,13 @@ public interface EntiteService {
 
     Entite Update(long id,Entite entite);
 
-    String Delete(long id);
+    String Delete(Entite entite);
+
+    String Delete1(Long id);
 
     Entite GetById(long id);
 
     Entite GetByLibelle(String libelle);
+
+    String DeleteEntiteById(Long id);
 }
