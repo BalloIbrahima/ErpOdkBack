@@ -3,10 +3,7 @@ package com.odc.Apiodkerp.Controller;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.odc.Apiodkerp.Configuration.ResponseMessage;
 import com.odc.Apiodkerp.Configuration.SaveImage;
-import com.odc.Apiodkerp.Models.Droit;
-import com.odc.Apiodkerp.Models.Entite;
-import com.odc.Apiodkerp.Models.Historique;
-import com.odc.Apiodkerp.Models.Utilisateur;
+import com.odc.Apiodkerp.Models.*;
 import com.odc.Apiodkerp.Service.*;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -16,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -79,11 +77,11 @@ public class EntiteController {
     @ApiOperation(value = "Creer un entite.")
     @PostMapping("/create/entite")
     public ResponseEntity<Object> createEntite(@RequestParam(value = "entite") String enti,
-            @RequestParam(value = "file", required = true) MultipartFile file,
-            @RequestParam(value = "user") String userVenant) {
-                Entite entite=null;
-                Utilisateur user=null;
-            try {
+                                               @RequestParam(value = "file", required = true) MultipartFile file,
+                                               @RequestParam(value = "user") String userVenant) {
+        Entite entite = null;
+        Utilisateur user = null;
+        try {
 
             entite = new JsonMapper().readValue(enti, Entite.class);
             if (file != null) {
@@ -92,27 +90,27 @@ public class EntiteController {
             }
             Utilisateur utilisateur = new JsonMapper().readValue(userVenant, Utilisateur.class);
 
-            
-             user = utilisateurService.trouverParLoginAndPass(utilisateur.getLogin(),
+
+            user = utilisateurService.trouverParLoginAndPass(utilisateur.getLogin(),
                     utilisateur.getPassword());
-                
+
             List<Entite> entit = entiteService.GetAll();
-            Boolean IsGerant=false;
+            Boolean IsGerant = false;
             Droit createrole = droitService.GetLibelle("Create Entite");
 
             if (user.getRole().getDroits().contains(createrole)) {
 
                 for (Entite en : entit) {
                     if (entite.getGerant() == en.getGerant()) {
-                        IsGerant=true;
+                        IsGerant = true;
                         break;
                     }
                 }
 
-                if(IsGerant==true){
+                if (IsGerant == true) {
                     return ResponseMessage.generateResponse("error", HttpStatus.OK,
-                                "cette personne est deja gerant d'une entite");
-                }else{
+                            "cette personne est deja gerant d'une entite");
+                } else {
                     try {
                         Historique historique = new Historique();
                         Date datehisto = new Date();
@@ -123,17 +121,16 @@ public class EntiteController {
                                                 + " a cree  une nouvelle entite ");
                         historiqueService.Create(historique);
                         Entite NewEntite = entiteService.Create(entite);
-    
+
                         return ResponseMessage.generateResponse("ok", HttpStatus.OK, NewEntite);
-    
+
                     } catch (Exception e) {
                         // TODO: handle exception
                         return ResponseMessage.generateResponse("iciiii", HttpStatus.OK, e.getMessage());
-    
+
                     }
                 }
-                
-                
+
 
             } else {
                 return ResponseMessage.generateResponse("error", HttpStatus.OK, "non autorise");
@@ -149,9 +146,14 @@ public class EntiteController {
     @ApiOperation(value = "Modifier un entite")
     @PostMapping("/update/entite/{id}")
     public ResponseEntity<Object> updateEntite(@PathVariable("id") Long id, @RequestParam(value = "entite") String enti,
-            @RequestParam(value = "user") String userVenant) {
+                                               @RequestParam(value = "file", required = true) MultipartFile file,
+                                               @RequestParam(value = "user") String userVenant) {
         try {
             Entite entite = new JsonMapper().readValue(enti, Entite.class);
+            if (file != null) {
+                System.out.println("ggggg");
+                entite.setImage(SaveImage.save("activite", file, entite.getLibelleentite()));
+            }
             Utilisateur utilisateur = new JsonMapper().readValue(userVenant, Utilisateur.class);
 
             Utilisateur user = utilisateurService.trouverParLoginAndPass(utilisateur.getLogin(),
@@ -179,11 +181,35 @@ public class EntiteController {
             Utilisateur utilisateur = new JsonMapper().readValue(userVenant, Utilisateur.class);
             Utilisateur user = utilisateurService.trouverParLoginAndPass(utilisateur.getLogin(),
                     utilisateur.getPassword());
-            Entite entite =entiteService.GetById(id);
+            Entite entite = entiteService.GetById(id);
             Droit deleterole = droitService.GetLibelle("Delete Entite");
 
             if (user.getRole().getDroits().contains(deleterole)) {
-                return ResponseMessage.generateResponse("ok", HttpStatus.OK,  entiteService.Delete(entite));
+                return ResponseMessage.generateResponse("ok", HttpStatus.OK, entiteService.Delete(entite));
+            } else {
+                return ResponseMessage.generateResponse("error", HttpStatus.OK, "non autorise");
+            }
+
+        } catch (Exception e) {
+            // TODO: handle exception
+            return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
+        }
+
+    }
+
+
+    @ApiOperation(value = "Supprimer un entite1")
+    @PostMapping("/delete/entite1/{id}")
+    public ResponseEntity<Object> DeleteEntiteE(@PathVariable Long id, @RequestParam(value = "user") String userVenant) {
+        try {
+            Utilisateur utilisateur = new JsonMapper().readValue(userVenant, Utilisateur.class);
+            Utilisateur user = utilisateurService.trouverParLoginAndPass(utilisateur.getLogin(),
+                    utilisateur.getPassword());
+            Entite entite = entiteService.GetById(id);
+            Droit deleterole = droitService.GetLibelle("Delete Entite");
+
+            if (user.getRole().getDroits().contains(deleterole)) {
+                return ResponseMessage.generateResponse("ok", HttpStatus.OK, entiteService.Delete1(id));
             } else {
                 return ResponseMessage.generateResponse("error", HttpStatus.OK, "non autorise");
             }
@@ -222,7 +248,7 @@ public class EntiteController {
     @ApiOperation(value = "Affichager une entite")
     @PostMapping("/get/entite/{id}")
     public ResponseEntity<Object> GetIdEntite(@PathVariable("id") Long id,
-            @RequestParam(value = "user") String userVenant) {
+                                              @RequestParam(value = "user") String userVenant) {
         // @RequestParam(value = "entite") String enti
         try {
             Utilisateur utilisateur = new JsonMapper().readValue(userVenant, Utilisateur.class);
@@ -287,5 +313,65 @@ public class EntiteController {
             return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
         }
 
+    }
+
+    //:::::::::::::perso par entite
+
+
+
+    @ApiOperation(value = "personnel par entite")
+    @PostMapping("entite/{identite}")
+    public ResponseEntity<Object> PostulantParActivite(@RequestParam(value = "user") String userVenant,
+                                                       @PathVariable long identite) {
+        try {
+            Utilisateur utilisateur = new JsonMapper().readValue(userVenant, Utilisateur.class);
+            // recupere les activites par identifiant
+            Entite entite = entiteService.GetById(identite);
+            // recupere tous les postTirés
+            List<Utilisateur> user =  utilisateurService.getAll();
+             List<Utilisateur> utilisateurs = new ArrayList<>();
+           for(Utilisateur u:user) {
+               if (u.getMonEntite()== entite.getUtilisateurEntite()) {
+                   utilisateurs.add(u);
+               }
+
+           }
+           // :::::::::::::::::::::::::::::Historique::::::::::::::::::::::::::::::::::
+
+                    Utilisateur users = utilisateurService.trouverParLoginAndPass(utilisateur.getLogin(),
+                            utilisateur.getPassword());
+
+                    Droit Rutili = droitService.GetLibelle("Read Utilisateur");
+
+                    if (users != null) {
+                        if (users.getRole().getDroits().contains(Rutili)) {
+                            try {
+                                Historique historique = new Historique();
+                                Date datehisto = new Date();
+                                historique.setDatehistorique(datehisto);
+                                historique.setDescription("" + users.getPrenom() + " " + users.getNom()
+                                        + " a affiche des personnes par entite ") ;
+                                historiqueService.Create(historique);
+                                return ResponseMessage.generateResponse("iciiii", HttpStatus.OK, utilisateurs);
+
+                            } catch (Exception e) {
+                                // TODO: handle exception
+                                return ResponseMessage.generateResponse("iciiii", HttpStatus.OK, e.getMessage());
+
+                            }
+                        } else {
+                            return ResponseMessage.generateResponse("error", HttpStatus.OK, "Non autorise");
+
+                        }
+                    } else {
+                        return ResponseMessage.generateResponse("error", HttpStatus.OK,
+                                "Cet utilisateur n'existe pas !");
+
+                    }
+
+        } catch (Exception e) {
+            // TODO: handle exception
+            return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
+        }
     }
 }

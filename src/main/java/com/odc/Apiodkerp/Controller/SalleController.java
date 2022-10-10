@@ -392,13 +392,12 @@ public class SalleController {
                             salle.add(s);
                         }
                     }
-
                     try {
                         Historique historique = new Historique();
                         Date datehisto = new Date();
                         historique.setDatehistorique(datehisto);
                         historique.setDescription("" + users.getPrenom() + " " + users.getNom()
-                                + " a afficher  salle disponible  " + date);
+                                + " a afficher  salle disponible" + date);
                         historiqueService.Create(historique);
                         return ResponseMessage.generateResponse("error", HttpStatus.OK, salle);
 
@@ -460,7 +459,7 @@ public class SalleController {
                         Date datehisto = new Date();
                         historique.setDatehistorique(datehisto);
                         historique.setDescription("" + users.getPrenom() + " " + users.getNom()
-                                + " a afficher  salle disponible dans l'intervalle ");
+                                + " a afficher  salle disponible ");
                         historiqueService.Create(historique);
 
                         return ResponseMessage.generateResponse("ok", HttpStatus.OK, salle);
