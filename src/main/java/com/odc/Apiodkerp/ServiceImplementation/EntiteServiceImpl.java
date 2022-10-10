@@ -58,4 +58,9 @@ public class EntiteServiceImpl implements EntiteService {
     public Entite GetByLibelle(String libelle) {
         return entiteRepository.findBylibelleentite(libelle);
     }
+
+    @Override
+    public String DeleteEntiteById(Long id) {
+        return null;
+    }
 }

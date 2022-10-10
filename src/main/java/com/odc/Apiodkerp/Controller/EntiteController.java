@@ -172,7 +172,7 @@ public class EntiteController {
 
     }
 
-    @ApiOperation(value = "Supprimer un entite")
+/*    @ApiOperation(value = "Supprimer un entite")
     @PostMapping("/delete/entite/{id}")
     public ResponseEntity<Object> DeleteEntite(@PathVariable Long id, @RequestParam(value = "user") String userVenant) {
         try {
@@ -193,7 +193,7 @@ public class EntiteController {
             return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
         }
 
-    }
+    }*/
 
     @ApiOperation(value = "Affichager tout les entités")
     @PostMapping("/getAll/entite")
