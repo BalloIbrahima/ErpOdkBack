@@ -202,7 +202,7 @@ public class MotdePassController {
                 = emailService.sendMailWithAttachment(details);
 
         return status;
-    }*/
+    }
 
 
 

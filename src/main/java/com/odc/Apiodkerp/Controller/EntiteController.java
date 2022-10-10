@@ -3,10 +3,7 @@ package com.odc.Apiodkerp.Controller;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.odc.Apiodkerp.Configuration.ResponseMessage;
 import com.odc.Apiodkerp.Configuration.SaveImage;
-import com.odc.Apiodkerp.Models.Droit;
-import com.odc.Apiodkerp.Models.Entite;
-import com.odc.Apiodkerp.Models.Historique;
-import com.odc.Apiodkerp.Models.Utilisateur;
+import com.odc.Apiodkerp.Models.*;
 import com.odc.Apiodkerp.Service.*;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -16,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -201,7 +199,7 @@ public class EntiteController {
 
 
     @ApiOperation(value = "Supprimer un entite1")
-    @DeleteMapping("/delete/entite1/{id}")
+    @PostMapping("/delete/entite1/{id}")
     public ResponseEntity<Object> DeleteEntiteE(@PathVariable Long id, @RequestParam(value = "user") String userVenant) {
         try {
             Utilisateur utilisateur = new JsonMapper().readValue(userVenant, Utilisateur.class);
@@ -315,5 +313,65 @@ public class EntiteController {
             return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
         }
 
+    }
+
+    //:::::::::::::perso par entite
+
+
+
+    @ApiOperation(value = "personnel par entite")
+    @PostMapping("entite/{identite}")
+    public ResponseEntity<Object> PostulantParActivite(@RequestParam(value = "user") String userVenant,
+                                                       @PathVariable long identite) {
+        try {
+            Utilisateur utilisateur = new JsonMapper().readValue(userVenant, Utilisateur.class);
+            // recupere les activites par identifiant
+            Entite entite = entiteService.GetById(identite);
+            // recupere tous les postTirés
+            List<Utilisateur> user =  utilisateurService.getAll();
+             List<Utilisateur> utilisateurs = new ArrayList<>();
+           for(Utilisateur u:user) {
+               if (u.getMonEntite()== entite.getUtilisateurEntite()) {
+                   utilisateurs.add(u);
+               }
+
+           }
+           // :::::::::::::::::::::::::::::Historique::::::::::::::::::::::::::::::::::
+
+                    Utilisateur users = utilisateurService.trouverParLoginAndPass(utilisateur.getLogin(),
+                            utilisateur.getPassword());
+
+                    Droit Rutili = droitService.GetLibelle("Read Utilisateur");
+
+                    if (users != null) {
+                        if (users.getRole().getDroits().contains(Rutili)) {
+                            try {
+                                Historique historique = new Historique();
+                                Date datehisto = new Date();
+                                historique.setDatehistorique(datehisto);
+                                historique.setDescription("" + users.getPrenom() + " " + users.getNom()
+                                        + " a affiche des personnes par entite ") ;
+                                historiqueService.Create(historique);
+                                return ResponseMessage.generateResponse("iciiii", HttpStatus.OK, utilisateurs);
+
+                            } catch (Exception e) {
+                                // TODO: handle exception
+                                return ResponseMessage.generateResponse("iciiii", HttpStatus.OK, e.getMessage());
+
+                            }
+                        } else {
+                            return ResponseMessage.generateResponse("error", HttpStatus.OK, "Non autorise");
+
+                        }
+                    } else {
+                        return ResponseMessage.generateResponse("error", HttpStatus.OK,
+                                "Cet utilisateur n'existe pas !");
+
+                    }
+
+        } catch (Exception e) {
+            // TODO: handle exception
+            return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
+        }
     }
 }
