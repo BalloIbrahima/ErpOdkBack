@@ -25,7 +25,7 @@ public class Entite {
     @Lob
     private String description;
     private String image;
-    private Boolean isdelete;
+    private String isdelete;
 
     @ManyToOne
     @JoinColumn(name = "utilisateur")
