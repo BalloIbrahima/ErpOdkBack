@@ -41,6 +41,7 @@ public class Utilisateur extends Personne {
     @OneToMany(mappedBy = "leader")
     private List<Activite> activitesLeads = new ArrayList<>();
 
+    @JsonIgnore
     @ManyToMany
     @JoinTable(name = "UtilisateurActivite", joinColumns = {
             @JoinColumn(name = "id_utilisateur")}, inverseJoinColumns = {

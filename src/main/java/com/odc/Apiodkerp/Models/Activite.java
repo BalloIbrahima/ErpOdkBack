@@ -2,6 +2,7 @@ package com.odc.Apiodkerp.Models;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -9,6 +10,7 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
@@ -33,9 +35,9 @@ public class Activite {
     private String description;
     private String image;
 
-    @JsonIgnore
+    //@JsonIgnore
     @ManyToMany(mappedBy = "activitesFormateurs")
-    List<Utilisateur> utilisateurs = new ArrayList<>();
+    List<Utilisateur> utilisateurs=new ArrayList<>() ;
 
     // @JsonIgnore
     // @OneToMany(mappedBy = "activite", cascade = CascadeType.ALL)
@@ -69,7 +71,6 @@ public class Activite {
     @OneToMany(mappedBy = "activite", cascade = CascadeType.ALL)
     List<ListePostulant> listePostulants = new ArrayList<>();
 
-    @JsonFormat(with = JsonFormat.Feature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
     @ManyToMany(mappedBy = "intervenuDansActivite")
     List<IntervenantExterne> intervenantExternes = new ArrayList<>();
 

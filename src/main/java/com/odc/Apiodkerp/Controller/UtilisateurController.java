@@ -608,9 +608,11 @@ public class UtilisateurController {
 
             @RequestParam(value = "user") String userVenant,
             @RequestParam(value = "file", required = false) MultipartFile file) throws JsonProcessingException {
+
         Activite activite = null;
 
         try {
+            System.out.println(acti);
             activite = new JsonMapper().readValue(acti, Activite.class);
             System.out.println(activite);
             Utilisateur utilisateurs = new JsonMapper().readValue(userVenant, Utilisateur.class);

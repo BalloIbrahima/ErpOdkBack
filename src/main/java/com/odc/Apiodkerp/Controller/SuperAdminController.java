@@ -2190,7 +2190,9 @@ public class SuperAdminController {
         }
     }
 
-
+//SELECT act.id,pos.id,pos.nom,pos.prenom,pos.genre,pos.email,pos.date_naissance,pos.numero
+// FROM `apprenant_participant` as pp,activite as act,
+// postulant as pos WHERE pp.tirage=0 and act.id = pp.idactivite and pp.idpostulant = pos.id;
     @ApiOperation(value = "Participant par activite.")
     @PostMapping("/participants/{idActivite}")
     public ResponseEntity<Object> ParticipantActivite(@RequestParam(value = "user") String userVenant,@PathVariable("idActivite") Long idActivite) {
