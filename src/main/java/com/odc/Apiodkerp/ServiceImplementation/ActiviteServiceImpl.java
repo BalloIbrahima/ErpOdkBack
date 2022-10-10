@@ -183,9 +183,14 @@ public class ActiviteServiceImpl implements ActiviteService {
 
         for (Activite activite : all) {
 
-            if (today.after(activite.getDateFin())) {
-                termines.add(activite);
+            try {
+                if (today.after(activite.getDateFin())) {
+                    termines.add(activite);
+                }
+            } catch (Exception e) {
+                // TODO: handle exception
             }
+            
 
         }
 
