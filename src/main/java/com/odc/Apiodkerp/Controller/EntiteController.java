@@ -16,6 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -172,7 +173,7 @@ public class EntiteController {
 
     }
 
-    @ApiOperation(value = "Supprimer un entite")
+    @ApiOperation(value = "Supprimer une entite")
     @PostMapping("/delete/entite/{id}")
     public ResponseEntity<Object> DeleteEntite(@PathVariable Long id, @RequestParam(value = "user") String userVenant) {
         try {
@@ -181,9 +182,9 @@ public class EntiteController {
                     utilisateur.getPassword());
             Entite entite =entiteService.GetById(id);
             Droit deleterole = droitService.GetLibelle("Delete Entite");
-
+               entite.setIsdelete(true);
             if (user.getRole().getDroits().contains(deleterole)) {
-                return ResponseMessage.generateResponse("ok", HttpStatus.OK,  entiteService.Delete(entite));
+                return ResponseMessage.generateResponse("ok", HttpStatus.OK,  entiteService.Update(id,entite));
             } else {
                 return ResponseMessage.generateResponse("error", HttpStatus.OK, "non autorise");
             }
@@ -207,7 +208,19 @@ public class EntiteController {
 
             if (user.getRole().getDroits().contains(getentite)) {
                 List<Entite> getAllEntite = entiteService.GetAll();
-                return ResponseMessage.generateResponse("ok", HttpStatus.OK, getAllEntite);
+              List<Entite> enti =  entiteService.GetAll();
+              List<Entite> en = new ArrayList<>();
+                for(Entite e:getAllEntite){
+                    try {
+                        if(!e.getIsdelete().equals(false)){
+                            en.add(e);
+                        }
+                    }catch (Exception exception){
+
+                    }
+
+                }
+                return ResponseMessage.generateResponse("ok", HttpStatus.OK, en);
             } else {
                 return ResponseMessage.generateResponse("error", HttpStatus.OK, "non autorise");
             }
