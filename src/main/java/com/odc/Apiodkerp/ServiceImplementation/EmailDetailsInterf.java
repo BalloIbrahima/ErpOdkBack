@@ -30,8 +30,7 @@ public class EmailDetailsInterf implements EmailService{
     {
 
         // Try block to check for exceptions
-
-
+        try{
             // Creating a simple mail message
             SimpleMailMessage mailMessage = new SimpleMailMessage();
 
@@ -44,8 +43,11 @@ public class EmailDetailsInterf implements EmailService{
             // Sending the mail
             javaMailSender.send(mailMessage);
             return "Mail Sent Successfully...";
+        
+
         }
 
+            
         // Catch block to handle the exceptions
 
 

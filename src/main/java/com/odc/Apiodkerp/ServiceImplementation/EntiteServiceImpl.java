@@ -46,8 +46,15 @@ public class EntiteServiceImpl implements EntiteService {
     @Override
     public String Delete(Entite entite) {
         System.out.println(entite.getId());
-        entiteRepository.delete(entite);
+        //entiteRepository.delete(entite);
+        entiteRepository.deleteById(entite.getId());
         return "Supprimer avec succes";
+    }
+
+    @Override
+    public String Delete1(Long id) {
+        entiteRepository.DELETEBYID(id);
+        return "supprimer avec succec";
     }
 
     @Override
@@ -57,5 +64,10 @@ public class EntiteServiceImpl implements EntiteService {
 
     public Entite GetByLibelle(String libelle) {
         return entiteRepository.findBylibelleentite(libelle);
+    }
+
+    @Override
+    public String DeleteEntiteById(Long id) {
+        return null;
     }
 }

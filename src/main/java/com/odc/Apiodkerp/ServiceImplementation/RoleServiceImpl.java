@@ -27,7 +27,12 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     public Role update(Role role, long id) {
-        return roleRepository.save(role);
+        return roleRepository.findById(id)
+                .map(p->{
+                    p.setLibellerole(role.getLibellerole());
+                    p.setDroits(role.getDroits());
+                    return roleRepository.save(p);
+                }).orElseThrow(()-> new RuntimeException("Personne non trouvé !"));
     }
 
     @Override
