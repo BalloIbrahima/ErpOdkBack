@@ -7,7 +7,7 @@ import com.odc.Apiodkerp.Models.Tirage;
 import java.util.List;
 
 public interface TirageService {
-    List<PostulantTire> creer(Tirage tirage, List<Postulant> listeatirer, long nombre);
+    Tirage creer(Tirage tirage, List<Postulant> listeatirer, long nombre);
 
     Tirage update(long id, Tirage tirage);
 

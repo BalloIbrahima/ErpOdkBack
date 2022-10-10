@@ -24,10 +24,10 @@ public class ListePostulant {
     private String libelle;
     private Date dateimport;
 
-    @OneToMany(mappedBy = "listepostulant")
+    @OneToMany(mappedBy = "listepostulant", cascade = CascadeType.ALL)
     List<Tirage> tirages = new ArrayList<>();
 
-    @ManyToMany(mappedBy = "listePostulants")
+    @ManyToMany(mappedBy = "listePostulants", cascade = CascadeType.ALL)
     private List<Postulant> postulants = new ArrayList<>();
 
     @ManyToOne
