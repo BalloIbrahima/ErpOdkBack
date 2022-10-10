@@ -40,7 +40,6 @@ public class UtilisateurServiceImpl implements UtilisateurService {
         utilisateur.setRole(user.getRole());
 
         if (utilisateur.getPassword() == null || utilisateur.getPassword() == "") {
-            System.out.println("nullll ou vide");
 
             utilisateur.setPassword(user.getPassword());
 

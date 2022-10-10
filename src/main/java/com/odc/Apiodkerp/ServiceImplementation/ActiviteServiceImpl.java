@@ -1,15 +1,23 @@
 package com.odc.Apiodkerp.ServiceImplementation;
 
 import com.odc.Apiodkerp.Models.Activite;
+import com.odc.Apiodkerp.Models.Entite;
 import com.odc.Apiodkerp.Models.Salle;
-
+import com.odc.Apiodkerp.Models.Statut;
+import com.odc.Apiodkerp.Models.Tache;
 import com.odc.Apiodkerp.Models.Etat;
 
 import com.odc.Apiodkerp.Repository.ActiviteRepository;
+import com.odc.Apiodkerp.Repository.EntiteRepository;
+import com.odc.Apiodkerp.Repository.EtatRepository;
 import com.odc.Apiodkerp.Repository.SalleRepository;
+import com.odc.Apiodkerp.Repository.StatusRepository;
+import com.odc.Apiodkerp.Repository.TacheRepository;
 import com.odc.Apiodkerp.Service.ActiviteService;
+import com.odc.Apiodkerp.Service.EntiteService;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -23,6 +31,18 @@ public class ActiviteServiceImpl implements ActiviteService {
 
     @Autowired
     ActiviteRepository activiteRepository;
+
+    @Autowired
+    EntiteRepository entiteRepository;
+
+    @Autowired
+    EtatRepository etatRepository;
+
+    @Autowired
+    StatusRepository statusRepository;
+
+    @Autowired
+    TacheRepository tacheRepository;
 
     @Override
     public Activite Create(Activite activite) {
@@ -163,9 +183,14 @@ public class ActiviteServiceImpl implements ActiviteService {
 
         for (Activite activite : all) {
 
-            if (today.after(activite.getDateFin())) {
-                termines.add(activite);
+            try {
+                if (today.after(activite.getDateFin())) {
+                    termines.add(activite);
+                }
+            } catch (Exception e) {
+                // TODO: handle exception
             }
+            
 
         }
 
@@ -174,7 +199,76 @@ public class ActiviteServiceImpl implements ActiviteService {
 
     @Override
     public List<Activite> ActiviteEntiteid(long identite) {
-        return  activiteRepository.actEntite(identite);
+
+        Entite entite=entiteRepository.findById(identite).get();
+
+        List<Activite> AllActivity=activiteRepository.findAll();
+        List<Activite> activiteAretourner=new ArrayList<>();
+        for(Activite a:AllActivity){
+            try {
+                if(a.getCreateur().getMonEntite().equals(entite)){
+                    activiteAretourner.add(a);
+
+                }
+            } catch (Exception e) {
+                // TODO: handle exception
+            }
+        }
+        return activiteAretourner;
+        //return  activiteRepository.actEntite(identite);
+    }
+
+    @Scheduled(fixedRateString = "PT01S")
+    public void etatActivite(){
+        List<Activite> allActivites=activiteRepository.findAll();
+
+        List<Tache> allTaches=tacheRepository.findAll();
+
+        Date today = new Date();
+        //
+        Etat encour=etatRepository.findByStatut("EN COUR");
+        Etat termine=etatRepository.findByStatut("TERMINE");
+        Etat avenir=etatRepository.findByStatut("A VENIR");
+
+
+        Statut encourEtat=statusRepository.findByLibelle("ENCOUR");
+        Statut termineEtat=statusRepository.findByLibelle("TERMINE");
+        for(Tache tache:allTaches){
+            try {
+                if (today.after(tache.getDatedebut()) && today.before(tache.getDatefin())) {
+                    tache.setStatut(encourEtat);
+                    tacheRepository.save(tache);
+                
+                }else if (today.after(tache.getDatefin())) {
+                    tache.setStatut(termineEtat);
+                    tacheRepository.save(tache);
+                }
+
+            } catch (Exception e) {
+                // TODO: handle exception
+            }
+        }
+
+        for(Activite activite:allActivites){
+            try {
+                if (today.after(activite.getDateDebut()) && today.before(activite.getDateFin())) {
+                    activite.setEtat(encour);
+                    activiteRepository.save(activite);
+                }else if (today.before(activite.getDateDebut())) {
+                    activite.setEtat(avenir);
+                    activiteRepository.save(activite);
+                }else if (today.after(activite.getDateFin())) {
+                    activite.setEtat(termine);
+                    activiteRepository.save(activite);
+                }
+
+            } catch (Exception e) {
+                // TODO: handle exception
+            }
+        }
+
+        //System.err.println("helllle");
+        
     }
 
 }

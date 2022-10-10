@@ -77,7 +77,7 @@ public class Utilisateur extends Personne {
 
 
 
-    @ManyToMany(mappedBy = "commissions")
+    @ManyToMany(mappedBy = "commissionsInterne")
     List<Tache> commissions = new ArrayList<>();
 
 
@@ -86,4 +86,7 @@ public class Utilisateur extends Personne {
     List<FormatEmail> ListeFormatEmail  = new ArrayList<>();
 
 
+    @JsonIgnore
+    @OneToMany(mappedBy="porteurInterne")
+    List<Tache> mestaches=new ArrayList<>();
 }

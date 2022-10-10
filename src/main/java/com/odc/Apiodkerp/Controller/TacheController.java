@@ -80,6 +80,9 @@ public class TacheController {
     @Autowired
     private TacheService tacheService;
 
+    @Autowired
+    private StatusService statusService;
+
 
     @ApiOperation(value = "Creer tache")
     @PostMapping("/creerTache")
@@ -94,7 +97,7 @@ public class TacheController {
             Utilisateur user = utilisateurService.trouverParLoginAndPass(utilisateur.getLogin(),
                     utilisateur.getPassword());
 
-            Droit Du = droitService.GetLibelle("Create Utilisateur");
+            Droit Du = droitService.GetLibelle("Create Tache");
 
             if (user != null) {
                 if (user.getRole().getDroits().contains(Du)) {
@@ -106,7 +109,9 @@ public class TacheController {
                         historique.setDescription("" + user.getPrenom() + " " + user.getNom()
                                 + " a cree une tache du nom de " + tache1.getDesignation());
                         historiqueService.Create(historique);
-                        tacheService.creer(tache1);
+                       
+
+                        return ResponseMessage.generateResponse("ok", HttpStatus.OK,  tacheService.creer(tache1));
 
                     } catch (Exception e) {
                         // TODO: handle exception
@@ -114,7 +119,6 @@ public class TacheController {
 
                     }
 
-                    return ResponseMessage.generateResponse("ok", HttpStatus.OK, null);
                 }
 
                 else {
@@ -148,7 +152,7 @@ public class TacheController {
             Utilisateur user = utilisateurService.trouverParLoginAndPass(utilisateur.getLogin(),
                     utilisateur.getPassword());
 
-            Droit Du = droitService.GetLibelle("Create Utilisateur");
+            Droit Du = droitService.GetLibelle("Update Tache");
 
             if (user != null) {
                 if (user.getRole().getDroits().contains(Du)) {
@@ -160,7 +164,9 @@ public class TacheController {
                         historique.setDescription("" + user.getPrenom() + " " + user.getNom()
                                 + " a modifier une tache du nom de " + tache1.getDesignation());
                         historiqueService.Create(historique);
-                        tacheService.update(tache1);
+                        
+
+                        return ResponseMessage.generateResponse("ok", HttpStatus.OK, tacheService.update(tache1));
 
                     } catch (Exception e) {
                         // TODO: handle exception
@@ -168,7 +174,6 @@ public class TacheController {
 
                     }
 
-                    return ResponseMessage.generateResponse("ok", HttpStatus.OK, null);
                 }
 
                 else {
@@ -201,7 +206,7 @@ public class TacheController {
             Utilisateur user = utilisateurService.trouverParLoginAndPass(utilisateur.getLogin(),
                     utilisateur.getPassword());
 
-            Droit Du = droitService.GetLibelle("Create Utilisateur");
+            Droit Du = droitService.GetLibelle("Delete Tache");
 
             if (user != null) {
                 if (user.getRole().getDroits().contains(Du)) {
@@ -214,6 +219,7 @@ public class TacheController {
                                 + " a supprime une tache " );
                         historiqueService.Create(historique);
                         tacheService.delete(id);
+                        return ResponseMessage.generateResponse("ok", HttpStatus.OK, "Supression effectué !");
 
                     } catch (Exception e) {
                         // TODO: handle exception
@@ -221,7 +227,6 @@ public class TacheController {
 
                     }
 
-                    return ResponseMessage.generateResponse("ok", HttpStatus.OK, null);
                 }
 
                 else {
@@ -252,7 +257,7 @@ public class TacheController {
             Utilisateur user = utilisateurService.trouverParLoginAndPass(utilisateur.getLogin(),
                     utilisateur.getPassword());
 
-            Droit Du = droitService.GetLibelle("Create Utilisateur");
+            Droit Du = droitService.GetLibelle("Read Tache");
 
             if (user != null) {
                 if (user.getRole().getDroits().contains(Du)) {
@@ -264,7 +269,10 @@ public class TacheController {
                         historique.setDescription("" + user.getPrenom() + " " + user.getNom()
                                 + " a recuperer toutes les taches  ");
                         historiqueService.Create(historique);
-                        tacheService.getAll();
+                        
+
+                        return ResponseMessage.generateResponse("ok", HttpStatus.OK, tacheService.getAll());
+
 
                     } catch (Exception e) {
                         // TODO: handle exception
@@ -272,7 +280,6 @@ public class TacheController {
 
                     }
 
-                    return ResponseMessage.generateResponse("ok", HttpStatus.OK, null);
                 }
 
                 else {
@@ -304,7 +311,7 @@ public class TacheController {
                     utilisateur.getPassword());
             Activite act   = activiteService.GetById(idactivite);
 
-List<Tache> tache = tacheService.getAll();
+            List<Tache> tache = tacheService.getAll();
             Droit Du = droitService.GetLibelle("Create Utilisateur");
             List<Tache> tacheretout = new ArrayList<>();
 
@@ -324,7 +331,7 @@ List<Tache> tache = tacheService.getAll();
                         historique.setDescription("" + user.getPrenom() + " " + user.getNom()
                                 + " a affiche toutes les taches en fonctiond e l'activite  ");
                         historiqueService.Create(historique);
-                        return ResponseMessage.generateResponse("iciiii", HttpStatus.OK, tacheretout);
+                        return ResponseMessage.generateResponse("ok", HttpStatus.OK, tacheretout);
 
                         //
                     } catch (Exception e) {
@@ -340,6 +347,56 @@ List<Tache> tache = tacheService.getAll();
                     return ResponseMessage.generateResponse("error", HttpStatus.OK, "Non autorisé");
 
                 }
+            } else {
+                return ResponseMessage.generateResponse("error", HttpStatus.OK, "Cet utilisateur n'existe pas !");
+
+            }
+        } catch (Exception e) {
+            // TODO: handle exception
+            return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
+        }
+
+    }
+
+    //all status
+    @ApiOperation(value = "Toutes les status")
+    @PostMapping("/status/all")
+    public ResponseEntity<Object> allStatuts(@RequestParam(value = "user") String userVenant) {
+        try {
+
+            Utilisateur utilisateur = new JsonMapper().readValue(userVenant, Utilisateur.class);
+            // Historique
+            Utilisateur user = utilisateurService.trouverParLoginAndPass(utilisateur.getLogin(),
+                    utilisateur.getPassword());
+            //Activite act   = activiteService.GetById(idactivite);
+
+           
+
+            if (user != null) {
+
+                 
+                try {
+
+                    Historique historique = new Historique();
+                    Date datehisto = new Date();
+                    historique.setDatehistorique(datehisto);
+                    historique.setDescription("" + user.getPrenom() + " " + user.getNom()
+                            + " a affiche tous les staus");
+                    historiqueService.Create(historique);
+
+                    return ResponseMessage.generateResponse("ok", HttpStatus.OK, statusService.getAll());
+
+                    //
+                } catch (Exception e) {
+                    // TODO: handle exception
+                    return ResponseMessage.generateResponse("iciiii", HttpStatus.OK, e.getMessage());
+
+                }
+
+                   // return ResponseMessage.generateResponse("ok", HttpStatus.OK, null);
+                
+
+              
             } else {
                 return ResponseMessage.generateResponse("error", HttpStatus.OK, "Cet utilisateur n'existe pas !");
 
