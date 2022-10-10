@@ -175,9 +175,6 @@ public class SuperAdminController {
 
             Utilisateur userModif = new JsonMapper().readValue(user, Utilisateur.class);
 
-            if (file != null) {
-                SaveImage.save("user", file, utilisateur.getEmail());
-            }
 
             Utilisateur users = utilisateurService.trouverParLoginAndPass(utilisateur.getLogin(),
                     utilisateur.getPassword());
@@ -185,6 +182,11 @@ public class SuperAdminController {
 
             if (users != null) {
                 if (users.getRole().getDroits().contains(UUser)) {
+
+
+                    if (file != null) {
+                        SaveImage.save("user", file, userModif.getEmail());
+                    }
 
                     // Historique
                     // Utilisateur user = utilisateurService.trouverParLoginAndPass(login,

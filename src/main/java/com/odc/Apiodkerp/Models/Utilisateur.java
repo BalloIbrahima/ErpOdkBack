@@ -57,6 +57,9 @@ public class Utilisateur extends Personne {
     @ManyToOne
     private Role role;
 
+    /*@ManyToOne
+    private FormatEmail formatemail;*/
+
     // Un utilisateur fait parti d'une entite
     @JsonIgnore
     @OneToMany(mappedBy = "activite")
