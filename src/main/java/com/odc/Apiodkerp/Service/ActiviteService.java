@@ -38,4 +38,5 @@ public interface ActiviteService {
 
     List<Activite> ActiviteEntiteid(long identite);
 
+    Object findFiltre(String nomactivite, String typeactivite, String entite, String dtdebut, String dtfin);
 }
