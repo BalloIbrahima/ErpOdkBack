@@ -22,9 +22,11 @@ public class Tache {
     private  long id;
     private Date datedebut;
     private Date datefin;
-    private  String lieu;
-
-
+    
+    
+    @ManyToOne
+    @JoinColumn(name = "salle")
+    Salle salle;
 
     @ManyToOne
     @JoinColumn(name = "activite")
@@ -38,11 +40,24 @@ public class Tache {
     @JoinColumn(name = "statut")
     private Statut statut;
 
+    @ManyToOne
+    @JoinColumn(name = "porteurinterne")
+    Utilisateur porteurInterne;
+
+    @ManyToOne
+    @JoinColumn(name = "porteurexterne")
+    IntervenantExterne porteurExterne;
 
     @ManyToMany
-    @JoinTable(name = "tacheCommission", joinColumns = {
+    @JoinTable(name = "tacheCommissionInterne", joinColumns = {
             @JoinColumn(name = "id_tache") }, inverseJoinColumns = {
             @JoinColumn(name = "id_utilisateur") })
-    List<Utilisateur> commissions = new ArrayList<>();
+    List<Utilisateur> commissionsInterne = new ArrayList<>();
+
+    @ManyToMany
+    @JoinTable(name = "tacheCommissionExterne", joinColumns = {
+            @JoinColumn(name = "id_tache") }, inverseJoinColumns = {
+            @JoinColumn(name = "id_intervenant") })
+    List<IntervenantExterne> commissionsExterne = new ArrayList<>();
 
 }

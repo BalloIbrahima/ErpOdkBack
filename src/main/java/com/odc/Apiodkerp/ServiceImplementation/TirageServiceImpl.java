@@ -28,7 +28,7 @@ public class TirageServiceImpl implements TirageService {
     PostulantRepository postulantRepository;
 
     @Override
-    public List<PostulantTire> creer(Tirage t, List<Postulant> listeatirer, long nombre) {
+    public Tirage creer(Tirage t, List<Postulant> listeatirer, long nombre) {
 
         // djedje
 
@@ -81,7 +81,7 @@ public class TirageServiceImpl implements TirageService {
             postulantTires.add(postulantTrieRepository.save(postulantTrie));
         }
 
-        return postulantTires;
+        return tirageRepository.save(tirage);
     }
 
     @Override

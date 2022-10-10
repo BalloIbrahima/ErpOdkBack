@@ -17,4 +17,10 @@ public class ForgetPassServiceImpleme implements ForgetPassService {
     public ForgetPass Create(ForgetPass forgetPass) {
         return forgetRepo.save(forgetPass);
     }
+
+    @Override
+    public ForgetPass Recuperer(String code) {
+        // TODO Auto-generated method stub
+        return forgetRepo.findByCode(code);
+    }
 }

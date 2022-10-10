@@ -28,6 +28,7 @@ import com.odc.Apiodkerp.Models.Utilisateur;
 import org.springframework.web.bind.annotation.*;
 
 import com.odc.Apiodkerp.Service.ActiviteService;
+import com.odc.Apiodkerp.Service.AouPService;
 import com.odc.Apiodkerp.Service.DroitService;
 import com.odc.Apiodkerp.Service.EntiteService;
 import com.odc.Apiodkerp.Service.EtatService;
@@ -109,6 +110,9 @@ public class UtilisateurController {
 
     @Autowired
     private DroitService droitService;
+
+    @Autowired
+    private AouPService aPService;
 
     // Pour le login d'un utilisateur
     @ApiOperation(value = "Pour le login d'un utilisateur.")
@@ -451,16 +455,16 @@ public class UtilisateurController {
     }
 
     // Ajouter des participants ou apprenants à la liste de presence
-    @ApiOperation(value = "Creer la liste de presence ")
-    @PostMapping("/lapresence/{idactivite}/{idpostulanttire}")
-    public ResponseEntity<Object> presence(@PathVariable("idactivite") long idactivite,
-            @PathVariable("idpostulanttire") long idpostulanttire, @RequestParam(value = "user") String userVenant) {
+    @ApiOperation(value = "Add un apprenant à la liste de presence ")
+    @PostMapping("/lapresence/{idpresence}")
+    public ResponseEntity<Object> presence(
+            @PathVariable("idpresence") long idpresence, @RequestParam(value = "user") String userVenant) {
         try {
-            Presence presence = new Presence();
-            Activite activite = activiteService.GetById(idactivite);
-            presence.setActivite(activite);
-            presence.setDate(new Date());
-            PostulantTire postulantTire = postulantTrieService.read(idpostulanttire);
+            //Presence presence = new Presence();
+            //Activite activite = activiteService.GetById(idactivite);
+            // presence.setActivite(activite);
+            // presence.setDate(new Date());
+            // AouP aouP = aPService.GetById(idaoup);
             Utilisateur utilisateur = new JsonMapper().readValue(userVenant, Utilisateur.class);
 
             Utilisateur user = utilisateurService.trouverParLoginAndPass(utilisateur.getLogin(),
@@ -471,6 +475,7 @@ public class UtilisateurController {
 
             Droit createpresence = droitService.GetLibelle("Create Presence");
 
+            Presence presence=presenceService.getById(idpresence);
             if (user != null) {
                 if (user.getRole().getDroits().contains(createpresence)) {
                     try {
@@ -478,14 +483,18 @@ public class UtilisateurController {
                         Date datehisto = new Date();
                         historique.setDatehistorique(datehisto);
                         historique.setDescription("" + user.getPrenom() + " " + user.getNom()
-                                + " a géré la presence de l'activité " + activite.getNom());
+                                + " a ajouter "+presence.getAouP().getPostulant().getEmail() +" a la liste de presence de l'activité " + presence.getActivite().getNom());
                         historiqueService.Create(historique);
+
+                        presence.setEtat(true);
+                        
+                        return ResponseMessage.generateResponse("ok", HttpStatus.OK, presenceService.creer(presence));
+
                     } catch (Exception e) {
                         // TODO: handle exception
                         return ResponseMessage.generateResponse("iciiii", HttpStatus.OK, e.getMessage());
 
                     }
-                    return ResponseMessage.generateResponse("ok", HttpStatus.OK, presenceService.creer(presence));
                 } else {
                     return ResponseMessage.generateResponse("error", HttpStatus.OK, "Non autorisé");
 
@@ -648,6 +657,13 @@ public class UtilisateurController {
                     if (user != null) {
                         if (user.getRole().getDroits().contains(createActivite)) {
                             try {
+                                Activite act=activiteService.Create(activite);
+                                Notification notif=new Notification();
+                                notif.setActivite(act);
+                                notif.setDatenotif(new Date());
+                                //notif.setDescription(description);
+                                notificationService.creer(notif);
+
                                 Historique historique = new Historique();
                                 Date datehisto = new Date();
                                 historique.setDatehistorique(datehisto);
@@ -658,7 +674,7 @@ public class UtilisateurController {
                                 historiqueService.Create(historique);
 
                                 return ResponseMessage.generateResponse("ok", HttpStatus.OK,
-                                        activiteService.Create(activite));
+                                act);
                             } catch (Exception e) {
                                 // TODO: handle exception
                                 return ResponseMessage.generateResponse("iciiii", HttpStatus.OK, e.getMessage());
@@ -1038,6 +1054,55 @@ public class UtilisateurController {
                         historiqueService.Create(historique);
 
                         return ResponseMessage.generateResponse("ok", HttpStatus.OK, tirageService.getById(id));
+
+                    } catch (Exception e) {
+                        // TODO: handle exception
+                        return ResponseMessage.generateResponse("iciiii", HttpStatus.OK,
+                                e.getMessage());
+
+                    }
+
+                } else {
+                    return ResponseMessage.generateResponse("error", HttpStatus.OK, "Non autorisé");
+
+                }
+
+            } else {
+                return ResponseMessage.generateResponse("error", HttpStatus.OK,
+                        "Vous n'êtes pas autorisé à afficher tous les liste");
+            }
+
+        } catch (Exception e) {
+            // TODO: handle exception
+            return ResponseMessage.generateResponse("errortt", HttpStatus.OK,
+                    e.getMessage());
+        }
+
+    }
+
+
+    @ApiOperation(value = "Tout les participants")
+    @PostMapping("/participants/all")
+    public ResponseEntity<Object> Allparticipant(@RequestParam(value = "user") String userVenant) {
+        try {
+            Utilisateur utilisateur = new JsonMapper().readValue(userVenant, Utilisateur.class);
+
+            Utilisateur user = utilisateurService.trouverParLoginAndPass(utilisateur.getLogin(),
+                    utilisateur.getPassword());
+            Droit readAoup = droitService.GetLibelle("Read AouP");
+
+            if (user != null) {
+                if (user.getRole().getDroits().contains(readAoup)) {
+                    try {
+
+                        Historique historique = new Historique();
+                        Date datehisto = new Date();
+                        historique.setDatehistorique(datehisto);
+                        historique.setDescription(
+                                "" + user.getPrenom() + " " + user.getNom() + " a affiche tout les participant");
+                        historiqueService.Create(historique);
+
+                        return ResponseMessage.generateResponse("ok", HttpStatus.OK, aPService.GetAll());
 
                     } catch (Exception e) {
                         // TODO: handle exception
