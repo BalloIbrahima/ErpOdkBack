@@ -11,12 +11,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
+@Table(name = "Apprenant_Participant")
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
 public class AouP {
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
@@ -31,7 +32,7 @@ public class AouP {
     private Postulant postulant;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "aouP")
+    @OneToMany(mappedBy = "aouP", cascade = CascadeType.ALL)
     private List<Presence> presence = new ArrayList<>();
 
 }

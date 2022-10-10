@@ -23,10 +23,12 @@ import com.odc.Apiodkerp.Service.StatusService;
 import com.odc.Apiodkerp.Service.TypeActiviteService;
 import com.odc.Apiodkerp.Service.UtilisateurService;
 import org.springframework.context.annotation.Bean;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 
+@EnableScheduling
 @SpringBootApplication
 public class ApiodkerpApplication {
 	@Bean
@@ -496,7 +498,7 @@ public class ApiodkerpApplication {
 			Utilisateur ballo = new Utilisateur();
 			ballo.setActive(true);
 			ballo.setNom("Ballo");
-			ballo.setEmail("ballo@gmail.com");
+			ballo.setEmail("ibrahimaballo01@gmail.com");
 			ballo.setRole(admin);
 			ballo.setPrenom("Ibrahima");
 			ballo.setGenre(Genre.Masculin);
@@ -567,9 +569,11 @@ public class ApiodkerpApplication {
 
 		// status
 		Statut encours = new Statut();
+		encours.setId(1L);
 		encours.setLibelle("ENCOUR");
 
 		Statut terminee = new Statut();
+		terminee.setId(2L);
 		terminee.setLibelle("TERMINE");
 
 		statusService.creer(encours);

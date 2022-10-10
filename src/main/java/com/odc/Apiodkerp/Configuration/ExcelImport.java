@@ -103,8 +103,11 @@ public class ExcelImport {
                                 // deuxième colonne contenant le prenom
                                 case 2:
 
-                                    String g= formatter.formatCellValue(colonneCourante);
-                                    if(g=="M" | g=="Masculin" | g=="MASCULIN"){
+
+                                    // String g= formatter.formatCellValue(colonneCourante);
+                                    String g= colonneCourante.getStringCellValue();
+                                    System.out.println(g);
+                                    if(g.equals("M") || g.equals("Masculin") || g.equals("MASCULIN")|| g.equals("masculin")){
                                         postulant.setGenre(Genre.Masculin);
                                     }else{
                                         postulant.setGenre(Genre.Feminin);

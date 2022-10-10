@@ -76,7 +76,7 @@ public class EmailDetailsInterf implements EmailService{
                     details.getSubject());
 
             // Adding the attachment
-           FileSystemResource file
+            FileSystemResource file
                     = new FileSystemResource(
                     new File(details.getAttachment()));
 
@@ -96,4 +96,5 @@ public class EmailDetailsInterf implements EmailService{
         }
     }
 }
+
 
