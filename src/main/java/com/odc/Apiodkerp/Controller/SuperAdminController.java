@@ -2395,6 +2395,41 @@ public class SuperAdminController {
         }
     }
 
+    @ApiOperation(value = "Affichager un intervenant")
+    @PostMapping("/get/intervenant/{id}")
+    public ResponseEntity<Object> GetIdIntervenant(@PathVariable("id") Long id,
+                                                   @RequestParam(value = "user") String userVenant) {
+        try {
+            IntervenantExterne utilisateur = new JsonMapper().readValue(userVenant, IntervenantExterne.class);
+
+            IntervenantExterne user = intervenantExterneService.trouverParLoginAndPass(utilisateur.getLogin(),
+                    utilisateur.getPassword());
+            Droit Rintervenant = droitService.GetLibelle("Read Intervenant");
+
+            if (user.getRole().getDroits().contains(Rintervenant)) {
+                try {
+                    Historique historique = new Historique();
+                    Date datehisto = new Date();
+                    historique.setDatehistorique(datehisto);
+                    historique.setDescription("" + user.getPrenom() + " " + user.getNom()
+                            + " a afficher  un intervenant du nom de " + intervenantExterneService.getById(id));
+                    historiqueService.Create(historique);
+                    IntervenantExterne idIntervenant = intervenantExterneService.getById(id);
+                    return ResponseMessage.generateResponse("ok", HttpStatus.OK, idIntervenant);
+                } catch (Exception e) {
+                    // TODO: handle exception
+                    return ResponseMessage.generateResponse("iciiii", HttpStatus.OK, e.getMessage());
+
+                }
+            } else {
+                return ResponseMessage.generateResponse("error", HttpStatus.OK, "Non autorisé");
+            }
+
+        } catch (Exception e) {
+            // TODO: handle exception
+            return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
+        }
+    }
 
     @ApiOperation(value = "Participant par activite.")
     @PostMapping("/participants/{idActivite}")

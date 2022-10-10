@@ -3,6 +3,7 @@ package com.odc.Apiodkerp.Service;
 import java.util.List;
 
 import com.odc.Apiodkerp.Models.IntervenantExterne;
+import com.odc.Apiodkerp.Models.Utilisateur;
 
 public interface IntervenantExterneService {
 
@@ -17,4 +18,5 @@ public interface IntervenantExterneService {
     List<IntervenantExterne> getAll();
 
     IntervenantExterne getByEmail(String email);
+    IntervenantExterne trouverParLoginAndPass(String login, String password);
 }

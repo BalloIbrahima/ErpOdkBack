@@ -25,6 +25,8 @@ public class IntervenantExterne extends Personne {
     private String login;
     private String password;
 
+    @ManyToOne
+    private Role role;
     @ManyToMany
     @JoinTable(name = "ActiviteIntervenant", joinColumns = {
             @JoinColumn(name = "id_intervenant") }, inverseJoinColumns = {
