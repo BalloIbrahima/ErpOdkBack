@@ -28,6 +28,7 @@ import com.odc.Apiodkerp.Models.Utilisateur;
 import org.springframework.web.bind.annotation.*;
 
 import com.odc.Apiodkerp.Service.ActiviteService;
+import com.odc.Apiodkerp.Service.AouPService;
 import com.odc.Apiodkerp.Service.DroitService;
 import com.odc.Apiodkerp.Service.EntiteService;
 import com.odc.Apiodkerp.Service.EtatService;
@@ -109,6 +110,9 @@ public class UtilisateurController {
 
     @Autowired
     private DroitService droitService;
+
+    @Autowired
+    private AouPService aPService;
 
     // Pour le login d'un utilisateur
     @ApiOperation(value = "Pour le login d'un utilisateur.")
@@ -648,6 +652,13 @@ public class UtilisateurController {
                     if (user != null) {
                         if (user.getRole().getDroits().contains(createActivite)) {
                             try {
+                                Activite act=activiteService.Create(activite);
+                                Notification notif=new Notification();
+                                notif.setActivite(act);
+                                notif.setDatenotif(new Date());
+                                //notif.setDescription(description);
+                                notificationService.creer(notif);
+
                                 Historique historique = new Historique();
                                 Date datehisto = new Date();
                                 historique.setDatehistorique(datehisto);
@@ -658,7 +669,7 @@ public class UtilisateurController {
                                 historiqueService.Create(historique);
 
                                 return ResponseMessage.generateResponse("ok", HttpStatus.OK,
-                                        activiteService.Create(activite));
+                                act);
                             } catch (Exception e) {
                                 // TODO: handle exception
                                 return ResponseMessage.generateResponse("iciiii", HttpStatus.OK, e.getMessage());
@@ -1038,6 +1049,55 @@ public class UtilisateurController {
                         historiqueService.Create(historique);
 
                         return ResponseMessage.generateResponse("ok", HttpStatus.OK, tirageService.getById(id));
+
+                    } catch (Exception e) {
+                        // TODO: handle exception
+                        return ResponseMessage.generateResponse("iciiii", HttpStatus.OK,
+                                e.getMessage());
+
+                    }
+
+                } else {
+                    return ResponseMessage.generateResponse("error", HttpStatus.OK, "Non autorisé");
+
+                }
+
+            } else {
+                return ResponseMessage.generateResponse("error", HttpStatus.OK,
+                        "Vous n'êtes pas autorisé à afficher tous les liste");
+            }
+
+        } catch (Exception e) {
+            // TODO: handle exception
+            return ResponseMessage.generateResponse("errortt", HttpStatus.OK,
+                    e.getMessage());
+        }
+
+    }
+
+
+    @ApiOperation(value = "Tout les participants")
+    @PostMapping("/participants/all")
+    public ResponseEntity<Object> Allparticipant(@RequestParam(value = "user") String userVenant) {
+        try {
+            Utilisateur utilisateur = new JsonMapper().readValue(userVenant, Utilisateur.class);
+
+            Utilisateur user = utilisateurService.trouverParLoginAndPass(utilisateur.getLogin(),
+                    utilisateur.getPassword());
+            Droit readAoup = droitService.GetLibelle("Read AouP");
+
+            if (user != null) {
+                if (user.getRole().getDroits().contains(readAoup)) {
+                    try {
+
+                        Historique historique = new Historique();
+                        Date datehisto = new Date();
+                        historique.setDatehistorique(datehisto);
+                        historique.setDescription(
+                                "" + user.getPrenom() + " " + user.getNom() + " a affiche tout les participant");
+                        historiqueService.Create(historique);
+
+                        return ResponseMessage.generateResponse("ok", HttpStatus.OK, aPService.GetAll());
 
                     } catch (Exception e) {
                         // TODO: handle exception
