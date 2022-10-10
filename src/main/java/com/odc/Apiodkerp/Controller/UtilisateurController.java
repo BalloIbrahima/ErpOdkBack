@@ -47,7 +47,6 @@ import com.odc.Apiodkerp.Service.TirageService;
 import com.odc.Apiodkerp.Service.TypeActiviteService;
 import com.odc.Apiodkerp.Service.UtilisateurService;
 
-import ch.qos.logback.classic.pattern.Util;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
