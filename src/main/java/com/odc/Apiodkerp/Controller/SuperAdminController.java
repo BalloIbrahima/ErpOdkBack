@@ -675,7 +675,7 @@ public class SuperAdminController {
     // :::::::::::::::total postulant ::::::::::::::::::::
 
     @ApiOperation(value = "Total postulant")
-    @PostMapping("/totalpersonnel")
+    @PostMapping("/totalpostulant")
     public ResponseEntity<Object> TotalPostulant(@RequestParam(value = "user") String userVenant) {
         try {
             Utilisateur utilisateur = new JsonMapper().readValue(userVenant, Utilisateur.class);
