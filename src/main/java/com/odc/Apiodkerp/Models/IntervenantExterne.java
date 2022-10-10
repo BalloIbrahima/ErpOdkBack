@@ -6,6 +6,9 @@ import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 import javax.persistence.*;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,6 +32,10 @@ public class IntervenantExterne extends Personne {
     List<Activite> intervenuDansActivite = new ArrayList<>();
 
 
+    @ManyToMany(mappedBy = "commissionsExterne")
+    List<Tache> commissions = new ArrayList<>();
 
-
+    @JsonIgnore
+    @OneToMany(mappedBy="porteurExterne")
+    List<Tache> mestaches=new ArrayList<>();
 }

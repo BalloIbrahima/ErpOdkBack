@@ -27,13 +27,14 @@ public class EmailDetailsInterf implements EmailService {
     public String sendSimpleMail(EmailDetails details) {
 
         // Try block to check for exceptions
-        try {
-
+        try{
             // Creating a simple mail message
             SimpleMailMessage mailMessage = new SimpleMailMessage();
 
             // Setting up necessary details
-            mailMessage.setFrom("ibrahimaballo01@gmail.com");
+
+            mailMessage.setFrom(sender);
+
             mailMessage.setTo(details.getRecipient());
             mailMessage.setText(details.getMsgBody());
             mailMessage.setSubject(details.getSubject());
@@ -41,9 +42,13 @@ public class EmailDetailsInterf implements EmailService {
             // Sending the mail
             javaMailSender.send(mailMessage);
             return "Mail Sent Successfully...";
+        
+
         }
 
+            
         // Catch block to handle the exceptions
+
         catch (Exception e) {
             // return "Error while Sending bb Mail";
             return e.getMessage();

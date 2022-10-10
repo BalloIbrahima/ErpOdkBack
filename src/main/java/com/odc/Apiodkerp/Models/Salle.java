@@ -34,4 +34,8 @@ public class Salle {
     @ManyToOne
     @JoinColumn(name = "utilisateur")
     private Utilisateur utilisateur;
+
+    @JsonIgnore
+    @OneToMany(mappedBy="salle")
+    List<Tache> mestaches=new ArrayList<>();
 }
