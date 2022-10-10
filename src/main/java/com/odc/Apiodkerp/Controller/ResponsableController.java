@@ -793,7 +793,7 @@ public class ResponsableController {
     }
 
     // Modifier une tache
-    @ApiOperation(value = "creer une tache")
+    @ApiOperation(value = "Mettre à jour une tache")
     @PostMapping("/tache/update/")
     public ResponseEntity<Object> updateTache(@RequestParam(value = "user") String userVenant,
             @RequestParam(value = "tache") String tach) {
@@ -879,7 +879,7 @@ public class ResponsableController {
     }
 
     // ::::::::::::Afficher tous les taches en fonction d'une d'une activite
-    @ApiOperation(value = "Afficher tous les taches")
+    @ApiOperation(value = "Afficher tous les taches en fonction d'une activite")
     @PostMapping("/taches/{idactivite}")
     public ResponseEntity<Object> getAllTacheForActivite(@RequestParam(value = "user") String userVenant,
             @PathVariable("idactivite") Long idactivite) {
@@ -965,9 +965,9 @@ public class ResponsableController {
     }
 
     // ::::::::::::::::::liste de postulant
-    @ApiOperation(value = "Suprimer une tache")
-    @PostMapping("/liste/all")
-    public ResponseEntity<Object> ToutesListe(@RequestParam(value = "user") String userVenant) {
+    @ApiOperation(value = "Recuperer toutes les taches")
+    @PostMapping("/taches/all")
+    public ResponseEntity<Object> ToutesTaches(@RequestParam(value = "user") String userVenant) {
         try {
 
             Utilisateur utilisateurs = new JsonMapper().readValue(userVenant, Utilisateur.class);
