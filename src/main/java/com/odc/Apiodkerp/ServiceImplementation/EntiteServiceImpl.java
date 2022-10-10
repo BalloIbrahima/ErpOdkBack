@@ -32,11 +32,11 @@ public class EntiteServiceImpl implements EntiteService {
 
         return entiteRepository.findById(id)
                 .map(entite1 -> {
-                    entite1.setDescription(entite1.getDescription());
-                    entite1.setLibelleentite(entite1.getLibelleentite());
-                    entite1.setImage(entite1.getImage());
-                    entite1.setGerant(entite1.getGerant());
-                    entite1.setCreateur(entite1.getCreateur());
+                    entite1.setDescription(entite.getDescription());
+                    entite1.setLibelleentite(entite.getLibelleentite());
+                    entite1.setImage(entite.getImage());
+                    entite1.setGerant(entite.getGerant());
+                    entite1.setCreateur(entite.getCreateur());
 
                     return entiteRepository.save(entite1);
                 }).orElseThrow(() -> new RuntimeException("entite non trouvéé"));
