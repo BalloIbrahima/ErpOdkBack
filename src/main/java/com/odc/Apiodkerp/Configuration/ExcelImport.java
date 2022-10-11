@@ -103,6 +103,7 @@ public class ExcelImport {
                                 // deuxième colonne contenant le prenom
                                 case 2:
 
+
                                     // String g= formatter.formatCellValue(colonneCourante);
                                     String g= colonneCourante.getStringCellValue();
                                     System.out.println(g);

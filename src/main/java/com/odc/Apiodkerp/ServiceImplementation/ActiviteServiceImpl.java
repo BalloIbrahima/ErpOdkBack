@@ -271,4 +271,9 @@ public class ActiviteServiceImpl implements ActiviteService {
         
     }
 
+    @Override
+    public List<Activite> findFiltre(String nomactivite, String typeactivite, String entite, String dtdebut, String dtfin) {
+        return activiteRepository.getFiltre(nomactivite, typeactivite, entite, dtdebut, dtfin);
+    }
+
 }
