@@ -37,8 +37,8 @@ public interface ActiviteRepository extends JpaRepository<Activite, Long> {
                     "WHERE act.nom LIKE '%:nomactivite%' " +
                     "OR ta.libelle LIKE '%:typeactivite%' " +
                     "OR ent.libelleentite LIKE '%:entite%' " +
-                    "OR (act.date_debut >= ':dtdebut' AND act.date_fin <= ':dtfin');",
+                    "OR (act.date_debut >= :dtdebut AND act.date_fin <= :dtfin);",
             nativeQuery = true
     )
-    Object getFiltre(String nomactivite, String typeactivite, String entite, String dtdebut, String dtfin);
+    List<Activite> getFiltre(String nomactivite, String typeactivite, String entite, String dtdebut, String dtfin);
 }
