@@ -94,6 +94,10 @@ public class EntiteController {
             user = utilisateurService.trouverParLoginAndPass(utilisateur.getLogin(),
                     utilisateur.getPassword());
 
+                } catch (Exception e) {
+                    // TODO: handle exception
+                    return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
+                }
             List<Entite> entit = entiteService.GetAll();
             Boolean IsGerant = false;
             Droit createrole = droitService.GetLibelle("Create Entite");
@@ -136,10 +140,7 @@ public class EntiteController {
                 return ResponseMessage.generateResponse("error", HttpStatus.OK, "non autorise");
             }
 
-        } catch (Exception e) {
-            // TODO: handle exception
-            return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
-        }
+        
 
     }
 
