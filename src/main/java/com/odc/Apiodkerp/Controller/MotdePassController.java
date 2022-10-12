@@ -235,46 +235,4 @@ public class MotdePassController {
         }
     }
 
- /*   @ApiOperation(value = "Envoyer email")
-    @PostMapping("/sendMail1")
-    public ResponseEntity<Object> sendEmail(@PathVariable String mail) {
-
-        SimpleMailMessage sm = new SimpleMailMessage();
-        sm.setFrom("abassemaiga403@gmail.com");// input the sender email Id or read it from properties file
-        sm.setTo(mail);
-        sm.setSubject("Welcome to Java SpringBoot Application");
-        sm.setText("Hello \n Welcome to the Java Springboot Mail Example.");
-        javaMailSender.send(sm);
-
-        return generateResponse("Email Sent to the mail ", HttpStatus.OK, mail);
-    }
-
-    public ResponseEntity<Object> generateResponse(String msg, HttpStatus st, Object response) {
-        Map<String, Object> mp = new HashMap<String, Object>();
-
-        mp.put("message", msg);
-        mp.put("status", st.value());
-        mp.put("data", response);
-
-        return new ResponseEntity<Object>(mp, st);
-    }
-
-
-    // Sending a simple Email
-    @PostMapping("/sendMailsansAt")
-    public String sendMail(@RequestBody EmailDetails details) {
-        String status = emailService.sendSimpleMail(details);
-
-        return status;
-    }
-
-    // Sending email with attachment
-    @PostMapping("/sendMailWithAttachment")
-    public String sendMailWithAttachment(
-            @RequestBody EmailDetails details) {
-        String status = emailService.sendMailWithAttachment(details);
-
-        return status;
-    }*/
-
 }

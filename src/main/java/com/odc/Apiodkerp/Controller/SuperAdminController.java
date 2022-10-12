@@ -675,7 +675,7 @@ public class SuperAdminController {
     // :::::::::::::::total postulant ::::::::::::::::::::
 
     @ApiOperation(value = "Total postulant")
-    @PostMapping("/totalpersonnel")
+    @PostMapping("/totalpostulant")
     public ResponseEntity<Object> TotalPostulant(@RequestParam(value = "user") String userVenant) {
         try {
             Utilisateur utilisateur = new JsonMapper().readValue(userVenant, Utilisateur.class);
@@ -1786,6 +1786,49 @@ public class SuperAdminController {
                     historiqueService.Create(historique);
                     Role NewEntite = roleService.update(role1,idrole);
                     return ResponseMessage.generateResponse("ok", HttpStatus.OK, NewEntite);
+                } catch (Exception e) {
+                    // TODO: handle exception
+                    return ResponseMessage.generateResponse("iciiii", HttpStatus.OK, e.getMessage());
+
+                }
+
+            } else {
+                return ResponseMessage.generateResponse("error", HttpStatus.OK, "non autorise");
+            }
+
+        } catch (Exception e) {
+            // TODO: handle exception
+            return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
+        }
+
+    }
+
+    @ApiOperation(value = "Recuperer un role par son id.")
+    @PostMapping("/getrole/{idrole}")
+    public ResponseEntity<Object> getRole(@PathVariable long idrole,
+                                             @RequestParam(value = "user") String userVenant) {
+        try {
+
+            Utilisateur utilisateur = new JsonMapper().readValue(userVenant, Utilisateur.class);
+
+            Utilisateur user = utilisateurService.trouverParLoginAndPass(utilisateur.getLogin(),
+                    utilisateur.getPassword());
+
+            Droit createrole = droitService.GetLibelle("Read Role");
+
+            if (user.getRole().getDroits().contains(createrole)) {
+                try {
+                    Role role=roleService.read(idrole);
+
+                    Historique historique = new Historique();
+                    Date datehisto = new Date();
+                    historique.setDatehistorique(datehisto);
+                    historique
+                            .setDescription(
+                                    "" + user.getPrenom() + " " + user.getNom() + " a recuperer  le  role "+role.getLibellerole());
+                    historiqueService.Create(historique);
+
+                    return ResponseMessage.generateResponse("ok", HttpStatus.OK, role);
                 } catch (Exception e) {
                     // TODO: handle exception
                     return ResponseMessage.generateResponse("iciiii", HttpStatus.OK, e.getMessage());

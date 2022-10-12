@@ -392,13 +392,12 @@ public class SalleController {
                             salle.add(s);
                         }
                     }
-
                     try {
                         Historique historique = new Historique();
                         Date datehisto = new Date();
                         historique.setDatehistorique(datehisto);
                         historique.setDescription("" + users.getPrenom() + " " + users.getNom()
-                                + " a afficher  salle disponible  " + date);
+                                + " a afficher  salle disponible" + date);
                         historiqueService.Create(historique);
                         return ResponseMessage.generateResponse("error", HttpStatus.OK, salle);
 
@@ -460,7 +459,7 @@ public class SalleController {
                         Date datehisto = new Date();
                         historique.setDatehistorique(datehisto);
                         historique.setDescription("" + users.getPrenom() + " " + users.getNom()
-                                + " a afficher  salle disponible dans l'intervalle ");
+                                + " a afficher  salle disponible ");
                         historiqueService.Create(historique);
 
                         return ResponseMessage.generateResponse("ok", HttpStatus.OK, salle);
@@ -575,6 +574,62 @@ public class SalleController {
                 return ResponseMessage.generateResponse("error", HttpStatus.OK, "Non autorise");
             }
 
+        } catch (Exception e) {
+            // TODO: handle exception
+            return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
+
+        }
+    }
+
+
+    // :::::::::::::::::::::::Les activites sans salle
+    @ApiOperation(value = "Les activites sans salle")
+    @PostMapping("/activitesanssalle")
+    public ResponseEntity<Object> ActiviteSansSalle(@RequestParam(value = "user") String userVenant) {
+        try {
+
+            Utilisateur utilisateur = new JsonMapper().readValue(userVenant, Utilisateur.class);
+
+            //Salle salle=salleService.getByIdsalle(idSalle);
+
+            Utilisateur user = utilisateurService.trouverParLoginAndPass(utilisateur.getLogin(),
+                    utilisateur.getPassword());
+            Droit Rsalle = droitService.GetLibelle("Read Activite");
+
+            if (user.getRole().getDroits().contains(Rsalle)) {
+              
+                List<Activite> allActivite=activiteService.GetAll();
+                List<Activite> ListAretourne=new ArrayList<>();
+
+                for(Activite a:allActivite){
+                    if(a.getSalle()==null){
+                        ListAretourne.add(a);
+                    }
+                }
+                try {
+                    Historique historique = new Historique();
+                    Date datehisto = new Date();
+                    historique.setDatehistorique(datehisto);
+                    historique.setDescription(
+                            "" + user.getPrenom() + " " + user.getNom() + " a recuperer les activites sans salles.");
+                    historiqueService.Create(historique);
+
+                    return ResponseMessage.generateResponse("ok", HttpStatus.OK,
+                            ListAretourne);
+                } catch (Exception e) {
+                    // TODO: handle exception
+                    return ResponseMessage.generateResponse("iciiii", HttpStatus.OK, e.getMessage());
+
+                }
+            }else{
+                // for(activite a:salle.getActivite()){
+                //     if()
+                // }
+                return ResponseMessage.generateResponse("error", HttpStatus.OK, "Cette salle est lié a des activites");
+
+            }
+                    
+                
         } catch (Exception e) {
             // TODO: handle exception
             return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());

@@ -32,5 +32,4 @@ public class Role {
             @JoinColumn(name = "id_role") }, inverseJoinColumns = {
                     @JoinColumn(name = "id_droit") })
     List<Droit> droits = new ArrayList<>();
-
 }

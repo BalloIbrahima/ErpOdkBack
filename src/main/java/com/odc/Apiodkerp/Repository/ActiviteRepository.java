@@ -29,4 +29,19 @@ public interface ActiviteRepository extends JpaRepository<Activite, Long> {
      @Query(value = "SELECT * FROM activite ORDER BY id DESC",nativeQuery = true)
     public List<Activite> trouveractivitepar();
 
+    @Query(
+            value = "SELECT act.* FROM activite AS act " +
+                    "LEFT JOIN type_activite AS ta " +
+                    "ON act.type_activite = ta.id " +
+                    "LEFT JOIN utilisateur AS ut " +
+                    "ON act.createur = ut.id " +
+                    "LEFT JOIN entite AS ent " +
+                    "ON ut.mon_entite_id = ent.id " +
+                    "WHERE act.nom LIKE '%:nomactivite%' " +
+                    "OR ta.libelle LIKE '%:typeactivite%' " +
+                    "OR ent.libelleentite LIKE '%:entite%' " +
+                    "OR (act.date_debut >= :dtdebut AND act.date_fin <= :dtfin);",
+            nativeQuery = true
+    )
+    List<Activite> getFiltre(String nomactivite, String typeactivite, String entite, String dtdebut, String dtfin);
 }
