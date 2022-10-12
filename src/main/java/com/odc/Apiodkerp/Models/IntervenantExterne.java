@@ -22,11 +22,8 @@ import java.util.List;
 public class IntervenantExterne extends Personne {
 
     private  String numero;
-    private String login;
-    private String password;
 
-    @ManyToOne
-    private Role role;
+
     @ManyToMany
     @JoinTable(name = "ActiviteIntervenant", joinColumns = {
             @JoinColumn(name = "id_intervenant") }, inverseJoinColumns = {
@@ -34,6 +31,7 @@ public class IntervenantExterne extends Personne {
     List<Activite> intervenuDansActivite = new ArrayList<>();
 
 
+    @JsonIgnore
     @ManyToMany(mappedBy = "commissionsExterne")
     List<Tache> commissions = new ArrayList<>();
 

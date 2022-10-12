@@ -23,8 +23,6 @@ public class Utilisateur extends Personne {
 
     private String login;
     private String password;
-    private Long contact;
-    private String lieunaissance;
     private String image;
     private Boolean active;
     private  Boolean notif;
@@ -81,7 +79,7 @@ public class Utilisateur extends Personne {
     private  Entite gererEntite;
 
 
-
+    @JsonIgnore
     @ManyToMany(mappedBy = "commissionsInterne")
     List<Tache> commissions = new ArrayList<>();
 

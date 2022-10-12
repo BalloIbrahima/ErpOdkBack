@@ -83,7 +83,9 @@ public class ActiviteServiceImpl implements ActiviteService {
 
     @Override
     public List<Activite> FindAllAct() {
-        return activiteRepository.findAll();
+        return activiteRepository.findAllByOrderByIdDesc();
+
+        //return activiteRepository.findAll();
     }
 
     @Override
@@ -107,11 +109,15 @@ public class ActiviteServiceImpl implements ActiviteService {
     @Override
     public Long ToutActivite() {
         return activiteRepository.toutActivite();
+        
     }
 
     public List<Activite> ToutActivit() {
         return activiteRepository.findAll();
+        //return activiteRepository.findAllByOrderByIdAsc();
+
     }
+    
 
     @Override
     public Activite GetByEtat(Etat etat) {
@@ -273,6 +279,12 @@ public class ActiviteServiceImpl implements ActiviteService {
     @Override
     public List<Activite> findFiltre(String nomactivite, String typeactivite, String entite, String dtdebut, String dtfin) {
         return activiteRepository.getFiltre(nomactivite, typeactivite, entite, dtdebut, dtfin);
+    }
+
+    @Override
+    public Activite RecupererParNom(String nom) {
+        // TODO Auto-generated method stub
+        return activiteRepository.findByNom(nom);
     }
 
 }
