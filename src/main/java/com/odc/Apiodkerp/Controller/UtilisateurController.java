@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.odc.Apiodkerp.Models.*;
 
+import java.io.Console;
 import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -655,95 +656,137 @@ public class UtilisateurController {
             @RequestParam(value = "user") String userVenant,
             @RequestParam(value = "file", required = false) MultipartFile file) throws JsonProcessingException {
         Activite activite = null;
+        Utilisateur utilisateurs=null;
 
         try {
             activite = new JsonMapper().readValue(acti, Activite.class);
             System.out.println(activite);
-            Utilisateur utilisateurs = new JsonMapper().readValue(userVenant, Utilisateur.class);
-
-            // Salle salle = salleService.read(idsalle);
-
-            if (file != null) {
-                try {
-                    Etat etat = etatService.recupereParStatut("A VENIR");
-
-                    Utilisateur user = utilisateurService.trouverParLoginAndPass(utilisateurs.getLogin(),
-                            utilisateurs.getPassword());
-                    Droit createActivite = droitService.GetLibelle("Create Activite");
-
-                    // TypeActivite type = typeActiviteService.getById(idtype);
-
-                    // activite.setTypeActivite(type);
-                    // activite.setSalle(salle);
-                    activite.setCreateur(user);
-                    activite.setEtat(etat);
-                    activite.setLeader(user);
-                    activite.setDateCreation(new Date());
-                    System.out.println(user);
-                    // activite.setLeader(user);
-                    try {
-                        activite.setImage(SaveImage.save("activite", file, activite.getNom()));
-                    } catch (Exception e) {
-                        // TODO: handle exception
-                        return ResponseMessage.generateResponse("iciiii", HttpStatus.OK, e.getMessage());
-
-                    }
-
-                    // ::::::::::::::::::::::::::::Historique ::::::::::::::::
-                    // Utilisateur user = utilisateurService.getById(iduser);
-                    if (user != null) {
-                        if (user.getRole().getDroits().contains(createActivite)) {
-                            try {
-                                Activite act = activiteService.Create(activite);
-                                Notification notif = new Notification();
-                                notif.setActivite(act);
-                                notif.setDatenotif(new Date());
-                                // notif.setDescription(description);
-                                notificationService.creer(notif);
-
-                                Historique historique = new Historique();
-                                Date datehisto = new Date();
-                                historique.setDatehistorique(datehisto);
-                                historique
-                                        .setDescription(
-                                                "" + user.getPrenom() + " " + user.getNom() + " a cree l activite "
-                                                        + activite.getNom());
-                                historiqueService.Create(historique);
-
-                                return ResponseMessage.generateResponse("ok", HttpStatus.OK,
-                                        act);
-                            } catch (Exception e) {
-                                // TODO: handle exception
-                                return ResponseMessage.generateResponse("iciiii", HttpStatus.OK, e.getMessage());
-
-                            }
-
-                        } else {
-                            return ResponseMessage.generateResponse("error", HttpStatus.OK, "Non autorisé");
-
-                        }
-
-                    } else {
-                        return ResponseMessage.generateResponse("error", HttpStatus.OK,
-                                "Cet utilisateur n'existe pas !");
-
-                    }
-                } catch (Exception e) {
-
-                    return ResponseMessage.generateResponse("errorpp", HttpStatus.OK, e.getMessage());
-                }
-
-            } else {
-
-                return ResponseMessage.generateResponse("error", HttpStatus.OK, "Fichier vide");
-            }
-
+            utilisateurs = new JsonMapper().readValue(userVenant, Utilisateur.class);
         } catch (Exception e) {
 
             System.out.println(activite);
 
-            return ResponseMessage.generateResponse("errorVVVVVVVVVV", HttpStatus.OK, e.getMessage());
+            return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
         }
+            // Salle salle = salleService.read(idsalle);
+
+            TypeActivite talk=typeActiviteService.getByLibelle("Talk");
+            TypeActivite eve=typeActiviteService.getByLibelle("Evenement");
+            TypeActivite formation=typeActiviteService.getByLibelle("Formations");
+            System.out.println(talk);
+            System.out.println(eve);
+            System.out.println(formation);
+
+            long diffInMillies = Math.abs(activite.getDateFin().getTime() - activite.getDateDebut().getTime());
+
+            long difInDay=diffInMillies/86400000;
+            System.out.println(difInDay);
+            System.out.println(activite.getTypeActivite().getLibelle());
+
+
+            Activite find=activiteService.RecupererParNom(activite.getNom());
+            if(find==null){
+                if (file != null) {
+                    if(activite.getDateDebut().before(new Date())){
+                        return ResponseMessage.generateResponse("error", HttpStatus.OK, "Veuillez renseigner une date ultérieure à aujourd'hui ! ");
+                    }else if(activite.getDateFin().before(activite.getDateDebut())){
+                        return ResponseMessage.generateResponse("error", HttpStatus.OK, "La date de fin de l'activite doit être ultérieure à la date de debut !");
+                    }else{
+                        if((activite.getTypeActivite().getLibelle().equals("Talk") && difInDay>3) || (activite.getTypeActivite().getLibelle().equals("Evenement") && difInDay>3)){
+
+                            return ResponseMessage.generateResponse("error", HttpStatus.OK, "Le type d'activité ne correspond pas au nombre de jours ! "+activite.getTypeActivite().getLibelle()+" "+ difInDay+"Jours");
+
+                        }else if(activite.getTypeActivite().getLibelle().equals("Formations") && (difInDay<=7 || difInDay>190)){
+                            if(difInDay>190){
+                                difInDay=difInDay/30;
+                                return ResponseMessage.generateResponse("error", HttpStatus.OK, "Le type d'activité ne correspond pas au nombre de jours ! "+activite.getTypeActivite().getLibelle()+" "+ difInDay+"Mois");
+                            }
+                            return ResponseMessage.generateResponse("error", HttpStatus.OK, "Le type d'activité ne correspond pas au nombre de jours ! "+activite.getTypeActivite().getLibelle()+" "+ difInDay+"Jours");
+                        }else{
+                            try {
+                                Etat etat = etatService.recupereParStatut("A VENIR");
+            
+                                Utilisateur user = utilisateurService.trouverParLoginAndPass(utilisateurs.getLogin(),
+                                        utilisateurs.getPassword());
+                                Droit createActivite = droitService.GetLibelle("Create Activite");
+            
+                                // TypeActivite type = typeActiviteService.getById(idtype);
+            
+                                // activite.setTypeActivite(type);
+                                // activite.setSalle(salle);
+                                activite.setCreateur(user);
+                                activite.setEtat(etat);
+                                activite.setLeader(user);
+                                activite.setDateCreation(new Date());
+                                System.out.println(user);
+                                // activite.setLeader(user);
+                                try {
+                                    activite.setImage(SaveImage.save("activite", file, activite.getNom()));
+                                } catch (Exception e) {
+                                    // TODO: handle exception
+                                    return ResponseMessage.generateResponse("iciiii", HttpStatus.OK, e.getMessage());
+            
+                                }
+            
+                                // ::::::::::::::::::::::::::::Historique ::::::::::::::::
+                                // Utilisateur user = utilisateurService.getById(iduser);
+                                if (user != null) {
+                                    if (user.getRole().getDroits().contains(createActivite)) {
+                                        try {
+                                            Activite act = activiteService.Create(activite);
+                                            Notification notif = new Notification();
+                                            notif.setActivite(act);
+                                            notif.setDatenotif(new Date());
+                                            // notif.setDescription(description);
+                                            notificationService.creer(notif);
+            
+                                            Historique historique = new Historique();
+                                            Date datehisto = new Date();
+                                            historique.setDatehistorique(datehisto);
+                                            historique
+                                                    .setDescription(
+                                                            "" + user.getPrenom() + " " + user.getNom() + " a cree l activite "
+                                                                    + activite.getNom());
+                                            historiqueService.Create(historique);
+            
+                                            return ResponseMessage.generateResponse("ok", HttpStatus.OK,
+                                                    act);
+                                        } catch (Exception e) {
+                                            // TODO: handle exception
+                                            return ResponseMessage.generateResponse("iciiii", HttpStatus.OK, e.getMessage());
+            
+                                        }
+            
+                                    } else {
+                                        return ResponseMessage.generateResponse("error", HttpStatus.OK, "Non autorisé");
+            
+                                    }
+            
+                                } else {
+                                    return ResponseMessage.generateResponse("error", HttpStatus.OK,
+                                            "Cet utilisateur n'existe pas !");
+            
+                                }
+                            } catch (Exception e) {
+            
+                                return ResponseMessage.generateResponse("errorpp", HttpStatus.OK, e.getMessage());
+                            }
+            
+                        }
+                    }
+                    
+    
+                } else {
+    
+                    return ResponseMessage.generateResponse("error", HttpStatus.OK, "Fichier vide");
+                }
+            }else{
+                return ResponseMessage.generateResponse("error", HttpStatus.OK, "Une activite existe déja avec le même nom !");
+
+            }
+            
+
+       
 
         // application/json
 
@@ -1216,6 +1259,60 @@ public class UtilisateurController {
         }
 
     }
+
+
+    // ::::::::::::Supprimer apprenant ounpartcipant
+    @ApiOperation(value = "Supprimer apprenant ou partcipant")
+    @PostMapping("/DeleteApprenant/{idap}")
+    public ResponseEntity<Object> DeleteApprenantOuPostulant(@RequestParam(value = "user") String userVenant,
+                                                @PathVariable("idap") Long idap) {
+        try {
+            Utilisateur utilisateur = new JsonMapper().readValue(userVenant, Utilisateur.class);
+
+            Utilisateur user = utilisateurService.trouverParLoginAndPass(utilisateur.getLogin(),
+                    utilisateur.getPassword());
+            Droit readAoup = droitService.GetLibelle("Read AouP");
+
+            if (user != null) {
+                if (user.getRole().getDroits().contains(readAoup)) {
+
+                    try {
+
+                        Historique historique = new Historique();
+                        Date datehisto = new Date();
+                        historique.setDatehistorique(datehisto);
+                        historique.setDescription(
+                                "" + user.getPrenom() + " " + user.getNom()
+                                        + " a supprime l apprenant "+aPService.GetById(idap).getPostulant().getPrenom() );
+                        historiqueService.Create(historique);
+                        aPService.Delete(idap);
+                        return ResponseMessage.generateResponse("ok", HttpStatus.OK, "ok");
+
+                    } catch (Exception e) {
+                        // TODO: handle exception
+                        return ResponseMessage.generateResponse("iciiii", HttpStatus.OK,
+                                e.getMessage());
+
+                    }
+
+                } else {
+                    return ResponseMessage.generateResponse("error", HttpStatus.OK, "Non autorisé");
+
+                }
+
+            } else {
+                return ResponseMessage.generateResponse("error", HttpStatus.OK,
+                        "Vous n'êtes pas autorisé à afficher tous les liste");
+            }
+
+        } catch (Exception e) {
+            // TODO: handle exception
+            return ResponseMessage.generateResponse("errortt", HttpStatus.OK,
+                    e.getMessage());
+        }
+
+    }
+
 }
 
 //

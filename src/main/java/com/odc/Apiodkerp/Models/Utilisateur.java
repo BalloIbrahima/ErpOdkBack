@@ -76,7 +76,7 @@ public class Utilisateur extends Personne {
     private  Entite gererEntite;
 
 
-
+    @JsonIgnore
     @ManyToMany(mappedBy = "commissionsInterne")
     List<Tache> commissions = new ArrayList<>();
 

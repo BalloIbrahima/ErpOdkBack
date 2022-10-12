@@ -92,6 +92,7 @@ public class DesignationController {
 
             if (user.getRole().getDroits().contains(Cdesignation)) {
                 try {
+                    desi.setEtat(true);
                     Historique historique = new Historique();
                     Date datehisto = new Date();
                     historique.setDatehistorique(datehisto);

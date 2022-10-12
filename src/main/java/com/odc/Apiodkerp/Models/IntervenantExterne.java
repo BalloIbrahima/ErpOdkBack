@@ -23,6 +23,7 @@ public class IntervenantExterne extends Personne {
 
     private  String numero;
 
+
     @ManyToMany
     @JoinTable(name = "ActiviteIntervenant", joinColumns = {
             @JoinColumn(name = "id_intervenant") }, inverseJoinColumns = {
@@ -30,6 +31,7 @@ public class IntervenantExterne extends Personne {
     List<Activite> intervenuDansActivite = new ArrayList<>();
 
 
+    @JsonIgnore
     @ManyToMany(mappedBy = "commissionsExterne")
     List<Tache> commissions = new ArrayList<>();
 
