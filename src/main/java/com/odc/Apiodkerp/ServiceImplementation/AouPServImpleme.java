@@ -81,9 +81,9 @@ public class AouPServImpleme implements AouPService {
     }
 
     @Override
-    public String Delete(long id) {
+    public void Delete(long id) {
         aouprepos.deleteById(id);
-        return "Supprimer avec succes";
+        //return "Supprimer avec succes";
     }
 
     @Override

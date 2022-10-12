@@ -14,7 +14,7 @@ public interface AouPService {
 
     AouP Update(long id, AouP aoup);
 
-    String Delete(long id);
+    void Delete(long id);
 
     AouP GetById(long id);
 

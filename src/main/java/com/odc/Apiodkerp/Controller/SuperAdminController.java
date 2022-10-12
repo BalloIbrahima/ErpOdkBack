@@ -1358,9 +1358,9 @@ public class SuperAdminController {
                     historique.setDescription("" + user.getPrenom() + " " + user.getNom()
                             + " a supprime l apprenants ou le participant sur lactivite " + aouP.getActivite());
                     historiqueService.Create(historique);
-
-                    return ResponseMessage.generateResponse("ok", HttpStatus.OK,
-                            aouPService.Delete(id));
+                    aouPService.Delete(id);
+                    return ResponseMessage.generateResponse("ok", HttpStatus.OK,"ok");
+                           
                 } catch (Exception e) {
                     // TODO: handle exception
                     return ResponseMessage.generateResponse("iciiii", HttpStatus.OK, e.getMessage());
