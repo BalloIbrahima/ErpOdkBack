@@ -726,7 +726,7 @@ public class ResponsableController {
                     Historique historique = new Historique();
                     historique.setDatehistorique(new Date());
                     historique.setDescription(utilisateur.getPrenom() + " " + utilisateur.getNom()
-                            + " a affiche l'ensemble des participants.");
+                            + " a affiche lensemble des participants.");
 
                     historiqueService.Create(historique);
 
@@ -763,7 +763,7 @@ public class ResponsableController {
                 if (utilisateur1.getRole().getDroits().contains(readAouP)){
                     Historique historique = new Historique();
                     historique.setDatehistorique(new Date());
-                    historique.setDescription(utilisateur1.getPrenom() + " " + utilisateur1.getNom() + "a filtré des participants");
+                    historique.setDescription(utilisateur1.getPrenom() + " " + utilisateur1.getNom() + "a filtre des participants");
                     historiqueService.Create(historique);
 
                     return ResponseMessage.generateResponse("ok", HttpStatus.OK, aouPService.filtrerParticipant(typeactivite, datedebut, datefin));
