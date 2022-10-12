@@ -16,12 +16,18 @@ public interface ActiviteRepository extends JpaRepository<Activite, Long> {
 
     Activite findByEtat(Etat etat);
 
+    Activite findByNom(String nom);
+    
     @Query(value = "SELECT COUNT(activite.id) FROM activite", nativeQuery = true)
     public Long Total();
 
     @Query(value = "SELECT *  FROM activite", nativeQuery = true)
     public Long toutActivite();
 
+    @Query(value = "SELECT * FROM activite ORDER BY id DESC",nativeQuery = true)
+    public List<Activite> trouveractivitepar();
+
+    List<Activite> findAllByOrderByIdDesc();
 
     @Query(value = "SELECT activite.* from activite,entite where entite.utilisateur=activite.createur and entite.id=:identite", nativeQuery = true)
     public List<Activite> actEntite(@PathVariable long identite);

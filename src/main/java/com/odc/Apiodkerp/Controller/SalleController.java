@@ -584,7 +584,7 @@ public class SalleController {
 
     // :::::::::::::::::::::::Les activites sans salle
     @ApiOperation(value = "Les activites sans salle")
-    @PostMapping("/activitesanssalle/")
+    @PostMapping("/activitesanssalle")
     public ResponseEntity<Object> ActiviteSansSalle(@RequestParam(value = "user") String userVenant) {
         try {
 
