@@ -183,9 +183,14 @@ public class ActiviteServiceImpl implements ActiviteService {
 
         for (Activite activite : all) {
 
-            if (today.after(activite.getDateFin())) {
-                termines.add(activite);
+            try {
+                if (today.after(activite.getDateFin())) {
+                    termines.add(activite);
+                }
+            } catch (Exception e) {
+                // TODO: handle exception
             }
+            
 
         }
 
@@ -264,6 +269,11 @@ public class ActiviteServiceImpl implements ActiviteService {
 
         //System.err.println("helllle");
         
+    }
+
+    @Override
+    public List<Activite> findFiltre(String nomactivite, String typeactivite, String entite, String dtdebut, String dtfin) {
+        return activiteRepository.getFiltre(nomactivite, typeactivite, entite, dtdebut, dtfin);
     }
 
 }
