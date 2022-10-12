@@ -7,6 +7,8 @@ import java.util.List;
 import javax.lang.model.element.Element;
 import javax.servlet.http.HttpServletResponse;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.odc.Apiodkerp.Configuration.ResponseMessage;
 
 import com.odc.Apiodkerp.Models.Utilisateur;
@@ -744,6 +746,32 @@ public class ResponsableController {
 
         }
 
+    }
+
+    //::::::::::Filte des participants:::::::::::
+    @ApiOperation(value="filtrer des participants")
+    @PostMapping("/participants/filtre/{typeactivite}/{datedebut}/{datefin}")
+    public ResponseEntity<Object> filtrerPostulant(@RequestParam (value="user") String user, @PathVariable String typeactivite, @PathVariable String datedebut, @PathVariable String datefin){
+        try{
+            Utilisateur utilisateur = new JsonMapper().readValue(user , Utilisateur.class);
+            Utilisateur utilisateur1 = utilisateurService.trouverParLoginAndPass(utilisateur.getLogin(),
+                    utilisateur.getPassword());
+            Droit readAouP = droitService.GetLibelle("Read AouP");
+            if (utilisateur1!=null){
+                if (utilisateur1.getRole().getDroits().contains(readAouP)){
+                    Historique historique = new Historique();
+                    historique.setDatehistorique(new Date());
+                    historique.setDescription(utilisateur1.getPrenom() + " " + utilisateur1.getNom() + "a filtré des participants");
+                    historiqueService.Create(historique);
+
+                    return ResponseMessage.generateResponse("ok", HttpStatus.OK, aouPService.filtrerParticipant(typeactivite, datedebut, datefin));
+                } else return ResponseMessage.generateResponse("error",HttpStatus.OK,"a te taimai !");
+            } return ResponseMessage.generateResponse("error", HttpStatus.OK,"Cet utilisateur n'existe pas !");
+        } catch (JsonMappingException e) {
+            return ResponseMessage.generateResponse("error", HttpStatus.OK,e.getMessage());
+        } catch (JsonProcessingException e) {
+            return ResponseMessage.generateResponse("error", HttpStatus.OK,e.getMessage());
+        }
     }
 
     // :::::::::::::::total postulant: :::::::::::::::::::::

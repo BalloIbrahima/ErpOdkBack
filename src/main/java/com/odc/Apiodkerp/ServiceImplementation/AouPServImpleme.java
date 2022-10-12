@@ -132,4 +132,9 @@ public class AouPServImpleme implements AouPService {
         return listArenvoyer;
     }
 
+    @Override
+    public List<AouP> filtrerParticipant(String typeactivite, String datedebut, String datefin) {
+        return aouprepos.filtrer(typeactivite, datedebut, datefin);
+    }
+
 }
