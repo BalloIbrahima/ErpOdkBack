@@ -182,7 +182,7 @@ public class EntiteController {
                     utilisateur.getPassword());
             Entite entite =entiteService.GetById(id);
             Droit deleterole = droitService.GetLibelle("Delete Entite");
-               entite.setIsdelete("TRUE");
+               entite.setIsdelete(true);
             if (user.getRole().getDroits().contains(deleterole)) {
                 return ResponseMessage.generateResponse("ok", HttpStatus.OK,  entiteService.Update(id,entite));
             } else {
@@ -212,7 +212,7 @@ public class EntiteController {
               List<Entite> en = new ArrayList<>();
                 for(Entite e:getAllEntite){
                     try {
-                        if(e.getIsdelete().equals("false")){
+                        if(e.getIsdelete().equals(false)){
                             en.add(e);
                         }
                     }catch (Exception exception){
