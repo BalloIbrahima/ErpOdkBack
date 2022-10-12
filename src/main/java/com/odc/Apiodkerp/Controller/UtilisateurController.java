@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.odc.Apiodkerp.Models.*;
 
 import java.util.Date;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -614,17 +615,13 @@ public class UtilisateurController {
     @ApiOperation(value = "methode pour la création d'une activité. ::::::::::::::::::::::::::::")
     @PostMapping("/activite/new")
     public ResponseEntity<Object> Createactivite(@RequestParam(value = "data") String acti,
-
             @RequestParam(value = "user") String userVenant,
             @RequestParam(value = "file", required = false) MultipartFile file) throws JsonProcessingException {
         Activite activite = null;
-
         try {
             activite = new JsonMapper().readValue(acti, Activite.class);
             System.out.println(activite);
             Utilisateur utilisateurs = new JsonMapper().readValue(userVenant, Utilisateur.class);
-
-            //Salle salle = salleService.read(idsalle);
 
             if (file != null) {
                 try {
@@ -636,8 +633,6 @@ public class UtilisateurController {
 
                     //TypeActivite type = typeActiviteService.getById(idtype);
 
-                    //activite.setTypeActivite(type);
-                    //activite.setSalle(salle);
                     activite.setCreateur(user);
                     activite.setEtat(etat);
                     activite.setLeader(user);
@@ -1006,7 +1001,7 @@ public class UtilisateurController {
 
                         return ResponseMessage.generateResponse("ok", HttpStatus.OK, listePostulantService.getAll());
 
-                    } catch (Exception e) {
+                    }  catch (Exception e) {
                         // TODO: handle exception
                         return ResponseMessage.generateResponse("iciiii", HttpStatus.OK,
                                 e.getMessage());
@@ -1099,10 +1094,11 @@ public class UtilisateurController {
                         Date datehisto = new Date();
                         historique.setDatehistorique(datehisto);
                         historique.setDescription(
-                                "" + user.getPrenom() + " " + user.getNom() + " a affiche tout les participant");
+                                "" + user.getPrenom() + " " + user.getNom() + " a affiche tout les participants");
                         historiqueService.Create(historique);
+                        List<AouP> ap =  aPService.GetAll();
 
-                        return ResponseMessage.generateResponse("ok", HttpStatus.OK, aPService.GetAll());
+                        return ResponseMessage.generateResponse("ok", HttpStatus.OK, ap);
 
                     } catch (Exception e) {
                         // TODO: handle exception
