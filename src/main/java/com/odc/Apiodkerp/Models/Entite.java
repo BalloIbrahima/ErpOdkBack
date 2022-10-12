@@ -22,6 +22,7 @@ public class Entite {
     private Long id;
     @Column(unique = true)
     private String libelleentite;
+    
     @Lob
     private String description;
     private String image;

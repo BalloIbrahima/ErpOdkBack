@@ -1,6 +1,7 @@
 package com.odc.Apiodkerp.Controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.odc.Apiodkerp.Models.*;
 
 import java.util.Date;
@@ -294,7 +295,6 @@ public class UtilisateurController {
 
                         }
 
-
                     } else {
                         return ResponseMessage.generateResponse("error", HttpStatus.OK, "vous n'etes pas autorisé");
                     }
@@ -407,6 +407,43 @@ public class UtilisateurController {
         }
     }
 
+    // Filtre de l'ensemble des activités
+    @ApiOperation(value = "Controller qui filtre les activités par nom, types, entite, date début et date fin")
+    @PostMapping("/activite/{nomactivite}/{typeactivite}/{entite}/{dtdebut}/{dtfin}")
+    public ResponseEntity<Object> filtrerActivite(
+            @RequestParam(value = "user") String usercourant,
+            @PathVariable String nomactivite,
+            @PathVariable String typeactivite,
+            @PathVariable String entite,
+            @PathVariable String dtdebut,
+            @PathVariable String dtfin) {
+        try {
+            Utilisateur monutilisateur = new JsonMapper().readValue(usercourant, Utilisateur.class);
+            Utilisateur thisuser = utilisateurService.trouverParLoginAndPass(monutilisateur.getLogin(),
+                    monutilisateur.getPassword());
+            Droit readActivite = droitService.GetLibelle("Read Activite");
+            if (thisuser != null) {
+                if (thisuser.getRole().getDroits().contains(readActivite)) {
+                    Historique historique = new Historique();
+                    Date datehisto = new Date();
+                    historique.setDatehistorique(datehisto);
+                    historique.setDescription(
+                            thisuser.getPrenom() + " " + thisuser.getNom() + " a filtre les activites");
+                    historiqueService.Create(historique);
+                    return ResponseMessage.generateResponse("ok", HttpStatus.OK,
+                            activiteService.findFiltre(nomactivite, typeactivite, entite, dtdebut, dtfin));
+                } else
+                    return ResponseMessage.generateResponse("error", HttpStatus.OK, "Vous n'êtes pas autorisé !");
+
+            } else
+                return ResponseMessage.generateResponse("error", HttpStatus.OK, "Cet utilisateur n'existe pas !");
+        } catch (JsonMappingException e) {
+            return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
+        } catch (JsonProcessingException e) {
+            return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
+        }
+    }
+
     // Afficher une activite
     @ApiOperation(value = "Afficher une activite en fonction de l'id ")
 
@@ -459,8 +496,8 @@ public class UtilisateurController {
     public ResponseEntity<Object> presence(
             @PathVariable("idpresence") long idpresence, @RequestParam(value = "user") String userVenant) {
         try {
-            //Presence presence = new Presence();
-            //Activite activite = activiteService.GetById(idactivite);
+            // Presence presence = new Presence();
+            // Activite activite = activiteService.GetById(idactivite);
             // presence.setActivite(activite);
             // presence.setDate(new Date());
             // AouP aouP = aPService.GetById(idaoup);
@@ -474,7 +511,7 @@ public class UtilisateurController {
 
             Droit createpresence = droitService.GetLibelle("Create Presence");
 
-            Presence presence=presenceService.getById(idpresence);
+            Presence presence = presenceService.getById(idpresence);
             if (user != null) {
                 if (user.getRole().getDroits().contains(createpresence)) {
                     try {
@@ -482,11 +519,12 @@ public class UtilisateurController {
                         Date datehisto = new Date();
                         historique.setDatehistorique(datehisto);
                         historique.setDescription("" + user.getPrenom() + " " + user.getNom()
-                                + " a ajouter "+presence.getAouP().getPostulant().getEmail() +" a la liste de presence de l'activité " + presence.getActivite().getNom());
+                                + " a ajouter " + presence.getAouP().getPostulant().getEmail()
+                                + " a la liste de presence de l'activité " + presence.getActivite().getNom());
                         historiqueService.Create(historique);
 
                         presence.setEtat(true);
-                        
+
                         return ResponseMessage.generateResponse("ok", HttpStatus.OK, presenceService.creer(presence));
 
                     } catch (Exception e) {
@@ -623,7 +661,7 @@ public class UtilisateurController {
             System.out.println(activite);
             Utilisateur utilisateurs = new JsonMapper().readValue(userVenant, Utilisateur.class);
 
-            //Salle salle = salleService.read(idsalle);
+            // Salle salle = salleService.read(idsalle);
 
             if (file != null) {
                 try {
@@ -633,10 +671,10 @@ public class UtilisateurController {
                             utilisateurs.getPassword());
                     Droit createActivite = droitService.GetLibelle("Create Activite");
 
-                    //TypeActivite type = typeActiviteService.getById(idtype);
+                    // TypeActivite type = typeActiviteService.getById(idtype);
 
-                    //activite.setTypeActivite(type);
-                    //activite.setSalle(salle);
+                    // activite.setTypeActivite(type);
+                    // activite.setSalle(salle);
                     activite.setCreateur(user);
                     activite.setEtat(etat);
                     activite.setLeader(user);
@@ -656,11 +694,11 @@ public class UtilisateurController {
                     if (user != null) {
                         if (user.getRole().getDroits().contains(createActivite)) {
                             try {
-                                Activite act=activiteService.Create(activite);
-                                Notification notif=new Notification();
+                                Activite act = activiteService.Create(activite);
+                                Notification notif = new Notification();
                                 notif.setActivite(act);
                                 notif.setDatenotif(new Date());
-                                //notif.setDescription(description);
+                                // notif.setDescription(description);
                                 notificationService.creer(notif);
 
                                 Historique historique = new Historique();
@@ -673,7 +711,7 @@ public class UtilisateurController {
                                 historiqueService.Create(historique);
 
                                 return ResponseMessage.generateResponse("ok", HttpStatus.OK,
-                                act);
+                                        act);
                             } catch (Exception e) {
                                 // TODO: handle exception
                                 return ResponseMessage.generateResponse("iciiii", HttpStatus.OK, e.getMessage());
@@ -1079,7 +1117,6 @@ public class UtilisateurController {
 
     }
 
-
     @ApiOperation(value = "Tout les participants")
     @PostMapping("/participants/all")
     public ResponseEntity<Object> Allparticipant(@RequestParam(value = "user") String userVenant) {
@@ -1128,10 +1165,10 @@ public class UtilisateurController {
 
     }
 
-
     @ApiOperation(value = "Tout les participants")
     @PostMapping("/postulantstires/{idTirage}")
-    public ResponseEntity<Object> Allparticipant(@RequestParam(value = "user") String userVenant,@PathVariable("idTirage") Long idTirage) {
+    public ResponseEntity<Object> Allparticipant(@RequestParam(value = "user") String userVenant,
+            @PathVariable("idTirage") Long idTirage) {
         try {
             Utilisateur utilisateur = new JsonMapper().readValue(userVenant, Utilisateur.class);
 
@@ -1143,13 +1180,14 @@ public class UtilisateurController {
                 if (user.getRole().getDroits().contains(readAoup)) {
 
                     try {
-                        Tirage tirage=tirageService.getById(idTirage);
+                        Tirage tirage = tirageService.getById(idTirage);
 
                         Historique historique = new Historique();
                         Date datehisto = new Date();
                         historique.setDatehistorique(datehisto);
                         historique.setDescription(
-                                "" + user.getPrenom() + " " + user.getNom() + " a affiche tout les participant du tirage"+idTirage);
+                                "" + user.getPrenom() + " " + user.getNom()
+                                        + " a affiche tout les participant du tirage" + idTirage);
                         historiqueService.Create(historique);
 
                         return ResponseMessage.generateResponse("ok", HttpStatus.OK, tirage.getPostulanttires());
