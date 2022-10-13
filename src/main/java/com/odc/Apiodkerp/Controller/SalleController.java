@@ -260,7 +260,7 @@ public class SalleController {
                         historique.setDatehistorique(datehisto);
                         historique.setDescription("" + user.getPrenom() + " " + user.getNom()
                                 + " a attribue  une salle du nom de  " + salleService.getByIdsalle(idsalle)
-                                + " à l'activte " + activiteService.GetById(idactivite));
+                                + " a l activte " + activiteService.GetById(idactivite));
                         historiqueService.Create(historique);
                     } catch (Exception e) {
                         // TODO: handle exception
