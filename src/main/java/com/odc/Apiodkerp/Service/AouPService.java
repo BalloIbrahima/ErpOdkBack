@@ -4,6 +4,7 @@ import com.odc.Apiodkerp.Models.Activite;
 import com.odc.Apiodkerp.Models.AouP;
 import com.odc.Apiodkerp.Models.Etat;
 
+import java.util.Date;
 import java.util.List;
 
 public interface AouPService {
@@ -14,7 +15,7 @@ public interface AouPService {
 
     AouP Update(long id, AouP aoup);
 
-    String Delete(long id);
+    void Delete(long id);
 
     AouP GetById(long id);
 
@@ -25,4 +26,6 @@ public interface AouPService {
 
     // partcipants Enfants
     List<AouP> listEnfants();
+
+    List<AouP> filtrerParticipant(String typeactivite, String datedebut, String datefin);
 }

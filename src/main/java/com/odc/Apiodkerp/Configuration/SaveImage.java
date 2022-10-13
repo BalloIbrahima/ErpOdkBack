@@ -39,20 +39,20 @@ public class SaveImage {
                 // si le fichier n'existe pas deja
                 Files.createDirectories(chemin);
                 Files.copy(file.getInputStream(), chemin
-                        .resolve(nomFichier + file.getOriginalFilename().substring(index).toLowerCase()));
+                        .resolve(nomFichier + file.getOriginalFilename()+file.getOriginalFilename().substring(index).toLowerCase()));
                 src = server + nomFichier
-                        + file.getOriginalFilename().substring(index).toLowerCase();
+                        + file.getOriginalFilename()+ file.getOriginalFilename().substring(index).toLowerCase();
             } else {
                 // si le fichier existe pas deja
-                String newPath = location + nomFichier
+                String newPath = location + nomFichier +file.getOriginalFilename()
                         + file.getOriginalFilename().substring(index).toLowerCase();
                 Path newchemin = Paths.get(newPath);
                 if (!Files.exists(newchemin)) {
                     // si le fichier n'existe pas deja
                     Files.copy(file.getInputStream(), chemin
                             .resolve(
-                                    nomFichier + file.getOriginalFilename().substring(index).toLowerCase()));
-                    src = server + nomFichier
+                                    nomFichier +file.getOriginalFilename()+ file.getOriginalFilename().substring(index).toLowerCase()));
+                    src = server + nomFichier +file.getOriginalFilename()
                             + file.getOriginalFilename().substring(index).toLowerCase();
                 } else {
                     // si le fichier existe pas deja on le suprime et le recrèe
@@ -61,9 +61,9 @@ public class SaveImage {
 
                     Files.copy(file.getInputStream(), chemin
                             .resolve(
-                                    nomFichier + file.getOriginalFilename().substring(index).toLowerCase()));
+                                    nomFichier + file.getOriginalFilename()+ file.getOriginalFilename().substring(index).toLowerCase()));
                     src = server + nomFichier
-                            + file.getOriginalFilename().substring(index).toLowerCase();
+                            +file.getOriginalFilename()+ file.getOriginalFilename().substring(index).toLowerCase();
                 }
 
             }

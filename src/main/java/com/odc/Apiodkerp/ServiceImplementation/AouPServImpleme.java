@@ -81,9 +81,9 @@ public class AouPServImpleme implements AouPService {
     }
 
     @Override
-    public String Delete(long id) {
+    public void Delete(long id) {
         aouprepos.deleteById(id);
-        return "Supprimer avec succes";
+        //return "Supprimer avec succes";
     }
 
     @Override
@@ -130,6 +130,11 @@ public class AouPServImpleme implements AouPService {
             }
         }
         return listArenvoyer;
+    }
+
+    @Override
+    public List<AouP> filtrerParticipant(String typeactivite, String datedebut, String datefin) {
+        return aouprepos.filtrer(typeactivite, datedebut, datefin);
     }
 
 }
