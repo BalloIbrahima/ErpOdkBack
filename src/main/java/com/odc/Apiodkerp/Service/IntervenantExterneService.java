@@ -18,5 +18,5 @@ public interface IntervenantExterneService {
     List<IntervenantExterne> getAll();
 
     IntervenantExterne getByEmail(String email);
-    IntervenantExterne trouverParLoginAndPass(String login, String password);
+    //IntervenantExterne trouverParLoginAndPass(String login, String password);
 }

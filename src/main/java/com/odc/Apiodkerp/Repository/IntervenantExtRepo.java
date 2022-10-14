@@ -7,5 +7,5 @@ import com.odc.Apiodkerp.Models.IntervenantExterne;
 
 public interface IntervenantExtRepo extends JpaRepository<IntervenantExterne, Long> {
     IntervenantExterne findByEmail(String email);
-    IntervenantExterne findByLoginAndPassword(String login, String password);
+    //IntervenantExterne findByLoginAndPassword(String login, String password);
 }

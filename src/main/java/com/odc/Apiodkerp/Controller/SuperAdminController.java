@@ -2394,15 +2394,15 @@ public class SuperAdminController {
             return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
         }
     }
-
+/*
     @ApiOperation(value = "Affichager un intervenant")
     @PostMapping("/get/intervenant/{id}")
     public ResponseEntity<Object> GetIdIntervenant(@PathVariable("id") Long id,
                                                    @RequestParam(value = "user") String userVenant) {
         try {
-            IntervenantExterne utilisateur = new JsonMapper().readValue(userVenant, IntervenantExterne.class);
+            Utilisateur utilisateur = new JsonMapper().readValue(userVenant, Utilisateur.class);
 
-            IntervenantExterne user = intervenantExterneService.trouverParLoginAndPass(utilisateur.getLogin(),
+            Utilisateur user = utilisateurService.trouverParLoginAndPass(utilisateur.getLogin(),
                     utilisateur.getPassword());
             Droit Rintervenant = droitService.GetLibelle("Read Intervenant");
 
@@ -2430,7 +2430,7 @@ public class SuperAdminController {
             return ResponseMessage.generateResponse("error", HttpStatus.OK, e.getMessage());
         }
     }
-
+*/
     @ApiOperation(value = "Participant par activite.")
     @PostMapping("/participants/{idActivite}")
     public ResponseEntity<Object> ParticipantActivite(@RequestParam(value = "user") String userVenant,@PathVariable("idActivite") Long idActivite) {

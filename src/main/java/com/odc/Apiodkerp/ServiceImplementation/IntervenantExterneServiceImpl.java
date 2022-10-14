@@ -51,10 +51,10 @@ public class IntervenantExterneServiceImpl implements IntervenantExterneService 
         // TODO Auto-generated method stub
         return intervenantExtRepo.findByEmail(email);
     }
-
+/*
     @Override
     public IntervenantExterne trouverParLoginAndPass(String login, String password) {
         return intervenantExtRepo.findByLoginAndPassword(login, password);
     }
-
+*/
 }
