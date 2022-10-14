@@ -689,7 +689,8 @@ public class UtilisateurController {
                 if (file != null) {
                     if(activite.getDateDebut().before(new Date())){
                         return ResponseMessage.generateResponse("error", HttpStatus.OK, "Veuillez renseigner une date ultérieure à aujourd'hui ! ");
-                    }else if(activite.getDateFin().before(activite.getDateDebut())){
+                    }else 
+                    if(activite.getDateFin().before(activite.getDateDebut())){
                         return ResponseMessage.generateResponse("error", HttpStatus.OK, "La date de fin de l'activite doit être ultérieure à la date de debut !");
                     }else{
                         if((activite.getTypeActivite().getLibelle().equals("Talk") && difInDay>3) || (activite.getTypeActivite().getLibelle().equals("Evenement") && difInDay>3)){

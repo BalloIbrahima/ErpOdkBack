@@ -1,5 +1,6 @@
 package com.odc.Apiodkerp;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -56,48 +57,70 @@ public class ApiodkerpApplication {
 		FormatEmailService formatEmailService = ctx.getBean(FormatEmailService.class);
 		StatusService statusService = ctx.getBean(StatusService.class);
 		DroitService droitService = ctx.getBean(DroitService.class);
+		List<Droit> UserDroit=new ArrayList<>();
+		List<Droit> ResponDroit=new ArrayList<>();
 
 		// droit
 		Droit Cactivite = new Droit();
 		Cactivite.setId(1L);
 		Cactivite.setLibelle("Create Activite");
 		Cactivite.setDescription("Creer une activité.");
+		UserDroit.add(Cactivite);
+		ResponDroit.add(Cactivite);
 
 		Droit Ractivite = new Droit();
 		Ractivite.setId(2L);
 		Ractivite.setLibelle("Read Activite");
 		Ractivite.setDescription("afficher une activité.");
+		UserDroit.add(Ractivite);
+		ResponDroit.add(Ractivite);
+
 
 		Droit Uactivite = new Droit();
 		Uactivite.setId(3L);
 		Uactivite.setLibelle("Update Activite");
 		Uactivite.setDescription("Mettre à jour une activité.");
+		UserDroit.add(Uactivite);
+		ResponDroit.add(Uactivite);
 
 		Droit Dactivite = new Droit();
 		Dactivite.setId(4L);
 		Dactivite.setLibelle("Delete Activite");
 		Dactivite.setDescription("Supprimer une activité.");
+		UserDroit.add(Dactivite);
+		ResponDroit.add(Dactivite);		
+
 
 		// aoup
 		Droit Caoup = new Droit();
 		Caoup.setId(5L);
 		Caoup.setLibelle("Create AouP");
 		Caoup.setDescription("Creer un apprenant ou un participant.");
+		UserDroit.add(Caoup);
+		ResponDroit.add(Caoup);
 
 		Droit Raoup = new Droit();
 		Raoup.setId(6L);
 		Raoup.setLibelle("Read AouP");
 		Raoup.setDescription("Afficher un apprenant ou un participant.");
+		UserDroit.add(Raoup);
+		ResponDroit.add(Raoup);
+
 
 		Droit Uaoup = new Droit();
 		Uaoup.setId(7L);
 		Uaoup.setLibelle("Update AouP");
 		Uaoup.setDescription("mettre à jour un apprenant ou un participant.");
+		UserDroit.add(Uaoup);
+		ResponDroit.add(Uaoup);
+
 
 		Droit Daoup = new Droit();
 		Daoup.setId(8L);
 		Daoup.setLibelle("Delete AouP");
 		Daoup.setDescription("Supprimer un apprenant ou un participant.");
+		UserDroit.add(Daoup);
+		ResponDroit.add(Daoup);
 
 		// ::::::::::::::::::::
 
@@ -105,21 +128,30 @@ public class ApiodkerpApplication {
 		Cdesignation.setId(9L);
 		Cdesignation.setLibelle("Create Designation");
 		Cdesignation.setDescription("Creer une designation.");
+		UserDroit.add(Cdesignation);
+		ResponDroit.add(Cdesignation);
+
 
 		Droit Rdesignation = new Droit();
 		Rdesignation.setId(10L);
 		Rdesignation.setLibelle("Read Designation");
 		Rdesignation.setDescription("Lire une designation.");
+		UserDroit.add(Rdesignation);
+		ResponDroit.add(Rdesignation);
 
 		Droit Udesignation = new Droit();
 		Udesignation.setId(11L);
 		Udesignation.setLibelle("Update Designation");
 		Udesignation.setDescription("Mettre à jour une designation.");
+		UserDroit.add(Udesignation);
+		ResponDroit.add(Udesignation);
 
 		Droit Ddesignation = new Droit();
 		Ddesignation.setId(12L);
 		Ddesignation.setLibelle("Delete Designation");
 		Ddesignation.setDescription("Suprimer une designation.");
+		UserDroit.add(Ddesignation);
+		ResponDroit.add(Ddesignation);
 
 		Droit Centite = new Droit();
 		Centite.setId(13L);
@@ -130,6 +162,8 @@ public class ApiodkerpApplication {
 		Rentite.setId(14L);
 		Rentite.setLibelle("Read Entite");
 		Rentite.setDescription("Lire une entite.");
+		UserDroit.add(Rentite);
+		ResponDroit.add(Rentite);
 
 		Droit Uentite = new Droit();
 		Uentite.setId(15L);
@@ -150,6 +184,8 @@ public class ApiodkerpApplication {
 		Retat.setId(18L);
 		Retat.setLibelle("Read Etat");
 		Retat.setDescription("Lire un etat.");
+		UserDroit.add(Retat);
+		ResponDroit.add(Retat);
 
 		Droit Uetat = new Droit();
 		Uetat.setId(19L);
@@ -175,6 +211,8 @@ public class ApiodkerpApplication {
 		Uformatemail.setId(23L);
 		Uformatemail.setLibelle("Update FormatEmail");
 		Uformatemail.setDescription("Mettre à jour un FormatEmail.");
+		UserDroit.add(Uformatemail);
+		ResponDroit.add(Uformatemail);
 
 		Droit Dformatemail = new Droit();
 		Dformatemail.setId(24L);
@@ -205,61 +243,90 @@ public class ApiodkerpApplication {
 		Clistepostulant.setId(29L);
 		Clistepostulant.setLibelle("Create ListePostulant");
 		Clistepostulant.setDescription("Creer une liste de postulant.");
+		UserDroit.add(Clistepostulant);
+		ResponDroit.add(Clistepostulant);
 
 		Droit Rlistepostulant = new Droit();
 		Rlistepostulant.setId(30L);
 		Rlistepostulant.setLibelle("Read ListePostulant");
 		Rlistepostulant.setDescription("Lire une liste de postulant.");
+		UserDroit.add(Rlistepostulant);
+		ResponDroit.add(Rlistepostulant);
 
 		Droit Ulistepostulant = new Droit();
 		Ulistepostulant.setId(31L);
 		Ulistepostulant.setLibelle("Update ListePostulant");
 		Ulistepostulant.setDescription("Mettre à jour une liste de postulant.");
+		UserDroit.add(Ulistepostulant);
+		ResponDroit.add(Ulistepostulant);
 
 		Droit Dlistepostulant = new Droit();
 		Dlistepostulant.setId(32L);
 		Dlistepostulant.setLibelle("Delete ListePostulant");
 		Dlistepostulant.setDescription("Suprimer une liste de postulant.");
+		UserDroit.add(Dlistepostulant);
+		ResponDroit.add(Dlistepostulant);
 
 		Droit Cpostulant = new Droit();
 		Cpostulant.setId(33L);
 		Cpostulant.setLibelle("Create postulant");
 		Cpostulant.setDescription("Creer un postulant.");
+		UserDroit.add(Cpostulant);
+		ResponDroit.add(Cpostulant);
 
 		Droit Rpostulant = new Droit();
 		Rpostulant.setId(34L);
 		Rpostulant.setLibelle("Read postulant");
 		Rpostulant.setDescription("Lire un postulant.");
+		UserDroit.add(Rpostulant);
+		ResponDroit.add(Rpostulant);
+
 
 		Droit Upostulant = new Droit();
 		Upostulant.setId(35L);
 		Upostulant.setLibelle("Update postulant");
 		Upostulant.setDescription("Mettre à jour un postulant.");
+		UserDroit.add(Upostulant);
+		ResponDroit.add(Upostulant);
+
 
 		Droit Dpostulant = new Droit();
 		Dpostulant.setId(36L);
 		Dpostulant.setLibelle("Delete postulant");
 		Dpostulant.setDescription("Suprimer un postulant.");
+		UserDroit.add(Dpostulant);
+		ResponDroit.add(Dpostulant);
+
 
 		Droit Cpresence = new Droit();
 		Cpresence.setId(37L);
 		Cpresence.setLibelle("Create Presence");
 		Cpresence.setDescription("Creer une presence.");
+		UserDroit.add(Cpresence);
+		ResponDroit.add(Cpresence);
+
 
 		Droit Rpresence = new Droit();
 		Rpresence.setId(38L);
 		Rpresence.setLibelle("Read Presence");
 		Rpresence.setDescription("Lire une presence.");
+		UserDroit.add(Rpresence);
+		ResponDroit.add(Rpresence);
+
 
 		Droit Upresence = new Droit();
 		Upresence.setId(39L);
 		Upresence.setLibelle("Update Presence");
 		Upresence.setDescription("Mettre à jour une presence.");
+		UserDroit.add(Upresence);
+		ResponDroit.add(Upresence);
 
 		Droit Dpresence = new Droit();
 		Dpresence.setId(40L);
 		Dpresence.setLibelle("Delete Presence");
 		Dpresence.setDescription("Suprimer une presence.");
+		UserDroit.add(Dpresence);
+		ResponDroit.add(Dpresence);
 
 		Droit Crole = new Droit();
 		Crole.setId(41L);
@@ -270,6 +337,8 @@ public class ApiodkerpApplication {
 		Rrole.setId(42L);
 		Rrole.setLibelle("Read Role");
 		Rrole.setDescription("Lire une role.");
+		UserDroit.add(Rrole);
+		ResponDroit.add(Rrole);
 
 		Droit Urole = new Droit();
 		Urole.setId(43L);
@@ -285,16 +354,23 @@ public class ApiodkerpApplication {
 		Csalle.setId(45L);
 		Csalle.setLibelle("Create Salle");
 		Csalle.setDescription("Creer une salle.");
+		UserDroit.add(Csalle);
+		ResponDroit.add(Csalle);
 
 		Droit Rsalle = new Droit();
 		Rsalle.setId(46L);
 		Rsalle.setLibelle("Read Salle");
 		Rsalle.setDescription("Lire une salle.");
+		UserDroit.add(Rsalle);
+		ResponDroit.add(Rsalle);
+		
 
 		Droit Usalle = new Droit();
 		Usalle.setId(47L);
 		Usalle.setLibelle("Update Salle");
 		Usalle.setDescription("Mettre à jour une salle.");
+		UserDroit.add(Usalle);
+		ResponDroit.add(Usalle);
 
 		Droit Dsalle = new Droit();
 		Dsalle.setId(48L);
@@ -305,41 +381,57 @@ public class ApiodkerpApplication {
 		Ctache.setId(49L);
 		Ctache.setLibelle("Create Tache");
 		Ctache.setDescription("Creer une tache.");
+		UserDroit.add(Ctache);
+		ResponDroit.add(Ctache);
 
 		Droit Rtache = new Droit();
 		Rtache.setId(50L);
 		Rtache.setLibelle("Read Tache");
 		Rtache.setDescription("Lire une tache.");
+		UserDroit.add(Rtache);
+		ResponDroit.add(Rtache);
 
 		Droit Utache = new Droit();
 		Utache.setId(51L);
 		Utache.setLibelle("Update Tache");
 		Utache.setDescription("Mettre à jour une tache.");
+		UserDroit.add(Utache);
+		ResponDroit.add(Utache);
 
 		Droit Dtache = new Droit();
 		Dtache.setId(52L);
 		Dtache.setLibelle("Delete Tache");
 		Dtache.setDescription("Suprimer une tache.");
+		UserDroit.add(Dtache);
+		ResponDroit.add(Dtache);
 
 		Droit Ctirage = new Droit();
 		Ctirage.setId(53L);
 		Ctirage.setLibelle("Create Tirage");
 		Ctirage.setDescription("Creer un tirage.");
+		UserDroit.add(Ctirage);
+		ResponDroit.add(Ctirage);
 
 		Droit Rtirage = new Droit();
 		Rtirage.setId(54L);
 		Rtirage.setLibelle("Read Tirage");
 		Rtirage.setDescription("Lire un tirage.");
+		UserDroit.add(Rtirage);
+		ResponDroit.add(Rtirage);
 
 		Droit Utirage = new Droit();
 		Utirage.setId(55L);
 		Utirage.setLibelle("Update Tirage");
 		Utirage.setDescription("Mettre à jour un tirage.");
+		UserDroit.add(Utirage);
+		ResponDroit.add(Utirage);
 
 		Droit Dtirage = new Droit();
 		Dtirage.setId(56L);
 		Dtirage.setLibelle("Delete Tirage");
 		Dtirage.setDescription("Suprimer un tirage.");
+		UserDroit.add(Dtirage);
+		ResponDroit.add(Dtirage);
 
 		Droit Cutilisateur = new Droit();
 		Cutilisateur.setId(57L);
@@ -350,11 +442,14 @@ public class ApiodkerpApplication {
 		Rutilisateur.setId(58L);
 		Rutilisateur.setLibelle("Read Utilisateur");
 		Rutilisateur.setDescription("Lire un utilisateur.");
+		UserDroit.add(Rutilisateur);
+		ResponDroit.add(Rutilisateur);
 
 		Droit Uutilisateur = new Droit();
 		Uutilisateur.setId(59L);
 		Uutilisateur.setLibelle("Update Utilisateur");
 		Uutilisateur.setDescription("Mettre à jour un utilisateur.");
+
 
 		Droit Dutilisateur = new Droit();
 		Dutilisateur.setId(60L);
@@ -365,16 +460,22 @@ public class ApiodkerpApplication {
 		Ctypeactivite.setId(61L);
 		Ctypeactivite.setLibelle("Create TypeActivite");
 		Ctypeactivite.setDescription("Creer un type d'activité.");
+		UserDroit.add(Ctypeactivite);
+		ResponDroit.add(Ctypeactivite);
 
 		Droit Rtypeactivite = new Droit();
 		Rtypeactivite.setId(62L);
 		Rtypeactivite.setLibelle("Read TypeActivite");
 		Rtypeactivite.setDescription("Lire un type d'activité.");
+		UserDroit.add(Rtypeactivite);
+		ResponDroit.add(Rtypeactivite);
 
 		Droit Utypeactivite = new Droit();
 		Utypeactivite.setId(63L);
 		Utypeactivite.setLibelle("Update TypeActivite");
 		Utypeactivite.setDescription("Mettre à jour un type d'activité.");
+		UserDroit.add(Utypeactivite);
+		ResponDroit.add(Utypeactivite);
 
 		Droit Dtypeactivite = new Droit();
 		Dtypeactivite.setId(64L);
@@ -468,15 +569,12 @@ public class ApiodkerpApplication {
 
 		user.setId(1L);
 		user.setLibellerole("USER");
-		for (Droit droit : droits) {
-			user.getDroits().add(droit);
-		}
+		user.getDroits().addAll(UserDroit);
+
 
 		Role responsable = new Role();
 
-		for (Droit droit : droits) {
-			responsable.getDroits().add(droit);
-		}
+		responsable.getDroits().addAll(ResponDroit);
 		responsable.setId(2L);
 		responsable.setLibellerole("RESPONSABLE");
 
